@@ -342,7 +342,7 @@ function ScreenshotFrame({
         alt={alt}
         loading="lazy"
         className="w-full h-full object-cover"
-        style={{ objectPosition, transform: `scale(${scale})` }}
+        style={{ objectPosition, width: `${scale * 100}%`, height: `${scale * 100}%`, maxWidth: "none" }}
       />
     </div>
   );
