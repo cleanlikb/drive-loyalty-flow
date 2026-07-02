@@ -158,13 +158,10 @@ function HeroSection() {
           For UK independent dealerships
         </span>
         <h1 className="mt-6 text-4xl md:text-5xl lg:text-6xl font-semibold tracking-tight text-white">
-          Turn past customers into your next month&apos;s sales.
+          When did you last hear from a customer you sold a car to two years ago?
         </h1>
         <p className="mt-6 text-lg md:text-xl text-white/80 max-w-2xl mx-auto leading-relaxed">
-          ReDrive automatically re-engages the customers you&apos;ve already sold to, 
-          surfacing warm leads at 12, 18, 24, 36, 48 and 60-month ownership milestones. 
-          More sales, stronger relationships, and first refusal on cars you previously 
-          sold — without paying a penny in auction fees.
+          They&apos;re due a new car right now. Someone&apos;s about to sell it to them. Is it you?
         </p>
         <div className="mt-9 flex flex-col sm:flex-row items-center justify-center gap-4">
           <Button asChild size="lg" className="h-12 px-8 text-base bg-white text-primary hover:bg-white/90 shadow-lg shadow-black/10 hover:shadow-black/20 transition-shadow">
