@@ -98,6 +98,7 @@ function SequenceDetail() {
   const update = useServerFn(updateEmailDraft);
   const stop = useServerFn(stopSequence);
   const reply = useServerFn(logReply);
+  const regen = useServerFn(regenerateSequenceEmail);
   const { data } = useQuery({ queryKey: ["sequence", id], queryFn: () => fetchOne({ data: { id } }) });
   const [replyText, setReplyText] = useState("");
   const [replyOpen, setReplyOpen] = useState(false);
