@@ -3,7 +3,6 @@ import { useEffect, useState, type ReactNode } from "react";
 import {
   LayoutDashboard,
   Inbox,
-  Car,
   Send,
   Users,
   MessageSquare,
@@ -26,7 +25,6 @@ const nav = [
   { to: "/sequences", label: "Sequences", icon: Send },
   { to: "/replies", label: "Replies", icon: MessageSquare },
   { to: "/customers", label: "Customers", icon: Users },
-  { to: "/stock", label: "Stock", icon: Car },
   { to: "/settings", label: "Settings", icon: SettingsIcon },
 ] as const;
 
