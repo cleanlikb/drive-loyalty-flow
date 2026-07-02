@@ -159,7 +159,7 @@ function HeroSection() {
           Your best leads are the customers you&apos;ve already sold to.
         </h1>
         <p className="mt-6 text-lg md:text-xl text-white/80 max-w-2xl mx-auto leading-relaxed">
-          Stop burning money on third-party leads. Our software finds every past customer hitting a 12 to 60-month ownership anniversary this month, automatically writes a personalised 3-email sequence, and lets you launch it in one click.
+          Don&apos;t just rely on AutoTrader and CarGurus to grow. ReDrive runs alongside your current marketing to capture massive hidden ROI from data you already own. Our software finds every past customer hitting a 12 to 60-month ownership anniversary this month, automatically writes a personalised 3-email sequence, and lets you launch it in one click.
         </p>
         <div className="mt-9 flex flex-col sm:flex-row items-center justify-center gap-4">
           <Button asChild size="lg" className="h-12 px-8 text-base bg-white text-primary hover:bg-white/90 shadow-lg shadow-black/10 hover:shadow-black/20 transition-shadow">
@@ -179,8 +179,8 @@ function PainSection() {
   const pains = [
     {
       icon: Zap,
-      title: "The Lead Addiction",
-      body: "Buying expensive, low-quality, shared leads from third-party platforms just to survive.",
+      title: "The Front-End Spend Trap",
+      body: "Spending heavily on AutoTrader and CarGurus to acquire new customers, but missing out on the backend profit when those same buyers go elsewhere for their next car.",
     },
     {
       icon: Database,
@@ -357,8 +357,8 @@ function BenefitsSection() {
     },
     {
       icon: Lock,
-      title: "100% Exclusive Leads",
-      body: "Stop competing with 5 local dealers for the same buyer. These customers already trust you.",
+      title: "The Ultimate Marketing Complement",
+      body: "Boosts your total sales volume and works perfectly alongside your existing AutoTrader and CarGurus listings. These are 100% exclusive leads that already trust your dealership.",
     },
   ];
 
