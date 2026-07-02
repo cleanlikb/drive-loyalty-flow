@@ -20,7 +20,15 @@ import {
   CheckCircle2,
   Mail,
   Calculator,
+  Check,
+  Sparkles,
 } from "lucide-react";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import logo from "@/assets/redrive-logo.png";
 
 export const Route = createFileRoute("/")({
