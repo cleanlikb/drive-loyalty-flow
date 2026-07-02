@@ -76,7 +76,7 @@ function Header({
     <header className="sticky top-0 z-50 border-b border-border/60 bg-background/80 backdrop-blur">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
         <Link to="/" className="flex items-center gap-2.5">
-          <img src={logo} alt="ReDrive" className="h-8 w-8 object-contain" />
+          <img src={logo.url} alt="ReDrive" className="h-9 w-9 object-contain" />
           <span className="font-semibold text-lg tracking-tight">ReDrive</span>
         </Link>
 

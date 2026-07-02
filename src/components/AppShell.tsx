@@ -89,9 +89,9 @@ export function AppShell({ children }: { children: ReactNode }) {
     <div className="flex min-h-screen bg-background">
       <aside className="hidden md:flex md:w-60 md:flex-col border-r bg-sidebar">
         <div className="px-6 py-5 border-b">
-          <Link to="/dashboard" className="flex items-center gap-2">
-            <img src={logo} alt="ReDrive" className="h-7 w-7 object-contain" />
-            <span className="font-semibold tracking-tight text-sidebar-foreground">ReDrive</span>
+          <Link to="/dashboard" className="flex items-center gap-2.5">
+            <img src={logo.url} alt="ReDrive" className="h-9 w-9 object-contain" />
+            <span className="font-semibold tracking-tight text-lg text-sidebar-foreground">ReDrive</span>
           </Link>
         </div>
         <NavList pathname={location.pathname} />
@@ -116,9 +116,9 @@ export function AppShell({ children }: { children: ReactNode }) {
               <SheetContent side="left" className="w-64 p-0 bg-sidebar flex flex-col">
                 <SheetTitle className="sr-only">Navigation</SheetTitle>
                 <div className="px-6 py-5 border-b">
-                  <Link to="/dashboard" onClick={() => setMobileOpen(false)} className="flex items-center gap-2">
-                    <img src={logo} alt="ReDrive" className="h-7 w-7 object-contain" />
-                    <span className="font-semibold tracking-tight text-sidebar-foreground">ReDrive</span>
+                  <Link to="/dashboard" onClick={() => setMobileOpen(false)} className="flex items-center gap-2.5">
+                    <img src={logo.url} alt="ReDrive" className="h-9 w-9 object-contain" />
+                    <span className="font-semibold tracking-tight text-lg text-sidebar-foreground">ReDrive</span>
                   </Link>
                 </div>
                 <NavList pathname={location.pathname} onNavigate={() => setMobileOpen(false)} />
@@ -128,8 +128,8 @@ export function AppShell({ children }: { children: ReactNode }) {
                 </div>
               </SheetContent>
             </Sheet>
-            <Link to="/dashboard" className="flex items-center gap-2">
-              <img src={logo} alt="ReDrive" className="h-6 w-6 object-contain" />
+            <Link to="/dashboard" className="flex items-center gap-2.5">
+              <img src={logo.url} alt="ReDrive" className="h-8 w-8 object-contain" />
               <span className="font-semibold tracking-tight text-sm">ReDrive</span>
             </Link>
           </div>
