@@ -110,7 +110,6 @@ export async function processReply(
     title,
     body: classification.summary?.slice(0, 200) ?? null,
     kind: "reply",
-    link: `/sequences/${seq.id}`,
   }).catch(() => {});
 
   // Best-effort forward to the dealer's inbox.
