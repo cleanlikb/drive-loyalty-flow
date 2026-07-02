@@ -263,26 +263,26 @@ function SolutionSection() {
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="max-w-3xl mx-auto text-center mb-16">
           <span className="text-sm font-semibold text-primary uppercase tracking-wide">How it works</span>
-          <h2 className="mt-3 text-3xl md:text-4xl font-semibold tracking-tight text-foreground">From dusty CRM to booked appointments in 3 steps</h2>
+          <h2 className="mt-3 text-3xl md:text-4xl font-semibold tracking-tight text-foreground">More sales, better relationships, cheaper stock — in 3 simple steps</h2>
         </div>
 
         <div className="grid md:grid-cols-3 gap-8">
           <StepCard
             step={1}
-            title="Securely upload or sync your previous customer list"
-            body="Upload once or connect your sales data. We keep every record secure and only ever email on your behalf."
+            title="Upload your previous customer sales in one CSV"
+            body="Securely import the sales you already have. The more history, the more warm leads and buy-back opportunities surface every month."
             mockup={<UploadMockup />}
           />
           <StepCard
             step={2}
-            title="Our system automatically flags buyers hitting key finance or ownership milestones"
-            body="Every month we surface customers at 12, 18, 24, 36, 48 or 60 months since their last purchase."
+            title="We automatically flag every customer at the right moment"
+            body="Each month we surface buyers at 12, 18, 24, 36, 48 or 60 months — exactly when they're likely to change car again."
             mockup={<MilestoneMockup />}
           />
           <StepCard
             step={3}
-            title="Review the AI-generated, personalised 3-email sequence and tap 'Approve' to send"
-            body="Check three warm, personalised emails per customer, then hit one button to schedule the entire month."
+            title="Review the AI emails and approve the whole month in one click"
+            body="Three warm, personalised emails per customer are written for you. Approve once, and ReDrive schedules everything automatically."
             mockup={<SequenceMockup />}
           />
         </div>
