@@ -16,8 +16,25 @@ function Landing() {
   }, [navigate]);
 
   return (
-    <div className="min-h-screen bg-background">
-      <header className="border-b">
+    <div className="relative min-h-screen overflow-hidden bg-background">
+      {/* Ambient background */}
+      <div aria-hidden className="pointer-events-none absolute inset-0 -z-10">
+        <div className="absolute -top-40 -left-32 h-[520px] w-[520px] rounded-full bg-primary/25 blur-3xl" />
+        <div className="absolute top-20 -right-32 h-[480px] w-[480px] rounded-full bg-accent/60 blur-3xl" />
+        <div className="absolute bottom-0 left-1/3 h-[420px] w-[420px] rounded-full bg-chart-4/20 blur-3xl" />
+        <div
+          className="absolute inset-0 opacity-[0.35]"
+          style={{
+            backgroundImage:
+              "linear-gradient(to right, color-mix(in oklab, var(--foreground) 6%, transparent) 1px, transparent 1px), linear-gradient(to bottom, color-mix(in oklab, var(--foreground) 6%, transparent) 1px, transparent 1px)",
+            backgroundSize: "56px 56px",
+            maskImage:
+              "radial-gradient(ellipse at 50% 20%, black 40%, transparent 75%)",
+          }}
+        />
+      </div>
+      <header className="border-b border-border/60 backdrop-blur-sm bg-background/60 sticky top-0 z-20">
+
         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2">
             <div className="h-8 w-8 rounded-md bg-primary grid place-items-center text-primary-foreground font-bold">S</div>
@@ -49,7 +66,7 @@ function Landing() {
             { title: "Matched to your live stock", body: "We score each lead against the cars you have today — same make + newer year wins." },
             { title: "AI-written, dealer-approved", body: "Three warm emails per customer, in your voice, with real prices from your database." },
           ].map((f) => (
-            <div key={f.title} className="rounded-lg border bg-card p-6">
+            <div key={f.title} className="rounded-xl border border-border/70 bg-card/80 backdrop-blur p-6 shadow-sm hover:shadow-md transition-shadow">
               <h3 className="font-semibold">{f.title}</h3>
               <p className="mt-2 text-sm text-muted-foreground">{f.body}</p>
             </div>
