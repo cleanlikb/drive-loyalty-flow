@@ -209,22 +209,22 @@ function PainSection() {
   const pains = [
     {
       icon: Zap,
-      title: "You're buying the same car twice at auction",
+      title: "How many of last year’s buyers are due a new car right now — and don’t know you’re still here?",
       body: "Most dealers pay auction fees and transport costs to source stock they've already sold once. ReDrive puts you back in touch with the owner before they trade it elsewhere.",
     },
     {
       icon: Database,
-      title: "Your CRM is a goldmine nobody is mining",
+      title: "If a customer’s ready to upgrade next month, who finds out first — you, or the dealer who emails them first?",
       body: "Thousands of past buyers sit idle while you spend thousands on portals to find new ones. Past customers convert faster, trust you already, and cost almost nothing to reach.",
     },
     {
       icon: Users,
-      title: "Relationships walk out the door with staff",
+      title: "What’s it costing you to buy back at auction the same car you already sold once?",
       body: "When a salesperson leaves, their contact book often leaves too. ReDrive institutionalises the follow-up so your dealership owns the relationship, not the individual.",
     },
     {
       icon: PenTool,
-      title: "You know you should follow up — but it's never the priority",
+      title: "Your CRM has the data. When’s the last time it actually sold you a car?",
       body: "Milestones pass, finance deals expire, and customers slip away. ReDrive automates the timing and the copy so it happens without eating your day.",
     },
   ];
