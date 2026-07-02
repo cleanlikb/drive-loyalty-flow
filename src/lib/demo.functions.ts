@@ -27,18 +27,6 @@ const UK_NAMES = [
   "Charlotte Wood","Tom Butler","Alice Morgan","Ryan Turner","Grace Lloyd",
 ];
 
-const DEMO_STOCK = [
-  { make: "Nissan", model: "Qashqai", year: 2023, trim: "Tekna", price: 22400 },
-  { make: "Volkswagen", model: "Golf", year: 2022, trim: "R-Line", price: 21200 },
-  { make: "Ford", model: "Kuga", year: 2023, trim: "ST-Line X", price: 24900 },
-  { make: "BMW", model: "3 Series", year: 2023, trim: "M Sport", price: 32800 },
-  { make: "Kia", model: "Sportage", year: 2023, trim: "GT-Line S", price: 26400 },
-  { make: "Audi", model: "A3", year: 2023, trim: "S Line", price: 28900 },
-  { make: "Hyundai", model: "Tucson", year: 2023, trim: "Ultimate", price: 27100 },
-  { make: "Mercedes-Benz", model: "A-Class", year: 2023, trim: "AMG Line Premium", price: 29500 },
-  { make: "Skoda", model: "Octavia", year: 2023, trim: "vRS", price: 24800 },
-  { make: "Toyota", model: "Yaris", year: 2023, trim: "GR Sport", price: 19800 },
-];
 
 function daysAgo(days: number): string {
   const d = new Date(); d.setDate(d.getDate() - days);

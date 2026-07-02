@@ -1,7 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { z } from "zod";
-import { MILESTONES, type Milestone } from "./format";
+import { MILESTONES } from "./format";
 
 function firstOfMonth(d: Date = new Date()): string {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-01`;
@@ -16,7 +16,6 @@ function monthsAgoAt(months: number, ref: Date = new Date()): { start: string; e
 
 async function rebuildCohortInternal(supabase: any, dealerId: string) {
   const monthDate = firstOfMonth();
-  // Ensure cohort exists
   const { data: existing } = await supabase.from("cohorts").select("id").eq("dealer_id", dealerId).eq("month", monthDate).maybeSingle();
   let cohortId = existing?.id;
   if (!cohortId) {
@@ -25,11 +24,6 @@ async function rebuildCohortInternal(supabase: any, dealerId: string) {
     cohortId = created.id;
   }
 
-  const { data: stock } = await supabase.from("stock").select("id,make,model,year,trim,price,active").eq("dealer_id", dealerId).eq("active", true);
-  const stockRows = stock ?? [];
-  const { findBestMatch } = await import("./matching.server");
-
-  // Get customers already recently contacted (last 6 months) via sequence_emails.sent_at
   const sixMonthsAgo = new Date(); sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
   const { data: recentSeq } = await supabase
     .from("sequences")
@@ -38,7 +32,6 @@ async function rebuildCohortInternal(supabase: any, dealerId: string) {
     .gte("sequence_emails.sent_at", sixMonthsAgo.toISOString());
   const recentlyContacted = new Set<string>((recentSeq ?? []).map((s: any) => s.customer_id));
 
-  // Active sequences
   const { data: activeSeq } = await supabase.from("sequences").select("customer_id").eq("dealer_id", dealerId).in("status", ["drafting", "scheduled", "active"]);
   const activeCustomers = new Set<string>((activeSeq ?? []).map((s: any) => s.customer_id));
 
@@ -54,20 +47,15 @@ async function rebuildCohortInternal(supabase: any, dealerId: string) {
       .lte("sale_date", end);
     for (const c of custs ?? []) {
       if (recentlyContacted.has(c.id) || activeCustomers.has(c.id)) continue;
-      const match = findBestMatch(c, stockRows as any, months as Milestone);
       inserts.push({
         cohort_id: cohortId,
         dealer_id: dealerId,
         customer_id: c.id,
         milestone_months: months,
-        best_stock_id: match.stockId,
-        match_score: match.score,
-        match_reasons: match.reasons,
       });
     }
   }
 
-  // Clear existing cohort_customers for this cohort that aren't already in sequences
   await supabase.from("cohort_customers").delete().eq("cohort_id", cohortId).is("sequence_id", null);
   if (inserts.length > 0) {
     await supabase.from("cohort_customers").upsert(inserts, { onConflict: "cohort_id,customer_id", ignoreDuplicates: true });
@@ -97,7 +85,7 @@ export const getCurrentCohort = createServerFn({ method: "GET" })
     if (!cohort) return { cohort: null, rows: [] };
     const { data: rows } = await context.supabase
       .from("cohort_customers")
-      .select("*, customer:customers(*), stock:stock(*)")
+      .select("*, customer:customers(*)")
       .eq("cohort_id", cohort.id)
       .order("milestone_months", { ascending: true });
     return { cohort, rows: rows ?? [] };
