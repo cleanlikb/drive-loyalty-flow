@@ -320,44 +320,33 @@ function StepCard({
   );
 }
 
-import stepCustomersAsset from "@/assets/step-customers.png.asset.json";
-import stepLeadsAsset from "@/assets/step-leads.png.asset.json";
-import stepSequencesAsset from "@/assets/step-sequences.png.asset.json";
+import stepCustomersCropped from "@/assets/step-customers-cropped.png";
+import stepLeadsCropped from "@/assets/step-leads-cropped.png";
+import stepSequencesCropped from "@/assets/step-sequences-cropped.png";
 
-function ScreenshotFrame({
-  src,
-  alt,
-  objectPosition = "center center",
-  scale = 1.25,
-}: {
-  src: string;
-  alt: string;
-  objectPosition?: string;
-  scale?: number;
-}) {
+function ScreenshotFrame({ src, alt }: { src: string; alt: string }) {
   return (
     <div className="rounded-xl border border-border bg-background overflow-hidden shadow-sm aspect-[16/11]">
       <img
         src={src}
         alt={alt}
         loading="lazy"
-        className="w-full h-full object-cover transition-transform duration-500"
-        style={{ objectPosition, width: `${scale * 100}%`, height: `${scale * 100}%`, maxWidth: "none" }}
+        className="w-full h-full object-cover"
       />
     </div>
   );
 }
 
 function UploadMockup() {
-  return <ScreenshotFrame src={stepCustomersAsset.url} alt="ReDrive customers page showing imported sales history" objectPosition="65% 35%" scale={2.2} />;
+  return <ScreenshotFrame src={stepCustomersCropped} alt="ReDrive customers page showing imported sales history" />;
 }
 
 function MilestoneMockup() {
-  return <ScreenshotFrame src={stepLeadsAsset.url} alt="ReDrive monthly leads grouped by ownership milestone" objectPosition="72% 30%" scale={2.6} />;
+  return <ScreenshotFrame src={stepLeadsCropped} alt="ReDrive monthly leads grouped by ownership milestone" />;
 }
 
 function SequenceMockup() {
-  return <ScreenshotFrame src={stepSequencesAsset.url} alt="ReDrive AI-generated 3-email sequence preview" objectPosition="72% 25%" scale={2.2} />;
+  return <ScreenshotFrame src={stepSequencesCropped} alt="ReDrive AI-generated 3-email sequence preview" />;
 }
 
 
