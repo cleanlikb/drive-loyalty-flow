@@ -36,7 +36,7 @@ export const completeOnboarding = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) => OnboardSchema.parse(d))
   .handler(async ({ data, context }) => {
     await ensureDealerId(context.supabase, context.userId);
-    const { error } = await context.supabase
+    const { data: dealer, error } = await context.supabase
       .from("dealers")
       .update({
         dealership_name: data.dealership_name,
@@ -45,9 +45,11 @@ export const completeOnboarding = createServerFn({ method: "POST" })
         onboarded_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
       })
-      .eq("user_id", context.userId);
+      .eq("user_id", context.userId)
+      .select("*")
+      .single();
     if (error) throw error;
-    return { ok: true };
+    return { ok: true, dealer };
   });
 
 export const updateDealerProfile = createServerFn({ method: "POST" })
