@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { listCustomers, setCustomerStatus } from "@/lib/customers.functions";
+import { listCustomers, setCustomerStatus, bulkInsertCustomers } from "@/lib/customers.functions";
 import { Card } from "@/components/ui/card";
 import { StatusBadge } from "@/components/StatusBadge";
 import { formatDate, formatGbp } from "@/lib/format";
@@ -11,7 +11,9 @@ import {
 import { MoreHorizontal } from "lucide-react";
 import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { useState } from "react";
+import { CsvImportDialog } from "@/components/CsvImportDialog";
 
 export const Route = createFileRoute("/_authenticated/customers")({
   component: Customers,
