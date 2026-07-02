@@ -30,7 +30,7 @@ function CalculatorSection() {
             <Calculator className="h-5 w-5" />
           </div>
           <div>
-            <h2 className="text-xl font-semibold tracking-tight text-foreground">See what Soldbook could generate for you</h2>
+            <h2 className="text-xl font-semibold tracking-tight text-foreground">See what ReDrive could generate for you</h2>
             <p className="text-sm text-muted-foreground">Based on 6 anniversary milestones per customer and a 1% reply-to-sale rate.</p>
           </div>
         </div>
@@ -78,7 +78,7 @@ function CalculatorSection() {
         <div className="mt-8 pt-6 border-t border-border">
           <div className="flex items-center justify-between flex-wrap gap-4">
             <p className="text-sm text-muted-foreground">
-              At {carsPerMonth} cars/month, Soldbook would email <span className="font-medium text-foreground">{formatNumber(peopleEmailed)}</span> past customers every month and potentially convert <span className="font-medium text-foreground">{formatNumber(salesPerYear)}</span> extra sales per year.
+              At {carsPerMonth} cars/month, ReDrive would email <span className="font-medium text-foreground">{formatNumber(peopleEmailed)}</span> past customers every month and potentially convert <span className="font-medium text-foreground">{formatNumber(salesPerYear)}</span> extra sales per year.
             </p>
             <Link to="/auth"><Button>Start your free account</Button></Link>
           </div>
@@ -111,7 +111,7 @@ function Landing() {
         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2">
             <div className="h-8 w-8 rounded-md bg-primary grid place-items-center text-primary-foreground font-bold">S</div>
-            <span className="font-semibold tracking-tight text-foreground">Soldbook</span>
+            <span className="font-semibold tracking-tight text-foreground">ReDrive</span>
           </Link>
           <div className="flex items-center gap-2">
             <Link to="/auth"><Button variant="ghost">Sign in</Button></Link>
@@ -129,7 +129,7 @@ function Landing() {
             Your best leads are the customers you've already sold to.
           </h1>
           <p className="mt-5 text-lg text-muted-foreground max-w-2xl mx-auto">
-            Soldbook finds every customer hitting a 12, 18, 24, 36, 48 or 60-month anniversary this month, and writes a personalised three-email sequence you approve in one click.
+            ReDrive finds every customer hitting a 12, 18, 24, 36, 48 or 60-month anniversary this month, and writes a personalised three-email sequence you approve in one click.
           </p>
           <div className="mt-8 flex justify-center gap-3">
             <Link to="/auth"><Button size="lg">Start your free account</Button></Link>
@@ -158,7 +158,7 @@ function Landing() {
 
       <footer className="border-t border-border bg-card py-8">
         <div className="max-w-6xl mx-auto px-6 text-center text-sm text-muted-foreground">
-          © {new Date().getFullYear()} Soldbook. Built for UK car dealerships.
+          © {new Date().getFullYear()} ReDrive. Built for UK car dealerships.
         </div>
       </footer>
     </div>

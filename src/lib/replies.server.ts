@@ -117,7 +117,7 @@ export async function processReply(
     try {
       await forwardReply({
         to: seq.dealer.notification_email,
-        fromLabel: `${seq.customer?.name ?? "Customer"} via Soldbook`,
+        fromLabel: `${seq.customer?.name ?? "Customer"} via ReDrive`,
         subject: `[${labelFor(classification.classification)}] ${meta.subject ?? "New reply"} — ${seq.customer?.name ?? ""}`,
         text: [
           `New inbound reply from ${seq.customer?.name ?? "customer"} <${meta.fromEmail ?? seq.customer?.email ?? ""}>`,

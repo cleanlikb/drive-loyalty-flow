@@ -59,7 +59,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         <div className="px-6 py-5 border-b">
           <Link to="/dashboard" className="flex items-center gap-2">
             <div className="h-7 w-7 rounded-md bg-primary grid place-items-center text-primary-foreground text-sm font-bold">S</div>
-            <span className="font-semibold tracking-tight text-sidebar-foreground">Soldbook</span>
+            <span className="font-semibold tracking-tight text-sidebar-foreground">ReDrive</span>
           </Link>
         </div>
         <nav className="flex-1 px-3 py-4 space-y-1">
