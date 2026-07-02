@@ -158,10 +158,13 @@ function HeroSection() {
           For UK independent dealerships
         </span>
         <h1 className="mt-6 text-4xl md:text-5xl lg:text-6xl font-semibold tracking-tight text-white">
-          Your best leads are the customers you&apos;ve already sold to.
+          Turn past customers into your next month&apos;s sales.
         </h1>
         <p className="mt-6 text-lg md:text-xl text-white/80 max-w-2xl mx-auto leading-relaxed">
-          Don&apos;t just rely on AutoTrader and CarGurus to grow. ReDrive runs alongside your current marketing to capture massive hidden ROI from data you already own. Our software finds every past customer hitting a 12 to 60-month ownership anniversary this month, automatically writes a personalised 3-email sequence, and lets you launch it in one click.
+          ReDrive automatically re-engages the customers you&apos;ve already sold to, 
+          surfacing warm leads at 12, 18, 24, 36, 48 and 60-month ownership milestones. 
+          More sales, stronger relationships, and first refusal on cars you previously 
+          sold — without paying a penny in auction fees.
         </p>
         <div className="mt-9 flex flex-col sm:flex-row items-center justify-center gap-4">
           <Button asChild size="lg" className="h-12 px-8 text-base bg-white text-primary hover:bg-white/90 shadow-lg shadow-black/10 hover:shadow-black/20 transition-shadow">
@@ -185,7 +188,7 @@ function VideoSection() {
           See how it works in 60 seconds
         </h2>
         <p className="mt-3 text-base md:text-lg text-muted-foreground max-w-2xl mx-auto">
-          Watch how ReDrive turns your existing customer list into a predictable pipeline of warm leads every month.
+          Watch how ReDrive turns your existing customer list into a reliable, low-cost source of extra sales and stock opportunities.
         </p>
         <div className="mt-10 rounded-2xl border border-border bg-card p-2 md:p-3 shadow-sm">
           <div className="relative aspect-video overflow-hidden rounded-xl bg-black">
@@ -207,23 +210,23 @@ function PainSection() {
   const pains = [
     {
       icon: Zap,
-      title: "The Front-End Spend Trap",
-      body: "Spending heavily on AutoTrader and CarGurus to acquire new customers, but missing out on the backend profit when those same buyers go elsewhere for their next car.",
+      title: "You're buying the same car twice at auction",
+      body: "Most dealers pay auction fees and transport costs to source stock they've already sold once. ReDrive puts you back in touch with the owner before they trade it elsewhere.",
     },
     {
       icon: Database,
-      title: "The Graveyard CRM",
-      body: "Thousands of past customer details sitting gathering dust because salespeople are too busy dealing with today's walk-ins.",
+      title: "Your CRM is a goldmine nobody is mining",
+      body: "Thousands of past buyers sit idle while you spend thousands on portals to find new ones. Past customers convert faster, trust you already, and cost almost nothing to reach.",
     },
     {
       icon: Users,
-      title: "Staff Turnover Leaks",
-      body: "When salespeople leave, the customer relationships leave with them.",
+      title: "Relationships walk out the door with staff",
+      body: "When a salesperson leaves, their contact book often leaves too. ReDrive institutionalises the follow-up so your dealership owns the relationship, not the individual.",
     },
     {
       icon: PenTool,
-      title: "Admin & Copywriting Paralysis",
-      body: "Wanting to reach out but having zero time to track dates or figure out what to write.",
+      title: "You know you should follow up — but it's never the priority",
+      body: "Milestones pass, finance deals expire, and customers slip away. ReDrive automates the timing and the copy so it happens without eating your day.",
     },
   ];
 
@@ -231,8 +234,8 @@ function PainSection() {
     <section className="py-24 bg-secondary/30">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="max-w-3xl mx-auto text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-semibold tracking-tight">Why most independent dealers are leaking money every month</h2>
-          <p className="mt-4 text-lg text-muted-foreground">These are the daily headaches ReDrive was built to eliminate.</p>
+          <h2 className="text-3xl md:text-4xl font-semibold tracking-tight">Why most independent dealers are leaving money on the table</h2>
+          <p className="mt-4 text-lg text-muted-foreground">ReDrive fixes the four leaks that quietly drain profit from every dealership.</p>
         </div>
         <div className="grid md:grid-cols-2 gap-6">
           {pains.map((pain) => (
@@ -260,26 +263,26 @@ function SolutionSection() {
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="max-w-3xl mx-auto text-center mb-16">
           <span className="text-sm font-semibold text-primary uppercase tracking-wide">How it works</span>
-          <h2 className="mt-3 text-3xl md:text-4xl font-semibold tracking-tight text-foreground">From dusty CRM to booked appointments in 3 steps</h2>
+          <h2 className="mt-3 text-3xl md:text-4xl font-semibold tracking-tight text-foreground">More sales, better relationships, cheaper stock — in 3 simple steps</h2>
         </div>
 
         <div className="grid md:grid-cols-3 gap-8">
           <StepCard
             step={1}
-            title="Securely upload or sync your previous customer list"
-            body="Upload once or connect your sales data. We keep every record secure and only ever email on your behalf."
+            title="Upload your previous customer sales in one CSV"
+            body="Securely import the sales you already have. The more history, the more warm leads and buy-back opportunities surface every month."
             mockup={<UploadMockup />}
           />
           <StepCard
             step={2}
-            title="Our system automatically flags buyers hitting key finance or ownership milestones"
-            body="Every month we surface customers at 12, 18, 24, 36, 48 or 60 months since their last purchase."
+            title="We automatically flag every customer at the right moment"
+            body="Each month we surface buyers at 12, 18, 24, 36, 48 or 60 months — exactly when they're likely to change car again."
             mockup={<MilestoneMockup />}
           />
           <StepCard
             step={3}
-            title="Review the AI-generated, personalised 3-email sequence and tap 'Approve' to send"
-            body="Check three warm, personalised emails per customer, then hit one button to schedule the entire month."
+            title="Review the AI emails and approve the whole month in one click"
+            body="Three warm, personalised emails per customer are written for you. Approve once, and ReDrive schedules everything automatically."
             mockup={<SequenceMockup />}
           />
         </div>
@@ -343,19 +346,34 @@ function SequenceMockup() {
 function BenefitsSection() {
   const benefits = [
     {
-      icon: ShieldCheck,
-      title: "Plugs the Leaky Bucket",
-      body: "Artificially creates main-dealer/franchise style retention without the expensive service department.",
+      icon: MousePointerClick,
+      title: "More sales, not more ad spend",
+      body: "Every email goes to someone who already knows and trusts your dealership. No portal fees, no click costs, no competing against every other dealer in your postcode.",
     },
     {
-      icon: MousePointerClick,
-      title: "1-Click Approvals",
-      body: "Requires zero marketing or copywriting skills. We do 99% of the heavy lifting.",
+      icon: ShieldCheck,
+      title: "Buy back cars you previously sold",
+      body: "Re-engaging past owners gives you first refusal on stock you understand. No auction buyer's premium, no transport, no surprises — just familiar cars you can retail with confidence.",
+    },
+    {
+      icon: Users,
+      title: "Stronger customer relationships",
+      body: "A well-timed, personal email at a 12, 18 or 24-month milestone keeps you front of mind. Customers feel looked after, not sold to.",
     },
     {
       icon: Lock,
-      title: "The Ultimate Marketing Complement",
-      body: "Boosts your total sales volume and works perfectly alongside your existing AutoTrader and CarGurus listings. These are 100% exclusive leads that already trust your dealership.",
+      title: "Marketing that works while you sleep",
+      body: "The system runs automatically every month. Your team reviews the emails and clicks approve — everything else is handled.",
+    },
+    {
+      icon: Sparkles,
+      title: "No copywriting or marketing skills needed",
+      body: "The AI writes every email in a warm, human tone, referencing the exact car the customer bought and a soft, natural call-to-action.",
+    },
+    {
+      icon: Database,
+      title: "Your CRM becomes a profit engine",
+      body: "The same customer database you've already paid to acquire keeps producing leads. We turn dead data into live opportunities month after month.",
     },
   ];
 
@@ -364,7 +382,8 @@ function BenefitsSection() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="max-w-3xl mx-auto text-center mb-16">
           <span className="text-sm font-semibold text-primary uppercase tracking-wide">The payoff</span>
-          <h2 className="mt-3 text-3xl md:text-4xl font-semibold tracking-tight">Turn your CRM into a predictable profit engine</h2>
+          <h2 className="mt-3 text-3xl md:text-4xl font-semibold tracking-tight">The benefits that matter to your bottom line</h2>
+          <p className="mt-4 text-lg text-muted-foreground">ReDrive is built to drive three outcomes: more sales, better retention, and cheaper stock.</p>
         </div>
         <div className="grid md:grid-cols-3 gap-8">
           {benefits.map((benefit) => (
@@ -391,7 +410,8 @@ function CalculatorSection() {
     const monthlyEmails = monthlyLeads * 3;
     const monthlySales = Math.round(monthlyLeads * 0.01);
     const yearlySales = monthlySales * 12;
-    return { totalCustomers, monthlyLeads, monthlyEmails, monthlySales, yearlySales };
+    const auctionFeesSaved = yearlySales * 500; // illustrative saving per buy-back
+    return { totalCustomers, monthlyLeads, monthlyEmails, monthlySales, yearlySales, auctionFeesSaved };
   }, [carsPerMonth]);
 
   return (
@@ -402,9 +422,9 @@ function CalculatorSection() {
             <Calculator className="h-3.5 w-3.5" />
             Revenue calculator
           </span>
-          <h2 className="mt-4 text-3xl md:text-4xl font-semibold tracking-tight">See what your CRM could be worth</h2>
+          <h2 className="mt-4 text-3xl md:text-4xl font-semibold tracking-tight">See what your past sales could be worth</h2>
           <p className="mt-4 text-lg text-muted-foreground">
-            Slide your average monthly sales. We assume that volume over 5 years, then surface anniversary buyers each month.
+            Slide your average monthly sales. ReDrive re-engages those same customers at key milestones, turning history into a steady stream of extra sales and buy-back opportunities.
           </p>
         </div>
 
@@ -435,11 +455,12 @@ function CalculatorSection() {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-            <StatBox label="Total customers in CRM" value={stats.totalCustomers.toLocaleString()} />
-            <StatBox label="People emailed / month" value={stats.monthlyLeads.toLocaleString()} />
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-4 md:gap-6">
+            <StatBox label="Customers in your CRM" value={stats.totalCustomers.toLocaleString()} />
+            <StatBox label="People re-engaged / month" value={stats.monthlyLeads.toLocaleString()} />
             <StatBox label="Emails sent / month" value={stats.monthlyEmails.toLocaleString()} />
             <StatBox label="Estimated extra sales / month" value={stats.monthlySales.toLocaleString()} highlight />
+            <StatBox label="Illustrative auction fees saved / year" value={`£${stats.auctionFeesSaved.toLocaleString()}`} />
           </div>
 
           <div className="mt-8 p-4 rounded-xl bg-primary/5 border border-primary/10 text-center">
@@ -448,7 +469,7 @@ function CalculatorSection() {
               <span className="font-semibold text-foreground">{stats.monthlySales} extra sales per month</span>{" "}
               and{" "}
               <span className="font-semibold text-foreground">{stats.yearlySales} extra sales per year</span>{" "}
-              from customers you already have.
+              from customers you already have — plus the chance to buy back familiar stock before it reaches auction.
             </p>
           </div>
         </div>
@@ -476,10 +497,10 @@ function FinalCTASection() {
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[500px] h-[300px] bg-primary/20 rounded-full blur-3xl pointer-events-none" />
           <div className="relative">
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-semibold tracking-tight">
-              Your best leads are already in your CRM.
+              More sales. Better relationships. Cheaper stock.
             </h2>
             <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
-              Let&apos;s turn them into sales this month.
+              Your customers are already changing cars. Let ReDrive make sure they change them with you.
             </p>
             <div className="mt-9 flex flex-col sm:flex-row items-center justify-center gap-4">
               <Button asChild size="lg" className="h-12 px-8 text-base shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-shadow">
@@ -507,9 +528,10 @@ function PricingSection() {
       limit: "1,000 past customers",
       popular: false,
       features: [
-        "Automated milestone tracking",
-        "AI 3-email generation",
-        "1-click approval dashboard",
+        "Automated monthly anniversary leads",
+        "AI-generated 3-email sequences",
+        "1-click approve & send",
+        "Reply detection & unsubscribe handling",
       ],
     },
     {
@@ -519,9 +541,10 @@ function PricingSection() {
       popular: true,
       features: [
         "Everything in Starter",
-        "Custom dealer email domains",
+        "Custom dealer email domain",
         "Faster AI generation",
         "Open & click analytics",
+        "Hot lead flagging",
       ],
     },
     {
@@ -531,9 +554,10 @@ function PricingSection() {
       popular: false,
       features: [
         "Everything in Growth",
-        "Multi-site lot support",
+        "Multi-site dealership support",
         "Priority processing",
-        "Smart follow-up logic",
+        "Advanced re-engagement logic",
+        "Dedicated onboarding support",
       ],
     },
   ];
@@ -543,8 +567,8 @@ function PricingSection() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="max-w-3xl mx-auto text-center mb-12">
           <span className="text-sm font-semibold text-primary uppercase tracking-wide">Pricing</span>
-          <h2 className="mt-3 text-3xl md:text-4xl font-semibold tracking-tight">Simple plans that grow with your dealership</h2>
-          <p className="mt-4 text-lg text-muted-foreground">Pick a plan based on how many past customers you have. Upgrade or downgrade anytime.</p>
+          <h2 className="mt-3 text-3xl md:text-4xl font-semibold tracking-tight">A small monthly fee, a measurable sales uplift</h2>
+          <p className="mt-4 text-lg text-muted-foreground">One extra sale usually pays for the entire year. Pick a plan based on how many past customers you have.</p>
         </div>
 
         <div className="flex justify-center mb-12">
@@ -631,16 +655,20 @@ function PricingSection() {
 function PricingFAQ() {
   const faqs = [
     {
-      q: "What happens if my database exceeds 5,000 customers?",
-      a: "Contact us for custom enterprise scaling — we'll tailor a plan around your volume and processing needs.",
+      q: "What kind of results can I expect?",
+      a: "Most dealers see an immediate uplift in warm enquiries from past customers. The system is designed to create more sales, strengthen relationships, and surface buy-back opportunities — all without portal or auction fees.",
+    },
+    {
+      q: "What data do I need to upload?",
+      a: "A simple CSV of your previous sales is enough: customer name, email, car details and sale date. ReDrive handles the rest and surfaces the right customers at the right milestone.",
     },
     {
       q: "How secure is my customer data?",
-      a: "Fully GDPR compliant, encrypted at rest and in transit, and never shared or sold to third parties.",
+      a: "Fully GDPR compliant, encrypted at rest and in transit, and never shared or sold. We only ever email your customers on your behalf.",
     },
     {
-      q: "Do I need any marketing experience?",
-      a: "None. Our AI writes everything for you — you just click 'Approve' to send.",
+      q: "Do I need marketing experience?",
+      a: "None. ReDrive writes the emails, selects the timing, and manages replies. You just review and approve.",
     },
   ];
 
