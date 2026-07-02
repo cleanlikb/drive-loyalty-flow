@@ -706,8 +706,8 @@ function Footer() {
   return (
     <footer className="border-t border-border py-10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4">
-        <Link to="/" className="flex items-center gap-2">
-          <img src={logo} alt="ReDrive" className="h-6 w-6 object-contain" />
+        <Link to="/" className="flex items-center gap-2.5">
+          <img src={logo.url} alt="ReDrive" className="h-8 w-8 object-contain" />
           <span className="font-semibold tracking-tight">ReDrive</span>
         </Link>
         <p className="text-sm text-muted-foreground">
