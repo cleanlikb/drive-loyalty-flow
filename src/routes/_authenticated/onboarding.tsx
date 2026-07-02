@@ -1,5 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import Papa from "papaparse";
 import { useServerFn } from "@tanstack/react-start";
 import { completeOnboarding } from "@/lib/dealer.functions";
@@ -19,6 +20,7 @@ export const Route = createFileRoute("/_authenticated/onboarding")({
 
 function Onboarding() {
   const navigate = useNavigate();
+  const qc = useQueryClient();
   const [step, setStep] = useState(0);
   const [dealership, setDealership] = useState("");
   const [salesperson, setSalesperson] = useState("");
@@ -53,11 +55,16 @@ function Onboarding() {
   async function finish() {
     setLoading(true);
     try {
-      await saveProfile({ data: {
+      const result = await saveProfile({ data: {
         dealership_name: dealership,
         salesperson_name: salesperson,
         website_url: website || null,
       }});
+
+      if (result?.dealer) {
+        qc.setQueryData(["dealer"], result.dealer);
+        qc.invalidateQueries({ queryKey: ["dealer"] });
+      }
 
       if (rawRows.length > 0) {
         const mapped = mapRows(rawRows, mapping);
