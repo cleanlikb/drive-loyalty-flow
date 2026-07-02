@@ -39,11 +39,13 @@ function Sequences() {
               {data.map((s: any) => {
                 const emails = (s.sequence_emails ?? []).sort((a: any, b: any) => a.step - b.step);
                 return (
-                  <tr key={s.id} className="hover:bg-accent/20 cursor-pointer">
+                  <tr
+                    key={s.id}
+                    onClick={() => navigate({ to: "/sequences/$id", params: { id: s.id } })}
+                    className="hover:bg-accent/30 cursor-pointer"
+                  >
                     <td className="px-4 py-3">
-                      <Link to="/sequences/$id" params={{ id: s.id }} className="font-medium hover:underline">
-                        {s.customer?.name}
-                      </Link>
+                      <div className="font-medium hover:underline">{s.customer?.name}</div>
                       <div className="text-xs text-muted-foreground">{s.customer?.email}</div>
                     </td>
                     <td className="px-4 py-3">{s.customer?.make} {s.customer?.model}</td>
