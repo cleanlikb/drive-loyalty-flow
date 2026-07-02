@@ -15,7 +15,7 @@
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
   --radius-2xl: calc(var(--radius) + 8px);
-  --font-sans: ui-sans-serif, system-ui, -apple-system, "Inter", "Segoe UI",
+  --font-sans: "Poppins", ui-sans-serif, system-ui, -apple-system, "Segoe UI",
     sans-serif;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
