@@ -497,10 +497,10 @@ function FinalCTASection() {
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[500px] h-[300px] bg-primary/20 rounded-full blur-3xl pointer-events-none" />
           <div className="relative">
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-semibold tracking-tight">
-              Your best leads are already in your CRM.
+              More sales. Better relationships. Cheaper stock.
             </h2>
             <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
-              Let&apos;s turn them into sales this month.
+              Your customers are already changing cars. Let ReDrive make sure they change them with you.
             </p>
             <div className="mt-9 flex flex-col sm:flex-row items-center justify-center gap-4">
               <Button asChild size="lg" className="h-12 px-8 text-base shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-shadow">
