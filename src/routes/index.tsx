@@ -346,19 +346,34 @@ function SequenceMockup() {
 function BenefitsSection() {
   const benefits = [
     {
-      icon: ShieldCheck,
-      title: "Plugs the Leaky Bucket",
-      body: "Artificially creates main-dealer/franchise style retention without the expensive service department.",
+      icon: MousePointerClick,
+      title: "More sales, not more ad spend",
+      body: "Every email goes to someone who already knows and trusts your dealership. No portal fees, no click costs, no competing against every other dealer in your postcode.",
     },
     {
-      icon: MousePointerClick,
-      title: "1-Click Approvals",
-      body: "Requires zero marketing or copywriting skills. We do 99% of the heavy lifting.",
+      icon: ShieldCheck,
+      title: "Buy back cars you previously sold",
+      body: "Re-engaging past owners gives you first refusal on stock you understand. No auction buyer's premium, no transport, no surprises — just familiar cars you can retail with confidence.",
+    },
+    {
+      icon: Users,
+      title: "Stronger customer relationships",
+      body: "A well-timed, personal email at a 12, 18 or 24-month milestone keeps you front of mind. Customers feel looked after, not sold to.",
     },
     {
       icon: Lock,
-      title: "The Ultimate Marketing Complement",
-      body: "Boosts your total sales volume and works perfectly alongside your existing AutoTrader and CarGurus listings. These are 100% exclusive leads that already trust your dealership.",
+      title: "Marketing that works while you sleep",
+      body: "The system runs automatically every month. Your team reviews the emails and clicks approve — everything else is handled.",
+    },
+    {
+      icon: Sparkles,
+      title: "No copywriting or marketing skills needed",
+      body: "The AI writes every email in a warm, human tone, referencing the exact car the customer bought and a soft, natural call-to-action.",
+    },
+    {
+      icon: Database,
+      title: "Your CRM becomes a profit engine",
+      body: "The same customer database you've already paid to acquire keeps producing leads. We turn dead data into live opportunities month after month.",
     },
   ];
 
@@ -367,7 +382,8 @@ function BenefitsSection() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="max-w-3xl mx-auto text-center mb-16">
           <span className="text-sm font-semibold text-primary uppercase tracking-wide">The payoff</span>
-          <h2 className="mt-3 text-3xl md:text-4xl font-semibold tracking-tight">Turn your CRM into a predictable profit engine</h2>
+          <h2 className="mt-3 text-3xl md:text-4xl font-semibold tracking-tight">The benefits that matter to your bottom line</h2>
+          <p className="mt-4 text-lg text-muted-foreground">ReDrive is built to drive three outcomes: more sales, better retention, and cheaper stock.</p>
         </div>
         <div className="grid md:grid-cols-3 gap-8">
           {benefits.map((benefit) => (
