@@ -210,23 +210,23 @@ function PainSection() {
   const pains = [
     {
       icon: Zap,
-      title: "The Front-End Spend Trap",
-      body: "Spending heavily on AutoTrader and CarGurus to acquire new customers, but missing out on the backend profit when those same buyers go elsewhere for their next car.",
+      title: "You're buying the same car twice at auction",
+      body: "Most dealers pay auction fees and transport costs to source stock they've already sold once. ReDrive puts you back in touch with the owner before they trade it elsewhere.",
     },
     {
       icon: Database,
-      title: "The Graveyard CRM",
-      body: "Thousands of past customer details sitting gathering dust because salespeople are too busy dealing with today's walk-ins.",
+      title: "Your CRM is a goldmine nobody is mining",
+      body: "Thousands of past buyers sit idle while you spend thousands on portals to find new ones. Past customers convert faster, trust you already, and cost almost nothing to reach.",
     },
     {
       icon: Users,
-      title: "Staff Turnover Leaks",
-      body: "When salespeople leave, the customer relationships leave with them.",
+      title: "Relationships walk out the door with staff",
+      body: "When a salesperson leaves, their contact book often leaves too. ReDrive institutionalises the follow-up so your dealership owns the relationship, not the individual.",
     },
     {
       icon: PenTool,
-      title: "Admin & Copywriting Paralysis",
-      body: "Wanting to reach out but having zero time to track dates or figure out what to write.",
+      title: "You know you should follow up — but it's never the priority",
+      body: "Milestones pass, finance deals expire, and customers slip away. ReDrive automates the timing and the copy so it happens without eating your day.",
     },
   ];
 
@@ -234,8 +234,8 @@ function PainSection() {
     <section className="py-24 bg-secondary/30">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="max-w-3xl mx-auto text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-semibold tracking-tight">Why most independent dealers are leaking money every month</h2>
-          <p className="mt-4 text-lg text-muted-foreground">These are the daily headaches ReDrive was built to eliminate.</p>
+          <h2 className="text-3xl md:text-4xl font-semibold tracking-tight">Why most independent dealers are leaving money on the table</h2>
+          <p className="mt-4 text-lg text-muted-foreground">ReDrive fixes the four leaks that quietly drain profit from every dealership.</p>
         </div>
         <div className="grid md:grid-cols-2 gap-6">
           {pains.map((pain) => (
