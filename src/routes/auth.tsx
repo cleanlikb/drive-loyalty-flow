@@ -6,6 +6,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
+import logo from "@/assets/redrive-logo.png";
+
 
 export const Route = createFileRoute("/auth")({
   ssr: false,
@@ -51,7 +53,7 @@ function AuthPage() {
     <div className="min-h-screen flex items-center justify-center bg-background px-4">
       <div className="w-full max-w-md">
         <div className="flex items-center gap-2 justify-center mb-8">
-          <div className="h-9 w-9 rounded-md bg-primary grid place-items-center text-primary-foreground font-bold">S</div>
+          <img src={logo} alt="ReDrive" className="h-9 w-9 object-contain" />
           <span className="text-xl font-semibold tracking-tight">ReDrive</span>
         </div>
         <Card className="p-6">

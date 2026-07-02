@@ -18,6 +18,8 @@ import {
   DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
+import logo from "@/assets/redrive-logo.png";
+
 
 const nav = [
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -58,7 +60,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       <aside className="hidden md:flex md:w-60 md:flex-col border-r bg-sidebar">
         <div className="px-6 py-5 border-b">
           <Link to="/dashboard" className="flex items-center gap-2">
-            <div className="h-7 w-7 rounded-md bg-primary grid place-items-center text-primary-foreground text-sm font-bold">S</div>
+            <img src={logo} alt="ReDrive" className="h-7 w-7 object-contain" />
             <span className="font-semibold tracking-tight text-sidebar-foreground">ReDrive</span>
           </Link>
         </div>
