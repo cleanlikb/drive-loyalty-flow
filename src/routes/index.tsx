@@ -287,61 +287,30 @@ function StepCard({
   );
 }
 
-function UploadMockup() {
+import stepCustomersAsset from "@/assets/step-customers.png.asset.json";
+import stepLeadsAsset from "@/assets/step-leads.png.asset.json";
+import stepSequencesAsset from "@/assets/step-sequences.png.asset.json";
+
+function ScreenshotFrame({ src, alt }: { src: string; alt: string }) {
   return (
-    <div className="rounded-xl border border-dashed border-border bg-background/50 p-6 text-center">
-      <div className="mx-auto h-10 w-10 rounded-full bg-primary/10 text-primary grid place-items-center mb-3">
-        <UploadCloud className="h-5 w-5" />
-      </div>
-      <p className="text-sm font-medium text-foreground">sales-history.csv</p>
-      <p className="text-xs text-muted-foreground mt-1">2,847 customers ready to import</p>
+    <div className="rounded-xl border border-border bg-background overflow-hidden shadow-sm">
+      <img src={src} alt={alt} loading="lazy" className="w-full h-auto block" />
     </div>
   );
+}
+
+function UploadMockup() {
+  return <ScreenshotFrame src={stepCustomersAsset.url} alt="ReDrive customers page showing imported sales history" />;
 }
 
 function MilestoneMockup() {
-  const rows = [
-    { name: "James Cooper", months: 36 },
-    { name: "Sarah Mitchell", months: 24 },
-    { name: "Daniel Evans", months: 48 },
-  ];
-  return (
-    <div className="rounded-xl border border-border bg-background/50 p-4 space-y-3">
-      {rows.map((row) => (
-        <div key={row.name} className="flex items-center justify-between rounded-lg bg-card px-3 py-2.5 border border-border">
-          <span className="text-sm font-medium text-foreground">{row.name}</span>
-          <span className="text-xs font-semibold px-2 py-1 rounded-full bg-primary/10 text-primary">{row.months}m</span>
-        </div>
-      ))}
-    </div>
-  );
+  return <ScreenshotFrame src={stepLeadsAsset.url} alt="ReDrive monthly leads grouped by ownership milestone" />;
 }
 
 function SequenceMockup() {
-  return (
-    <div className="rounded-xl border border-border bg-background/50 p-4 space-y-3">
-      <div className="space-y-2">
-        {[1, 2, 3].map((i) => (
-          <div key={i} className="rounded-lg bg-card px-3 py-2 border border-border">
-            <div className="flex items-center gap-2 mb-1.5">
-              <Mail className="h-3 w-3 text-primary" />
-              <span className="text-[10px] uppercase tracking-wide text-muted-foreground">Email {i}</span>
-            </div>
-            <div className="h-1.5 w-3/4 bg-muted rounded-full" />
-            <div className="h-1.5 w-1/2 bg-muted rounded-full mt-1.5" />
-          </div>
-        ))}
-      </div>
-      <div className="flex items-center justify-between gap-2 pt-1">
-        <span className="text-xs text-muted-foreground">24 customers</span>
-        <span className="inline-flex items-center gap-1 text-xs font-semibold text-primary bg-primary/10 px-2.5 py-1 rounded-full">
-          <CheckCircle2 className="h-3 w-3" />
-          Approve
-        </span>
-      </div>
-    </div>
-  );
+  return <ScreenshotFrame src={stepSequencesAsset.url} alt="ReDrive AI-generated 3-email sequence preview" />;
 }
+
 
 function BenefitsSection() {
   const benefits = [
