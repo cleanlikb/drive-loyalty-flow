@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
 import { listSequences } from "@/lib/sequences.functions";
@@ -12,6 +12,7 @@ export const Route = createFileRoute("/_authenticated/sequences/")({
 
 function Sequences() {
   const fetchSeqs = useServerFn(listSequences);
+  const navigate = useNavigate();
   const { data = [] } = useQuery({ queryKey: ["sequences"], queryFn: () => fetchSeqs() });
 
   return (
@@ -38,11 +39,13 @@ function Sequences() {
               {data.map((s: any) => {
                 const emails = (s.sequence_emails ?? []).sort((a: any, b: any) => a.step - b.step);
                 return (
-                  <tr key={s.id} className="hover:bg-accent/20 cursor-pointer">
+                  <tr
+                    key={s.id}
+                    onClick={() => navigate({ to: "/sequences/$id", params: { id: s.id } })}
+                    className="hover:bg-accent/30 cursor-pointer"
+                  >
                     <td className="px-4 py-3">
-                      <Link to="/sequences/$id" params={{ id: s.id }} className="font-medium hover:underline">
-                        {s.customer?.name}
-                      </Link>
+                      <div className="font-medium hover:underline">{s.customer?.name}</div>
                       <div className="text-xs text-muted-foreground">{s.customer?.email}</div>
                     </td>
                     <td className="px-4 py-3">{s.customer?.make} {s.customer?.model}</td>
