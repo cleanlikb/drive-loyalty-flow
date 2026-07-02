@@ -180,6 +180,15 @@ export const logReply = createServerFn({ method: "POST" })
     let classification: any = { classification: "replied", confidence: 0.5, summary: data.text.slice(0, 100) };
     try { classification = await classifyReply(data.text); } catch (e) { console.error("classify failed", e); }
 
+    // Keyword safety net — if AI misses it, catch obvious "no longer owns" phrasings
+    const soldRegex = /\b(sold|got rid of|traded (it |in)|scrapped|written off|write[- ]off|no longer (have|own)|don'?t (have|own) (it|the car)|gave (it )?(to|away)|part[- ]exchanged?|part ex)\b/i;
+    const unsubRegex = /\b(unsubscribe|stop emailing|remove me|opt[- ]?out|don'?t (email|contact) me)\b/i;
+    if (classification.classification === "replied" || classification.classification === "interested") {
+      if (soldRegex.test(data.text)) classification.classification = "no_longer_owns";
+      else if (unsubRegex.test(data.text)) classification.classification = "unsubscribe";
+    }
+
+
     await context.supabase.from("replies").insert({
       dealer_id: seq.dealer_id,
       sequence_id: seq.id,
