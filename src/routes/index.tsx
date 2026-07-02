@@ -655,16 +655,20 @@ function PricingSection() {
 function PricingFAQ() {
   const faqs = [
     {
-      q: "What happens if my database exceeds 5,000 customers?",
-      a: "Contact us for custom enterprise scaling — we'll tailor a plan around your volume and processing needs.",
+      q: "What kind of results can I expect?",
+      a: "Most dealers see an immediate uplift in warm enquiries from past customers. The system is designed to create more sales, strengthen relationships, and surface buy-back opportunities — all without portal or auction fees.",
+    },
+    {
+      q: "What data do I need to upload?",
+      a: "A simple CSV of your previous sales is enough: customer name, email, car details and sale date. ReDrive handles the rest and surfaces the right customers at the right milestone.",
     },
     {
       q: "How secure is my customer data?",
-      a: "Fully GDPR compliant, encrypted at rest and in transit, and never shared or sold to third parties.",
+      a: "Fully GDPR compliant, encrypted at rest and in transit, and never shared or sold. We only ever email your customers on your behalf.",
     },
     {
-      q: "Do I need any marketing experience?",
-      a: "None. Our AI writes everything for you — you just click 'Approve' to send.",
+      q: "Do I need marketing experience?",
+      a: "None. ReDrive writes the emails, selects the timing, and manages replies. You just review and approve.",
     },
   ];
 
