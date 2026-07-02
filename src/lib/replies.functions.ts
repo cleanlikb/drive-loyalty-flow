@@ -32,18 +32,22 @@ export const overrideReplyClassification = createServerFn({ method: "POST" })
       .eq("id", data.id);
 
     // Apply the side-effects of the new classification to the customer record.
-    const patch: Record<string, unknown> = {};
+    const patch: {
+      status?: "active" | "no_longer_owns" | "unsubscribed";
+      is_hot_lead?: boolean;
+      hot_lead_at?: string;
+    } = {};
     if (data.classification === "no_longer_owns") patch.status = "no_longer_owns";
     else if (data.classification === "unsubscribe") patch.status = "unsubscribed";
-    else if (data.classification === "hot_lead") { patch.is_hot_lead = true; patch.hot_lead_at = new Date().toISOString(); }
-    else if (data.classification === "interested" || data.classification === "replied") {
-      // Revert previous auto-side-effects if a user says "this wasn't actually a stop"
+    else if (data.classification === "hot_lead") {
+      patch.is_hot_lead = true;
+      patch.hot_lead_at = new Date().toISOString();
+    } else {
+      // interested or replied — revert previous auto-stop side-effects
       patch.status = "active";
-      patch.is_hot_lead = data.classification === "hot_lead" ? true : false;
+      patch.is_hot_lead = false;
     }
-    if (Object.keys(patch).length) {
-      await context.supabase.from("customers").update(patch).eq("id", reply.customer_id);
-    }
+    await context.supabase.from("customers").update(patch).eq("id", reply.customer_id);
     return { ok: true };
   });
 
