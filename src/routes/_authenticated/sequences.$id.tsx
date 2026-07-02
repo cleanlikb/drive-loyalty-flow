@@ -11,7 +11,7 @@ import { StatusBadge } from "@/components/StatusBadge";
 import { formatDateTime, formatGbp, formatDate } from "@/lib/format";
 import { toast } from "sonner";
 import { useState } from "react";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Sparkles } from "lucide-react";
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogTrigger,
 } from "@/components/ui/dialog";
