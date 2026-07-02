@@ -22,7 +22,6 @@ import {
   Calculator,
 } from "lucide-react";
 import logo from "@/assets/redrive-logo.png";
-import heroImage from "@/assets/hero-dealership.jpg";
 
 export const Route = createFileRoute("/")({
   component: Landing,
@@ -138,44 +137,29 @@ function MobileNavLink({
 
 function HeroSection() {
   return (
-    <section className="relative overflow-hidden bg-white pt-20 pb-20 md:pt-28 md:pb-28">
-      <div className="absolute inset-0 bg-grid opacity-40 pointer-events-none" />
-      <div className="absolute -top-24 -left-24 w-[600px] h-[600px] bg-primary/10 rounded-full blur-3xl pointer-events-none" />
+    <section className="relative overflow-hidden bg-gradient-to-br from-primary via-primary to-violet-600 text-primary-foreground pt-24 pb-28 md:pt-32 md:pb-36">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.18),transparent_40%)] pointer-events-none" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_left,rgba(0,0,0,0.12),transparent_40%)] pointer-events-none" />
 
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-        <div className="text-center lg:text-left">
-          <span className="inline-flex items-center gap-2 rounded-full border border-primary/25 bg-primary/10 px-4 py-1.5 text-xs font-semibold tracking-wide uppercase text-primary">
-            For UK independent dealerships
-          </span>
-          <h1 className="mt-6 text-4xl md:text-5xl lg:text-6xl font-semibold tracking-tight text-foreground">
-            Your best leads are the customers you&apos;ve already sold to.
-          </h1>
-          <p className="mt-6 text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto lg:mx-0 leading-relaxed">
-            Stop burning money on third-party leads. Our software finds every past customer hitting a 12 to 60-month ownership anniversary this month, automatically writes a personalised 3-email sequence, and lets you launch it in one click.
-          </p>
-          <div className="mt-9 flex flex-col sm:flex-row items-center lg:justify-start justify-center gap-4">
-            <Button asChild size="lg" className="h-12 px-8 text-base shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-shadow">
-              <Link to="/auth">
-                Start your free account
-                <ArrowRight className="h-4 w-4" />
-              </Link>
-            </Button>
-          </div>
-          <p className="mt-3 text-sm text-muted-foreground">No credit card required</p>
+      <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <span className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/15 px-4 py-1.5 text-xs font-semibold tracking-wide uppercase text-white">
+          For UK independent dealerships
+        </span>
+        <h1 className="mt-6 text-4xl md:text-5xl lg:text-6xl font-semibold tracking-tight text-white">
+          Your best leads are the customers you&apos;ve already sold to.
+        </h1>
+        <p className="mt-6 text-lg md:text-xl text-white/80 max-w-2xl mx-auto leading-relaxed">
+          Stop burning money on third-party leads. Our software finds every past customer hitting a 12 to 60-month ownership anniversary this month, automatically writes a personalised 3-email sequence, and lets you launch it in one click.
+        </p>
+        <div className="mt-9 flex flex-col sm:flex-row items-center justify-center gap-4">
+          <Button asChild size="lg" className="h-12 px-8 text-base bg-white text-primary hover:bg-white/90 shadow-lg shadow-black/10 hover:shadow-black/20 transition-shadow">
+            <Link to="/auth">
+              Start your free account
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+          </Button>
         </div>
-
-        <div className="relative">
-          <div className="absolute -inset-4 bg-gradient-to-tr from-primary/20 via-primary/5 to-transparent rounded-3xl blur-2xl" />
-          <div className="relative rounded-2xl overflow-hidden border border-border/60 shadow-2xl shadow-primary/10 bg-secondary">
-            <img
-              src={heroImage}
-              alt="UK car dealer shaking hands with a returning customer in a modern showroom"
-              width={1600}
-              height={1120}
-              className="w-full h-auto object-cover"
-            />
-          </div>
-        </div>
+        <p className="mt-3 text-sm text-white/70">No credit card required</p>
       </div>
     </section>
   );
