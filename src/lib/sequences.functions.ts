@@ -13,7 +13,7 @@ export const listSequences = createServerFn({ method: "GET" })
   .handler(async ({ context }) => {
     const { data, error } = await context.supabase
       .from("sequences")
-      .select("*, customer:customers(id,name,email,make,model,sale_date), sequence_emails(step,status,scheduled_for,sent_at)")
+      .select("*, customer:customers(id,name,email,make,model,sale_date), sequence_emails(id,step,status,subject,body,send_offset_days,scheduled_for,sent_at)")
       .order("started_at", { ascending: false })
       .limit(200);
     if (error) throw error;
