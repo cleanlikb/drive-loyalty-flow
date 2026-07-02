@@ -320,28 +320,33 @@ function StepCard({
   );
 }
 
-import stepCustomersAsset from "@/assets/step-customers.png.asset.json";
-import stepLeadsAsset from "@/assets/step-leads.png.asset.json";
-import stepSequencesAsset from "@/assets/step-sequences.png.asset.json";
+import stepCustomersCropped from "@/assets/step-customers-cropped.png";
+import stepLeadsCropped from "@/assets/step-leads-cropped.png";
+import stepSequencesCropped from "@/assets/step-sequences-cropped.png";
 
 function ScreenshotFrame({ src, alt }: { src: string; alt: string }) {
   return (
-    <div className="rounded-xl border border-border bg-background overflow-hidden shadow-sm">
-      <img src={src} alt={alt} loading="lazy" className="w-full h-auto block" />
+    <div className="rounded-xl border border-border bg-background overflow-hidden shadow-sm aspect-[16/11]">
+      <img
+        src={src}
+        alt={alt}
+        loading="lazy"
+        className="w-full h-full object-cover"
+      />
     </div>
   );
 }
 
 function UploadMockup() {
-  return <ScreenshotFrame src={stepCustomersAsset.url} alt="ReDrive customers page showing imported sales history" />;
+  return <ScreenshotFrame src={stepCustomersCropped} alt="ReDrive customers page showing imported sales history" />;
 }
 
 function MilestoneMockup() {
-  return <ScreenshotFrame src={stepLeadsAsset.url} alt="ReDrive monthly leads grouped by ownership milestone" />;
+  return <ScreenshotFrame src={stepLeadsCropped} alt="ReDrive monthly leads grouped by ownership milestone" />;
 }
 
 function SequenceMockup() {
-  return <ScreenshotFrame src={stepSequencesAsset.url} alt="ReDrive AI-generated 3-email sequence preview" />;
+  return <ScreenshotFrame src={stepSequencesCropped} alt="ReDrive AI-generated 3-email sequence preview" />;
 }
 
 
