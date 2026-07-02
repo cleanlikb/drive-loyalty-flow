@@ -18,6 +18,8 @@ import {
   DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
+import logo from "@/assets/redrive-logo.png";
+
 
 const nav = [
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
