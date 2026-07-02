@@ -1,7 +1,8 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
+import { Slider } from "@/components/ui/slider";
 import {
   Menu,
   X,
@@ -18,6 +19,7 @@ import {
   ArrowRight,
   CheckCircle2,
   Mail,
+  Calculator,
 } from "lucide-react";
 import logo from "@/assets/redrive-logo.png";
 
