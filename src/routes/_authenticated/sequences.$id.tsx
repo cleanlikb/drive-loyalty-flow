@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getSequence, updateEmailDraft, stopSequence, logReply } from "@/lib/sequences.functions";
+import { getSequence, updateEmailDraft, stopSequence, logReply, regenerateSequenceEmail } from "@/lib/sequences.functions";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,7 +11,7 @@ import { StatusBadge } from "@/components/StatusBadge";
 import { formatDateTime, formatGbp, formatDate } from "@/lib/format";
 import { toast } from "sonner";
 import { useState } from "react";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Sparkles } from "lucide-react";
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogTrigger,
 } from "@/components/ui/dialog";
@@ -20,11 +20,12 @@ export const Route = createFileRoute("/_authenticated/sequences/$id")({
   component: SequenceDetail,
 });
 
-function EmailCard({ e, onSave }: { e: any; onSave: (payload: { id: string; subject: string; body: string }) => Promise<void> }) {
+function EmailCard({ e, onSave, onRegen }: { e: any; onSave: (payload: { id: string; subject: string; body: string }) => Promise<void>; onRegen: (payload: { id: string; instruction?: string }) => Promise<void> }) {
   const [editing, setEditing] = useState(false);
   const [subject, setSubject] = useState(e.subject);
   const [body, setBody] = useState(e.body);
   const [saving, setSaving] = useState(false);
+  const [regenerating, setRegenerating] = useState(false);
   const canEdit = e.status === "draft" || e.status === "scheduled";
   return (
     <Card className="p-5">
@@ -65,7 +66,23 @@ function EmailCard({ e, onSave }: { e: any; onSave: (payload: { id: string; subj
           <div className="font-medium">{e.subject}</div>
           <pre className="whitespace-pre-wrap text-sm text-muted-foreground font-sans">{e.body}</pre>
           {canEdit && (
-            <div className="pt-2"><Button variant="outline" size="sm" onClick={() => setEditing(true)}>Edit draft</Button></div>
+            <div className="pt-2 flex gap-2">
+              <Button variant="outline" size="sm" onClick={() => setEditing(true)}>Edit draft</Button>
+              <Button
+                variant="outline"
+                size="sm"
+                disabled={regenerating}
+                onClick={async () => {
+                  setRegenerating(true);
+                  try { await onRegen({ id: e.id }); toast.success("Regenerated"); }
+                  catch (er: any) { toast.error(er?.message ?? "Regenerate failed"); }
+                  finally { setRegenerating(false); }
+                }}
+              >
+                <Sparkles className="h-3.5 w-3.5 mr-1.5" />
+                {regenerating ? "Regenerating…" : "Regenerate"}
+              </Button>
+            </div>
           )}
         </div>
       )}
@@ -81,6 +98,7 @@ function SequenceDetail() {
   const update = useServerFn(updateEmailDraft);
   const stop = useServerFn(stopSequence);
   const reply = useServerFn(logReply);
+  const regen = useServerFn(regenerateSequenceEmail);
   const { data } = useQuery({ queryKey: ["sequence", id], queryFn: () => fetchOne({ data: { id } }) });
   const [replyText, setReplyText] = useState("");
   const [replyOpen, setReplyOpen] = useState(false);
@@ -143,10 +161,16 @@ function SequenceDetail() {
 
       <div className="space-y-4">
         {(data.sequence_emails ?? []).map((e: any) => (
-          <EmailCard key={e.id} e={e} onSave={async (payload) => {
-            await update({ data: payload });
-            qc.invalidateQueries({ queryKey: ["sequence", id] });
-          }} />
+          <EmailCard key={e.id} e={e}
+            onSave={async (payload) => {
+              await update({ data: payload });
+              qc.invalidateQueries({ queryKey: ["sequence", id] });
+            }}
+            onRegen={async (payload) => {
+              await regen({ data: payload });
+              qc.invalidateQueries({ queryKey: ["sequence", id] });
+            }}
+          />
         ))}
       </div>
 

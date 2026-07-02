@@ -64,6 +64,47 @@ export const stopSequence = createServerFn({ method: "POST" })
     return { ok: true };
   });
 
+export const regenerateSequenceEmail = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) => z.object({
+    id: z.string().uuid(),
+    instruction: z.string().max(300).optional(),
+  }).parse(d))
+  .handler(async ({ data, context }) => {
+    const { data: email, error } = await context.supabase
+      .from("sequence_emails")
+      .select("*, sequence:sequences(*, customer:customers(*))")
+      .eq("id", data.id)
+      .single();
+    if (error) throw error;
+    if (!["draft", "scheduled"].includes(email.status)) throw new Error("Cannot regenerate a sent email");
+
+    const dealer = await getDealerFull(context.supabase, context.userId);
+    if (!dealer) throw new Error("Dealer not found");
+    const c = email.sequence.customer;
+
+    const { regenerateEmail } = await import("./ai.server");
+    const fresh = await regenerateEmail({
+      dealership: dealer.dealership_name,
+      salesperson: dealer.salesperson_name,
+      customerName: c.name,
+      customerCarYearMakeModelTrim: [c.make, c.model, c.trim].filter(Boolean).join(" "),
+      purchaseDate: c.sale_date ?? new Date().toISOString(),
+      monthsSincePurchase: c.sale_date ? monthsAgo(c.sale_date) : 12,
+      step: email.step as 1 | 2 | 3,
+      currentSubject: email.subject,
+      currentBody: email.body,
+      instruction: data.instruction,
+    });
+
+    const { error: updErr } = await context.supabase
+      .from("sequence_emails")
+      .update({ subject: fresh.subject, body: fresh.body })
+      .eq("id", data.id);
+    if (updErr) throw updErr;
+    return fresh;
+  });
+
 function addDays(base: Date, days: number): Date {
   const d = new Date(base); d.setDate(d.getDate() + days); return d;
 }
