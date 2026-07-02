@@ -11,61 +11,11 @@ import { Card } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import { Check } from "lucide-react";
+import { FIELDS, guessMapping, Row, mapRows } from "@/lib/csv-import";
 
 export const Route = createFileRoute("/_authenticated/onboarding")({
   component: Onboarding,
 });
-
-type Row = Record<string, string>;
-
-const FIELDS = [
-  { key: "name", label: "Customer name", required: true },
-  { key: "email", label: "Email" },
-  { key: "vehicle_reg", label: "Vehicle registration" },
-  { key: "make", label: "Make" },
-  { key: "model", label: "Model" },
-  { key: "trim", label: "Trim" },
-  { key: "sale_date", label: "Sale date (YYYY-MM-DD or DD/MM/YYYY)" },
-  { key: "sale_price", label: "Sale price (£)" },
-  { key: "finance_type", label: "Finance type" },
-  { key: "finance_term_months", label: "Finance term (months)" },
-] as const;
-
-function guessMapping(header: string): string | null {
-  const h = header.toLowerCase().trim();
-  if (/(name)/.test(h) && !/(user|company|dealer)/.test(h)) return "name";
-  if (/mail/.test(h)) return "email";
-  if (/reg/.test(h)) return "vehicle_reg";
-  if (/make|manufacturer|brand/.test(h)) return "make";
-  if (/model/.test(h)) return "model";
-  if (/trim|variant/.test(h)) return "trim";
-  if (/date/.test(h)) return "sale_date";
-  if (/price|amount|total/.test(h)) return "sale_price";
-  if (/(finance).*(type)|deal type/.test(h)) return "finance_type";
-  if (/term|months/.test(h)) return "finance_term_months";
-  return null;
-}
-
-function parseDate(s: string): string | null {
-  if (!s) return null;
-  const iso = /^\d{4}-\d{2}-\d{2}/.exec(s);
-  if (iso) return s.slice(0, 10);
-  const uk = /^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{2,4})/.exec(s);
-  if (uk) {
-    const [_, d, m, y] = uk;
-    const year = y.length === 2 ? Number("20" + y) : Number(y);
-    return `${year}-${m.padStart(2, "0")}-${d.padStart(2, "0")}`;
-  }
-  const d = new Date(s);
-  if (!isNaN(d.getTime())) return d.toISOString().slice(0, 10);
-  return null;
-}
-
-function toNumber(s: string): number | null {
-  if (!s) return null;
-  const n = Number(String(s).replace(/[£,\s]/g, ""));
-  return isNaN(n) ? null : n;
-}
 
 function Onboarding() {
   const navigate = useNavigate();
@@ -110,22 +60,7 @@ function Onboarding() {
       }});
 
       if (rawRows.length > 0) {
-        const mapped = rawRows.map((r) => {
-          const out: any = {};
-          for (const f of FIELDS) {
-            const src = mapping[f.key];
-            if (!src) continue;
-            const val = r[src];
-            if (val === undefined || val === "") continue;
-            if (f.key === "sale_date") out[f.key] = parseDate(val);
-            else if (f.key === "sale_price" || f.key === "finance_term_months") {
-              const n = toNumber(val);
-              if (n !== null) out[f.key] = n;
-            } else out[f.key] = String(val).trim();
-          }
-          return out;
-        }).filter((r) => r.name);
-
+        const mapped = mapRows(rawRows, mapping);
         // Batch in chunks of 500
         for (let i = 0; i < mapped.length; i += 500) {
           await uploadCustomers({ data: { rows: mapped.slice(i, i + 500) } });

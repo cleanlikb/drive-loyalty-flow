@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { listCustomers, setCustomerStatus } from "@/lib/customers.functions";
+import { listCustomers, setCustomerStatus, bulkInsertCustomers } from "@/lib/customers.functions";
 import { Card } from "@/components/ui/card";
 import { StatusBadge } from "@/components/StatusBadge";
 import { formatDate, formatGbp } from "@/lib/format";
@@ -11,7 +11,9 @@ import {
 import { MoreHorizontal } from "lucide-react";
 import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { useState } from "react";
+import { CsvImportDialog } from "@/components/CsvImportDialog";
 
 export const Route = createFileRoute("/_authenticated/customers")({
   component: Customers,
@@ -21,12 +23,22 @@ function Customers() {
   const qc = useQueryClient();
   const fetch = useServerFn(listCustomers);
   const setStatus = useServerFn(setCustomerStatus);
+  const uploadCustomers = useServerFn(bulkInsertCustomers);
   const { data = [] } = useQuery({ queryKey: ["customers"], queryFn: () => fetch() });
   const [q, setQ] = useState("");
 
   const mut = useMutation({
     mutationFn: (v: { id: string; status: any }) => setStatus({ data: v }),
     onSuccess: () => { toast.success("Updated"); qc.invalidateQueries({ queryKey: ["customers"] }); },
+  });
+
+  const importMut = useMutation({
+    mutationFn: async (rows: Array<Record<string, any>>) => {
+      for (let i = 0; i < rows.length; i += 500) {
+        await uploadCustomers({ data: { rows: rows.slice(i, i + 500) } });
+      }
+    },
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ["customers"] }); },
   });
 
   const filtered = q ? data.filter((c: any) =>
@@ -40,7 +52,12 @@ function Customers() {
           <h1 className="text-2xl font-semibold tracking-tight">Customers</h1>
           <p className="text-sm text-muted-foreground mt-1">Your full sales history.</p>
         </div>
-        <Input placeholder="Search…" value={q} onChange={(e) => setQ(e.target.value)} className="max-w-xs" />
+        <div className="flex items-center gap-2">
+          <CsvImportDialog onImport={(rows) => importMut.mutateAsync(rows)}>
+            <Button variant="outline">Import CSV</Button>
+          </CsvImportDialog>
+          <Input placeholder="Search…" value={q} onChange={(e) => setQ(e.target.value)} className="max-w-xs" />
+        </div>
       </div>
 
       <Card>
