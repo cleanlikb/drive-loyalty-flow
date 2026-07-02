@@ -52,7 +52,12 @@ function Customers() {
           <h1 className="text-2xl font-semibold tracking-tight">Customers</h1>
           <p className="text-sm text-muted-foreground mt-1">Your full sales history.</p>
         </div>
-        <Input placeholder="Search…" value={q} onChange={(e) => setQ(e.target.value)} className="max-w-xs" />
+        <div className="flex items-center gap-2">
+          <CsvImportDialog onImport={(rows) => importMut.mutateAsync(rows)}>
+            <Button variant="outline">Import CSV</Button>
+          </CsvImportDialog>
+          <Input placeholder="Search…" value={q} onChange={(e) => setQ(e.target.value)} className="max-w-xs" />
+        </div>
       </div>
 
       <Card>
