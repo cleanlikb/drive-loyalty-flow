@@ -173,54 +173,11 @@ export const logReply = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) => z.object({ sequenceId: z.string().uuid(), text: z.string().min(1).max(5000) }).parse(d))
   .handler(async ({ data, context }) => {
-    const { data: seq } = await context.supabase.from("sequences").select("*").eq("id", data.sequenceId).single();
-    if (!seq) throw new Error("Sequence not found");
-
-    const { classifyReply } = await import("./ai.server");
-    let classification: any = { classification: "replied", confidence: 0.5, summary: data.text.slice(0, 100) };
-    try { classification = await classifyReply(data.text); } catch (e) { console.error("classify failed", e); }
-
-    // Keyword safety net — if AI misses it, catch obvious "no longer owns" phrasings
-    const soldRegex = /\b(sold|got rid of|traded (it |in)|scrapped|written off|write[- ]off|no longer (have|own)|don'?t (have|own) (it|the car)|gave (it )?(to|away)|part[- ]exchanged?|part ex)\b/i;
-    const unsubRegex = /\b(unsubscribe|stop emailing|remove me|opt[- ]?out|don'?t (email|contact) me)\b/i;
-    if (classification.classification === "replied" || classification.classification === "interested") {
-      if (soldRegex.test(data.text)) classification.classification = "no_longer_owns";
-      else if (unsubRegex.test(data.text)) classification.classification = "unsubscribe";
-    }
-
-
-    await context.supabase.from("replies").insert({
-      dealer_id: seq.dealer_id,
-      sequence_id: seq.id,
-      customer_id: seq.customer_id,
-      raw_text: data.text,
-      classification: classification.classification,
+    const { processReply } = await import("./replies.server");
+    const result = await processReply(context.supabase, {
+      sequenceId: data.sequenceId,
+      text: data.text,
+      source: "manual",
     });
-
-    // Any reply cancels remaining emails
-    await context.supabase.from("sequence_emails")
-      .update({ status: "cancelled" })
-      .eq("sequence_id", seq.id)
-      .in("status", ["draft", "scheduled"]);
-
-    let stoppedReason = "Customer replied";
-    if (classification.classification === "no_longer_owns") {
-      await context.supabase.from("customers").update({ status: "no_longer_owns" }).eq("id", seq.customer_id);
-      stoppedReason = "No longer owns car";
-    } else if (classification.classification === "unsubscribe") {
-      await context.supabase.from("customers").update({ status: "unsubscribed" }).eq("id", seq.customer_id);
-      stoppedReason = "Unsubscribed";
-    } else if (classification.classification === "interested") {
-      stoppedReason = "Interested — take over manually";
-    }
-
-    await context.supabase.from("sequences")
-      .update({ status: "stopped", stopped_reason: stoppedReason, updated_at: new Date().toISOString() })
-      .eq("id", seq.id);
-
-    await context.supabase.from("activity_log").insert({
-      dealer_id: seq.dealer_id, kind: "reply_logged", payload: { sequence_id: seq.id, classification: classification.classification },
-    });
-
-    return { classification };
+    return { classification: result.classification };
   });
