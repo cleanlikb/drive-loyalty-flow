@@ -14,6 +14,7 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedStockRouteImport } from './routes/_authenticated/stock'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
+import { Route as AuthenticatedRepliesRouteImport } from './routes/_authenticated/replies'
 import { Route as AuthenticatedOnboardingRouteImport } from './routes/_authenticated/onboarding'
 import { Route as AuthenticatedLeadsRouteImport } from './routes/_authenticated/leads'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
@@ -21,6 +22,7 @@ import { Route as AuthenticatedCustomersRouteImport } from './routes/_authentica
 import { Route as AuthenticatedSequencesIndexRouteImport } from './routes/_authenticated/sequences.index'
 import { Route as AuthenticatedSequencesIdRouteImport } from './routes/_authenticated/sequences.$id'
 import { Route as ApiPublicWebhooksInboundReplyRouteImport } from './routes/api/public/webhooks/inbound-reply'
+import { Route as ApiPublicCronRescanRepliesRouteImport } from './routes/api/public/cron/rescan-replies'
 import { Route as ApiPublicCronMonthlyCohortRouteImport } from './routes/api/public/cron/monthly-cohort'
 import { Route as ApiPublicCronDispatchEmailsRouteImport } from './routes/api/public/cron/dispatch-emails'
 
@@ -46,6 +48,11 @@ const AuthenticatedStockRoute = AuthenticatedStockRouteImport.update({
 const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedRepliesRoute = AuthenticatedRepliesRouteImport.update({
+  id: '/replies',
+  path: '/replies',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedOnboardingRoute = AuthenticatedOnboardingRouteImport.update({
@@ -86,6 +93,12 @@ const ApiPublicWebhooksInboundReplyRoute =
     path: '/api/public/webhooks/inbound-reply',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicCronRescanRepliesRoute =
+  ApiPublicCronRescanRepliesRouteImport.update({
+    id: '/api/public/cron/rescan-replies',
+    path: '/api/public/cron/rescan-replies',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicCronMonthlyCohortRoute =
   ApiPublicCronMonthlyCohortRouteImport.update({
     id: '/api/public/cron/monthly-cohort',
@@ -106,12 +119,14 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/leads': typeof AuthenticatedLeadsRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
+  '/replies': typeof AuthenticatedRepliesRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/stock': typeof AuthenticatedStockRoute
   '/sequences/$id': typeof AuthenticatedSequencesIdRoute
   '/sequences/': typeof AuthenticatedSequencesIndexRoute
   '/api/public/cron/dispatch-emails': typeof ApiPublicCronDispatchEmailsRoute
   '/api/public/cron/monthly-cohort': typeof ApiPublicCronMonthlyCohortRoute
+  '/api/public/cron/rescan-replies': typeof ApiPublicCronRescanRepliesRoute
   '/api/public/webhooks/inbound-reply': typeof ApiPublicWebhooksInboundReplyRoute
 }
 export interface FileRoutesByTo {
@@ -121,12 +136,14 @@ export interface FileRoutesByTo {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/leads': typeof AuthenticatedLeadsRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
+  '/replies': typeof AuthenticatedRepliesRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/stock': typeof AuthenticatedStockRoute
   '/sequences/$id': typeof AuthenticatedSequencesIdRoute
   '/sequences': typeof AuthenticatedSequencesIndexRoute
   '/api/public/cron/dispatch-emails': typeof ApiPublicCronDispatchEmailsRoute
   '/api/public/cron/monthly-cohort': typeof ApiPublicCronMonthlyCohortRoute
+  '/api/public/cron/rescan-replies': typeof ApiPublicCronRescanRepliesRoute
   '/api/public/webhooks/inbound-reply': typeof ApiPublicWebhooksInboundReplyRoute
 }
 export interface FileRoutesById {
@@ -138,12 +155,14 @@ export interface FileRoutesById {
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/leads': typeof AuthenticatedLeadsRoute
   '/_authenticated/onboarding': typeof AuthenticatedOnboardingRoute
+  '/_authenticated/replies': typeof AuthenticatedRepliesRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/_authenticated/stock': typeof AuthenticatedStockRoute
   '/_authenticated/sequences/$id': typeof AuthenticatedSequencesIdRoute
   '/_authenticated/sequences/': typeof AuthenticatedSequencesIndexRoute
   '/api/public/cron/dispatch-emails': typeof ApiPublicCronDispatchEmailsRoute
   '/api/public/cron/monthly-cohort': typeof ApiPublicCronMonthlyCohortRoute
+  '/api/public/cron/rescan-replies': typeof ApiPublicCronRescanRepliesRoute
   '/api/public/webhooks/inbound-reply': typeof ApiPublicWebhooksInboundReplyRoute
 }
 export interface FileRouteTypes {
@@ -155,12 +174,14 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/leads'
     | '/onboarding'
+    | '/replies'
     | '/settings'
     | '/stock'
     | '/sequences/$id'
     | '/sequences/'
     | '/api/public/cron/dispatch-emails'
     | '/api/public/cron/monthly-cohort'
+    | '/api/public/cron/rescan-replies'
     | '/api/public/webhooks/inbound-reply'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -170,12 +191,14 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/leads'
     | '/onboarding'
+    | '/replies'
     | '/settings'
     | '/stock'
     | '/sequences/$id'
     | '/sequences'
     | '/api/public/cron/dispatch-emails'
     | '/api/public/cron/monthly-cohort'
+    | '/api/public/cron/rescan-replies'
     | '/api/public/webhooks/inbound-reply'
   id:
     | '__root__'
@@ -186,12 +209,14 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard'
     | '/_authenticated/leads'
     | '/_authenticated/onboarding'
+    | '/_authenticated/replies'
     | '/_authenticated/settings'
     | '/_authenticated/stock'
     | '/_authenticated/sequences/$id'
     | '/_authenticated/sequences/'
     | '/api/public/cron/dispatch-emails'
     | '/api/public/cron/monthly-cohort'
+    | '/api/public/cron/rescan-replies'
     | '/api/public/webhooks/inbound-reply'
   fileRoutesById: FileRoutesById
 }
@@ -201,6 +226,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   ApiPublicCronDispatchEmailsRoute: typeof ApiPublicCronDispatchEmailsRoute
   ApiPublicCronMonthlyCohortRoute: typeof ApiPublicCronMonthlyCohortRoute
+  ApiPublicCronRescanRepliesRoute: typeof ApiPublicCronRescanRepliesRoute
   ApiPublicWebhooksInboundReplyRoute: typeof ApiPublicWebhooksInboundReplyRoute
 }
 
@@ -239,6 +265,13 @@ declare module '@tanstack/react-router' {
       path: '/settings'
       fullPath: '/settings'
       preLoaderRoute: typeof AuthenticatedSettingsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/replies': {
+      id: '/_authenticated/replies'
+      path: '/replies'
+      fullPath: '/replies'
+      preLoaderRoute: typeof AuthenticatedRepliesRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/onboarding': {
@@ -290,6 +323,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicWebhooksInboundReplyRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/cron/rescan-replies': {
+      id: '/api/public/cron/rescan-replies'
+      path: '/api/public/cron/rescan-replies'
+      fullPath: '/api/public/cron/rescan-replies'
+      preLoaderRoute: typeof ApiPublicCronRescanRepliesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/cron/monthly-cohort': {
       id: '/api/public/cron/monthly-cohort'
       path: '/api/public/cron/monthly-cohort'
@@ -312,6 +352,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedLeadsRoute: typeof AuthenticatedLeadsRoute
   AuthenticatedOnboardingRoute: typeof AuthenticatedOnboardingRoute
+  AuthenticatedRepliesRoute: typeof AuthenticatedRepliesRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
   AuthenticatedStockRoute: typeof AuthenticatedStockRoute
   AuthenticatedSequencesIdRoute: typeof AuthenticatedSequencesIdRoute
@@ -323,6 +364,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedLeadsRoute: AuthenticatedLeadsRoute,
   AuthenticatedOnboardingRoute: AuthenticatedOnboardingRoute,
+  AuthenticatedRepliesRoute: AuthenticatedRepliesRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
   AuthenticatedStockRoute: AuthenticatedStockRoute,
   AuthenticatedSequencesIdRoute: AuthenticatedSequencesIdRoute,
@@ -338,6 +380,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   ApiPublicCronDispatchEmailsRoute: ApiPublicCronDispatchEmailsRoute,
   ApiPublicCronMonthlyCohortRoute: ApiPublicCronMonthlyCohortRoute,
+  ApiPublicCronRescanRepliesRoute: ApiPublicCronRescanRepliesRoute,
   ApiPublicWebhooksInboundReplyRoute: ApiPublicWebhooksInboundReplyRoute,
 }
 export const routeTree = rootRouteImport

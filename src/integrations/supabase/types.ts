@@ -153,11 +153,14 @@ export type Database = {
           email: string | null
           finance_term_months: number | null
           finance_type: string | null
+          hot_lead_at: string | null
           id: string
+          is_hot_lead: boolean
           last_contacted_at: string | null
           make: string | null
           model: string | null
           name: string
+          next_car_notes: string | null
           sale_date: string | null
           sale_price: number | null
           status: Database["public"]["Enums"]["customer_status"]
@@ -170,11 +173,14 @@ export type Database = {
           email?: string | null
           finance_term_months?: number | null
           finance_type?: string | null
+          hot_lead_at?: string | null
           id?: string
+          is_hot_lead?: boolean
           last_contacted_at?: string | null
           make?: string | null
           model?: string | null
           name: string
+          next_car_notes?: string | null
           sale_date?: string | null
           sale_price?: number | null
           status?: Database["public"]["Enums"]["customer_status"]
@@ -187,11 +193,14 @@ export type Database = {
           email?: string | null
           finance_term_months?: number | null
           finance_type?: string | null
+          hot_lead_at?: string | null
           id?: string
+          is_hot_lead?: boolean
           last_contacted_at?: string | null
           make?: string | null
           model?: string | null
           name?: string
+          next_car_notes?: string | null
           sale_date?: string | null
           sale_price?: number | null
           status?: Database["public"]["Enums"]["customer_status"]
@@ -212,7 +221,9 @@ export type Database = {
         Row: {
           created_at: string
           dealership_name: string | null
+          forward_replies: boolean
           id: string
+          notification_email: string | null
           onboarded_at: string | null
           salesperson_name: string | null
           stock_page_url: string | null
@@ -223,7 +234,9 @@ export type Database = {
         Insert: {
           created_at?: string
           dealership_name?: string | null
+          forward_replies?: boolean
           id?: string
+          notification_email?: string | null
           onboarded_at?: string | null
           salesperson_name?: string | null
           stock_page_url?: string | null
@@ -234,7 +247,9 @@ export type Database = {
         Update: {
           created_at?: string
           dealership_name?: string | null
+          forward_replies?: boolean
           id?: string
+          notification_email?: string | null
           onboarded_at?: string | null
           salesperson_name?: string | null
           stock_page_url?: string | null
@@ -285,30 +300,60 @@ export type Database = {
       replies: {
         Row: {
           classification: Database["public"]["Enums"]["reply_classification"]
+          confidence: number | null
           created_at: string
           customer_id: string
           dealer_id: string
+          forwarded_at: string | null
+          from_email: string | null
           id: string
+          in_reply_to: string | null
+          manual_override: boolean
+          message_id: string | null
+          next_car_notes: string | null
           raw_text: string
+          rescanned_at: string | null
           sequence_id: string | null
+          subject: string | null
+          summary: string | null
         }
         Insert: {
           classification?: Database["public"]["Enums"]["reply_classification"]
+          confidence?: number | null
           created_at?: string
           customer_id: string
           dealer_id: string
+          forwarded_at?: string | null
+          from_email?: string | null
           id?: string
+          in_reply_to?: string | null
+          manual_override?: boolean
+          message_id?: string | null
+          next_car_notes?: string | null
           raw_text: string
+          rescanned_at?: string | null
           sequence_id?: string | null
+          subject?: string | null
+          summary?: string | null
         }
         Update: {
           classification?: Database["public"]["Enums"]["reply_classification"]
+          confidence?: number | null
           created_at?: string
           customer_id?: string
           dealer_id?: string
+          forwarded_at?: string | null
+          from_email?: string | null
           id?: string
+          in_reply_to?: string | null
+          manual_override?: boolean
+          message_id?: string | null
+          next_car_notes?: string | null
           raw_text?: string
+          rescanned_at?: string | null
           sequence_id?: string | null
+          subject?: string | null
+          summary?: string | null
         }
         Relationships: [
           {
@@ -339,6 +384,7 @@ export type Database = {
           body: string
           dealer_id: string
           id: string
+          message_id: string | null
           scheduled_for: string | null
           send_offset_days: number
           sent_at: string | null
@@ -351,6 +397,7 @@ export type Database = {
           body: string
           dealer_id: string
           id?: string
+          message_id?: string | null
           scheduled_for?: string | null
           send_offset_days: number
           sent_at?: string | null
@@ -363,6 +410,7 @@ export type Database = {
           body?: string
           dealer_id?: string
           id?: string
+          message_id?: string | null
           scheduled_for?: string | null
           send_offset_days?: number
           sent_at?: string | null
@@ -562,6 +610,7 @@ export type Database = {
         | "no_longer_owns"
         | "unsubscribe"
         | "interested"
+        | "hot_lead"
       sequence_status:
         | "drafting"
         | "scheduled"
@@ -704,6 +753,7 @@ export const Constants = {
         "no_longer_owns",
         "unsubscribe",
         "interested",
+        "hot_lead",
       ],
       sequence_status: [
         "drafting",

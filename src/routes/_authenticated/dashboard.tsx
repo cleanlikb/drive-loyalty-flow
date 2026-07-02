@@ -4,11 +4,12 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getDashboardStats } from "@/lib/dashboard.functions";
 import { getMyDealer } from "@/lib/dealer.functions";
 import { loadDemoData } from "@/lib/demo.functions";
+import { listHotLeads, clearHotLead } from "@/lib/replies.functions";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { formatDateTime } from "@/lib/format";
 import { toast } from "sonner";
-import { ArrowRight, Sparkles } from "lucide-react";
+import { ArrowRight, Sparkles, Flame, X } from "lucide-react";
 import { useEffect } from "react";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
@@ -31,10 +32,13 @@ function Dashboard() {
   const qc = useQueryClient();
   const fetchStats = useServerFn(getDashboardStats);
   const fetchDealer = useServerFn(getMyDealer);
+  const fetchHot = useServerFn(listHotLeads);
+  const clearHot = useServerFn(clearHotLead);
   const runDemo = useServerFn(loadDemoData);
 
   const { data: dealer } = useQuery({ queryKey: ["dealer"], queryFn: () => fetchDealer() });
   const { data: stats } = useQuery({ queryKey: ["dashboard"], queryFn: () => fetchStats() });
+  const { data: hotLeads = [] } = useQuery({ queryKey: ["hot-leads"], queryFn: () => fetchHot() });
 
   useEffect(() => {
     if (dealer && !dealer.onboarded_at) navigate({ to: "/onboarding" });
@@ -47,6 +51,11 @@ function Dashboard() {
       qc.invalidateQueries();
     },
     onError: (e: any) => toast.error(e?.message ?? "Failed"),
+  });
+
+  const clearMut = useMutation({
+    mutationFn: (customerId: string) => clearHot({ data: { customerId } }),
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ["hot-leads"] }); },
   });
 
   const cards = [
@@ -92,6 +101,35 @@ function Dashboard() {
           </Card>
         ))}
       </div>
+
+      {hotLeads.length > 0 && (
+        <Card className="border-orange-200 bg-orange-50/50">
+          <div className="px-5 py-4 border-b border-orange-200 flex items-center justify-between">
+            <h2 className="font-semibold flex items-center gap-2 text-orange-900">
+              <Flame className="h-5 w-5 text-orange-600" /> Hot leads ({hotLeads.length})
+            </h2>
+            <Link to="/replies" className="text-xs text-orange-700 hover:underline">View all replies →</Link>
+          </div>
+          <div className="divide-y divide-orange-100">
+            {hotLeads.map((l: any) => (
+              <div key={l.id} className="px-5 py-3 flex items-center justify-between gap-3 text-sm">
+                <div className="min-w-0 flex-1">
+                  <div className="font-medium">{l.name} <span className="text-muted-foreground font-normal">— {l.make} {l.model}</span></div>
+                  {l.next_car_notes && <div className="text-xs text-orange-800 mt-0.5 truncate">💡 {l.next_car_notes}</div>}
+                </div>
+                <span className="text-xs text-muted-foreground">{formatDateTime(l.hot_lead_at)}</span>
+                <button
+                  onClick={() => clearMut.mutate(l.id)}
+                  className="p-1 rounded hover:bg-orange-100 text-muted-foreground"
+                  title="Dismiss"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
+            ))}
+          </div>
+        </Card>
+      )}
 
       <Card>
         <div className="px-5 py-4 border-b">

@@ -6,7 +6,7 @@ export interface SequenceInputs {
   salesperson: string;
   customerName: string;
   customerCarYearMakeModelTrim: string;
-  purchaseDate: string; // ISO
+  purchaseDate: string;
   monthsSincePurchase: number;
   stock?: {
     year: number | null;
@@ -56,35 +56,42 @@ If no stock match was provided, email 2 should ask what they'd want in their nex
 
   const parsed = await chatJson<GeneratedSequence>({ system: SYSTEM, user });
 
-  // Guardrail: if stock provided, verify body contains the exact price string
   if (input.stock?.price) {
     const priceStr = formatGbp(input.stock.price);
     const priceDigits = String(Math.round(Number(input.stock.price)));
     const body2 = parsed.email2?.body ?? "";
     if (!body2.includes(priceStr) && !body2.includes(priceDigits)) {
-      // Append verbatim line so we never risk a wrong price
       parsed.email2.body = body2.trimEnd() + `\n\nThe car is ${input.stock.year ?? ""} ${input.stock.make} ${input.stock.model}${input.stock.trim ? " " + input.stock.trim : ""}, priced at ${priceStr}.`;
     }
   }
   return parsed;
 }
 
+export type ReplyClass = "replied" | "no_longer_owns" | "unsubscribe" | "interested" | "hot_lead";
+
 export interface ReplyClassification {
-  classification: "replied" | "no_longer_owns" | "unsubscribe" | "interested";
+  classification: ReplyClass;
   confidence: number;
   summary: string;
+  next_car_notes?: string | null;
 }
 
-const CLASSIFY_SYSTEM = `Classify a UK car dealership customer's reply into ONE of:
-- "no_longer_owns": they no longer own the car (sold, written off, gave to family, etc.).
-- "unsubscribe": they want to stop receiving emails.
-- "interested": they express interest, ask for a valuation, ask to view a car, or share their mileage.
-- "replied": any other reply (questions, small talk, out-of-office, negative reply that isn't unsubscribe).
-Return strict JSON: {"classification","confidence" (0-1),"summary" (max 20 words)}.`;
+const CLASSIFY_SYSTEM = `You classify UK car dealership customer email replies. Return ONE classification:
+- "no_longer_owns": they no longer own the car they bought from us (sold, written off, scrapped, gifted, part-exchanged elsewhere). Often mentions what they got instead.
+- "unsubscribe": they explicitly want to stop receiving emails from us.
+- "hot_lead": they express clear buying intent — ask for a valuation, ask to view a car, ask a specific question about a car, share their current mileage, propose a visit, or ask for prices.
+- "interested": mild positive interest without clear intent (e.g. "keep me posted", "maybe later this year").
+- "replied": anything else (questions unrelated to buying, small talk, out-of-office, negative tone that isn't unsubscribe).
+
+Also extract "next_car_notes": if the reply mentions what car they currently drive or plan to buy next (make, model, year, budget, wish list), summarise it in <=25 words. Otherwise null.
+
+Return strict JSON: {"classification","confidence" (0-1),"summary" (max 25 words),"next_car_notes"}.`;
 
 export async function classifyReply(text: string): Promise<ReplyClassification> {
-  return chatJson<ReplyClassification>({
+  const out = await chatJson<ReplyClassification>({
     system: CLASSIFY_SYSTEM,
-    user: `Reply text:\n"""${text.slice(0, 2000)}"""`,
+    user: `Reply text:\n"""${text.slice(0, 2500)}"""`,
   });
+  if (!out.next_car_notes) out.next_car_notes = null;
+  return out;
 }

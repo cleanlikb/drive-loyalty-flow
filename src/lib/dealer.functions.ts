@@ -28,6 +28,8 @@ const OnboardSchema = z.object({
   salesperson_name: z.string().trim().min(1).max(120),
   website_url: z.string().trim().max(500).optional().nullable(),
   stock_page_url: z.string().trim().max(500).optional().nullable(),
+  notification_email: z.string().trim().email().max(200).optional().nullable().or(z.literal("")),
+  forward_replies: z.boolean().optional(),
 });
 
 export const completeOnboarding = createServerFn({ method: "POST" })
