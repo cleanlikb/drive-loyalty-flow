@@ -158,10 +158,13 @@ function HeroSection() {
           For UK independent dealerships
         </span>
         <h1 className="mt-6 text-4xl md:text-5xl lg:text-6xl font-semibold tracking-tight text-white">
-          Your best leads are the customers you&apos;ve already sold to.
+          Turn past customers into your next month&apos;s sales.
         </h1>
         <p className="mt-6 text-lg md:text-xl text-white/80 max-w-2xl mx-auto leading-relaxed">
-          Don&apos;t just rely on AutoTrader and CarGurus to grow. ReDrive runs alongside your current marketing to capture massive hidden ROI from data you already own. Our software finds every past customer hitting a 12 to 60-month ownership anniversary this month, automatically writes a personalised 3-email sequence, and lets you launch it in one click.
+          ReDrive automatically re-engages the customers you&apos;ve already sold to, 
+          surfacing warm leads at 12, 18, 24, 36, 48 and 60-month ownership milestones. 
+          More sales, stronger relationships, and first refusal on cars you previously 
+          sold — without paying a penny in auction fees.
         </p>
         <div className="mt-9 flex flex-col sm:flex-row items-center justify-center gap-4">
           <Button asChild size="lg" className="h-12 px-8 text-base bg-white text-primary hover:bg-white/90 shadow-lg shadow-black/10 hover:shadow-black/20 transition-shadow">
