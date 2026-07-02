@@ -20,6 +20,7 @@ export const Route = createFileRoute("/_authenticated/onboarding")({
 
 function Onboarding() {
   const navigate = useNavigate();
+  const qc = useQueryClient();
   const [step, setStep] = useState(0);
   const [dealership, setDealership] = useState("");
   const [salesperson, setSalesperson] = useState("");
