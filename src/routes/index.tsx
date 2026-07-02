@@ -36,7 +36,7 @@ function Landing() {
   }, [navigate]);
 
   return (
-    <div className="dark min-h-screen bg-background text-foreground font-sans selection:bg-primary/30">
+    <div className="min-h-screen bg-white text-foreground font-sans selection:bg-primary/30">
       <Header mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />
       <main>
         <HeroSection />
