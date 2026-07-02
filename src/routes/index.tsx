@@ -45,6 +45,7 @@ function Landing() {
         <PainSection />
         <SolutionSection />
         <BenefitsSection />
+        <CalculatorSection />
         <FinalCTASection />
       </main>
       <Footer />
