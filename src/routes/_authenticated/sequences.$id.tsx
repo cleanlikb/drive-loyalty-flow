@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getSequence, updateEmailDraft, stopSequence, logReply } from "@/lib/sequences.functions";
+import { getSequence, updateEmailDraft, stopSequence, logReply, regenerateSequenceEmail } from "@/lib/sequences.functions";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
