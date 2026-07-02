@@ -25,7 +25,7 @@ export const Route = createFileRoute("/api/public/cron/rescan-replies")({
         for (const r of candidates ?? []) {
           try {
             const next = await classifyText(r.raw_text);
-            const patch: Record<string, unknown> = {
+            const patch: any = {
               rescanned_at: new Date().toISOString(),
               confidence: next.confidence,
               summary: next.summary,
