@@ -30,6 +30,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import logo from "@/assets/redrive-logo.png";
+import explainerAsset from "@/assets/redrive-explainer.mp4.asset.json";
 
 export const Route = createFileRoute("/")({
   component: Landing,
@@ -50,6 +51,7 @@ function Landing() {
       <Header mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />
       <main>
         <HeroSection />
+        <VideoSection />
         <PainSection />
         <SolutionSection />
         <BenefitsSection />
@@ -170,6 +172,32 @@ function HeroSection() {
           </Button>
         </div>
         <p className="mt-3 text-sm text-white/70">No credit card required</p>
+      </div>
+    </section>
+  );
+}
+
+function VideoSection() {
+  return (
+    <section className="py-16 md:py-24 bg-white">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <h2 className="text-3xl md:text-4xl font-semibold tracking-tight text-foreground">
+          See how it works in 60 seconds
+        </h2>
+        <p className="mt-3 text-base md:text-lg text-muted-foreground max-w-2xl mx-auto">
+          Watch how ReDrive turns your existing customer list into a predictable pipeline of warm leads every month.
+        </p>
+        <div className="mt-10 rounded-2xl border border-border bg-card p-2 md:p-3 shadow-sm">
+          <div className="relative aspect-video overflow-hidden rounded-xl bg-black">
+            <video
+              src={explainerAsset.url}
+              controls
+              preload="metadata"
+              className="w-full h-full"
+              aria-label="ReDrive explainer video"
+            />
+          </div>
+        </div>
       </div>
     </section>
   );
