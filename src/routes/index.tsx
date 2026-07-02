@@ -196,6 +196,8 @@ function VideoSection() {
               src={explainerAsset.url}
               controls
               preload="metadata"
+              playsInline
+              webkit-playsinline="true"
               className="w-full h-full"
               aria-label="ReDrive explainer video"
             />
