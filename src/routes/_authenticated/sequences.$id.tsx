@@ -66,7 +66,23 @@ function EmailCard({ e, onSave, onRegen }: { e: any; onSave: (payload: { id: str
           <div className="font-medium">{e.subject}</div>
           <pre className="whitespace-pre-wrap text-sm text-muted-foreground font-sans">{e.body}</pre>
           {canEdit && (
-            <div className="pt-2"><Button variant="outline" size="sm" onClick={() => setEditing(true)}>Edit draft</Button></div>
+            <div className="pt-2 flex gap-2">
+              <Button variant="outline" size="sm" onClick={() => setEditing(true)}>Edit draft</Button>
+              <Button
+                variant="outline"
+                size="sm"
+                disabled={regenerating}
+                onClick={async () => {
+                  setRegenerating(true);
+                  try { await onRegen({ id: e.id }); toast.success("Regenerated"); }
+                  catch (er: any) { toast.error(er?.message ?? "Regenerate failed"); }
+                  finally { setRegenerating(false); }
+                }}
+              >
+                <Sparkles className="h-3.5 w-3.5 mr-1.5" />
+                {regenerating ? "Regenerating…" : "Regenerate"}
+              </Button>
+            </div>
           )}
         </div>
       )}
