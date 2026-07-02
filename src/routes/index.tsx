@@ -1,12 +1,101 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { Mail, Calendar, ShieldCheck } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Slider } from "@/components/ui/slider";
+import { Mail, Calendar, ShieldCheck, Calculator } from "lucide-react";
 
 export const Route = createFileRoute("/")({
   component: Landing,
 });
+
+function formatNumber(n: number) {
+  return n.toLocaleString("en-GB", { maximumFractionDigits: 1 });
+}
+
+function CalculatorSection() {
+  const [carsPerMonth, setCarsPerMonth] = useState(30);
+  const milestones = 6;
+  const peopleEmailed = carsPerMonth * milestones;
+  const emailsSent = peopleEmailed * 3;
+  const salesPerMonth = peopleEmailed * 0.01;
+  const salesPerYear = salesPerMonth * 12;
+
+  return (
+    <section className="max-w-5xl mx-auto px-6 pb-24">
+      <div className="rounded-2xl border border-border bg-card p-8 md:p-10 shadow-sm">
+        <div className="flex items-center gap-3 mb-6">
+          <div className="h-10 w-10 rounded-lg bg-primary/10 text-primary grid place-items-center">
+            <Calculator className="h-5 w-5" />
+          </div>
+          <div>
+            <h2 className="text-xl font-semibold tracking-tight text-foreground">See what Soldbook could generate for you</h2>
+            <p className="text-sm text-muted-foreground">Based on 6 anniversary milestones per customer and a 1% reply-to-sale rate.</p>
+          </div>
+        </div>
+
+        <div className="grid md:grid-cols-2 gap-8 items-start">
+          <div className="space-y-6">
+            <div>
+              <label htmlFor="carsPerMonth" className="block text-sm font-medium text-foreground mb-2">
+                Average cars sold per month
+              </label>
+              <div className="flex items-center gap-4">
+                <Input
+                  id="carsPerMonth"
+                  type="number"
+                  min={1}
+                  max={200}
+                  value={carsPerMonth}
+                  onChange={(e) => setCarsPerMonth(Math.max(1, Math.min(200, Number(e.target.value) || 0)))}
+                  className="w-28 text-center bg-background"
+                />
+                <span className="text-sm text-muted-foreground">cars / month</span>
+              </div>
+            </div>
+            <Slider
+              value={[carsPerMonth]}
+              onValueChange={(v) => setCarsPerMonth(v[0])}
+              min={1}
+              max={200}
+              step={1}
+              className="w-full"
+            />
+            <p className="text-xs text-muted-foreground">
+              Assumes you have sold at roughly this monthly rate over the last 5 years, so each month a matching cohort reaches a 12, 18, 24, 36, 48 or 60-month anniversary.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <MetricCard label="People emailed per month" value={formatNumber(peopleEmailed)} />
+            <MetricCard label="Emails sent per month" value={formatNumber(emailsSent)} />
+            <MetricCard label="Extra sales per month" value={formatNumber(salesPerMonth)} accent />
+            <MetricCard label="Extra sales per year" value={formatNumber(salesPerYear)} accent />
+          </div>
+        </div>
+
+        <div className="mt-8 pt-6 border-t border-border">
+          <div className="flex items-center justify-between flex-wrap gap-4">
+            <p className="text-sm text-muted-foreground">
+              At {carsPerMonth} cars/month, Soldbook would email <span className="font-medium text-foreground">{formatNumber(peopleEmailed)}</span> past customers every month and potentially convert <span className="font-medium text-foreground">{formatNumber(salesPerYear)}</span> extra sales per year.
+            </p>
+            <Link to="/auth"><Button>Start your free account</Button></Link>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function MetricCard({ label, value, accent }: { label: string; value: string; accent?: boolean }) {
+  return (
+    <div className={`rounded-xl border border-border p-5 ${accent ? "bg-primary text-primary-foreground" : "bg-background"}`}>
+      <div className={`text-xs uppercase tracking-wide ${accent ? "text-primary-foreground/80" : "text-muted-foreground"}`}>{label}</div>
+      <div className="text-2xl md:text-3xl font-semibold tracking-tight mt-1">{value}</div>
+    </div>
+  );
+}
 
 function Landing() {
   const navigate = useNavigate();
@@ -47,6 +136,8 @@ function Landing() {
           </div>
           <p className="mt-3 text-xs text-muted-foreground">No card required. Live in under five minutes.</p>
         </section>
+
+        <CalculatorSection />
 
         <section className="max-w-5xl mx-auto px-6 pb-24 grid md:grid-cols-3 gap-6">
           {[
