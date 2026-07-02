@@ -612,7 +612,7 @@ function PricingSection() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="max-w-3xl mx-auto text-center mb-12">
           <span className="text-sm font-semibold text-primary uppercase tracking-wide">Pricing</span>
-          <h2 className="mt-3 text-3xl md:text-4xl font-semibold tracking-tight">A small monthly fee, a measurable sales uplift</h2>
+          <h2 className="mt-3 text-3xl md:text-4xl font-semibold tracking-tight">Worth more than one extra sale a month?</h2>
           <p className="mt-4 text-lg text-muted-foreground">One extra sale usually pays for the entire year. Pick a plan based on how many past customers you have.</p>
         </div>
 
