@@ -114,11 +114,6 @@ function SequenceDetail() {
             <p className="text-sm text-muted-foreground mt-1">
               {data.customer?.email} · Bought {data.customer?.make} {data.customer?.model} on {formatDate(data.customer?.sale_date)} for {formatGbp(data.customer?.sale_price)}
             </p>
-            {data.stock && (
-              <p className="text-sm text-muted-foreground mt-1">
-                Matched to: <span className="font-medium text-foreground">{data.stock.year} {data.stock.make} {data.stock.model}</span> at {formatGbp(data.stock.price)}
-              </p>
-            )}
           </div>
           <div className="flex items-center gap-2">
             <StatusBadge status={data.status} />

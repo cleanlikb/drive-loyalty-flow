@@ -13,7 +13,6 @@ export const Route = createFileRoute("/api/public/cron/monthly-cohort")({
         const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
         const { data: dealers } = await supabaseAdmin.from("dealers").select("id").not("onboarded_at", "is", null);
         const { MILESTONES } = await import("@/lib/format");
-        const { findBestMatch } = await import("@/lib/matching.server");
 
         const now = new Date();
         const monthDate = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-01`;
@@ -23,7 +22,6 @@ export const Route = createFileRoute("/api/public/cron/monthly-cohort")({
           const { data: cohort } = await supabaseAdmin.from("cohorts").upsert({ dealer_id: d.id, month: monthDate }, { onConflict: "dealer_id,month" }).select().single();
           if (!cohort) continue;
 
-          const { data: stock } = await supabaseAdmin.from("stock").select("*").eq("dealer_id", d.id).eq("active", true);
           const sixMonthsAgo = new Date(); sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
           const { data: recent } = await supabaseAdmin.from("sequences").select("customer_id, sequence_emails!inner(sent_at)").eq("dealer_id", d.id).gte("sequence_emails.sent_at", sixMonthsAgo.toISOString());
           const recentSet = new Set((recent ?? []).map((r: any) => r.customer_id));
@@ -38,8 +36,7 @@ export const Route = createFileRoute("/api/public/cron/monthly-cohort")({
             const { data: custs } = await supabaseAdmin.from("customers").select("id,make,model,sale_price,sale_date,status").eq("dealer_id", d.id).eq("status", "active").gte("sale_date", start).lte("sale_date", end);
             for (const c of custs ?? []) {
               if (recentSet.has(c.id) || activeSet.has(c.id)) continue;
-              const m = findBestMatch(c as any, (stock ?? []) as any, months);
-              inserts.push({ cohort_id: cohort.id, dealer_id: d.id, customer_id: c.id, milestone_months: months, best_stock_id: m.stockId, match_score: m.score, match_reasons: m.reasons });
+              inserts.push({ cohort_id: cohort.id, dealer_id: d.id, customer_id: c.id, milestone_months: months });
             }
           }
 

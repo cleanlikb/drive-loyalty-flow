@@ -13,7 +13,7 @@ export const listSequences = createServerFn({ method: "GET" })
   .handler(async ({ context }) => {
     const { data, error } = await context.supabase
       .from("sequences")
-      .select("*, customer:customers(id,name,email,make,model,sale_date), stock:stock(id,make,model,year,price), sequence_emails(step,status,scheduled_for,sent_at)")
+      .select("*, customer:customers(id,name,email,make,model,sale_date), sequence_emails(step,status,scheduled_for,sent_at)")
       .order("started_at", { ascending: false })
       .limit(200);
     if (error) throw error;
@@ -26,11 +26,10 @@ export const getSequence = createServerFn({ method: "GET" })
   .handler(async ({ data, context }) => {
     const { data: seq, error } = await context.supabase
       .from("sequences")
-      .select("*, customer:customers(*), stock:stock(*), sequence_emails(*), replies(*)")
+      .select("*, customer:customers(*), sequence_emails(*), replies(*)")
       .eq("id", data.id)
       .single();
     if (error) throw error;
-    // Sort emails by step
     if (seq.sequence_emails) seq.sequence_emails.sort((a: any, b: any) => a.step - b.step);
     return seq;
   });
@@ -79,7 +78,7 @@ export const startSequencesForSelected = createServerFn({ method: "POST" })
 
     const { data: rows, error } = await context.supabase
       .from("cohort_customers")
-      .select("*, customer:customers(*), stock:stock(*)")
+      .select("*, customer:customers(*)")
       .in("id", data.cohortCustomerIds);
     if (error) throw error;
 
@@ -91,7 +90,6 @@ export const startSequencesForSelected = createServerFn({ method: "POST" })
     for (const row of rows ?? []) {
       if (row.sequence_id) continue;
       const c = row.customer;
-      const s = row.stock;
       try {
         const seq = await generateSequence({
           dealership: dealer.dealership_name,
@@ -100,14 +98,12 @@ export const startSequencesForSelected = createServerFn({ method: "POST" })
           customerCarYearMakeModelTrim: [c.make, c.model, c.trim].filter(Boolean).join(" "),
           purchaseDate: c.sale_date ?? new Date().toISOString(),
           monthsSincePurchase: c.sale_date ? monthsAgo(c.sale_date) : row.milestone_months,
-          stock: s ? { year: s.year, make: s.make, model: s.model, trim: s.trim, price: s.price } : null,
         });
 
         const { data: seqRow, error: seqErr } = await context.supabase.from("sequences").insert({
           dealer_id: dealer.id,
           customer_id: c.id,
           cohort_customer_id: row.id,
-          stock_id: s?.id ?? null,
           status: "active",
           started_at: now.toISOString(),
         }).select("id").single();

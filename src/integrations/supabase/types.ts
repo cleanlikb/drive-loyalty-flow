@@ -48,52 +48,36 @@ export type Database = {
       }
       cohort_customers: {
         Row: {
-          best_stock_id: string | null
           cohort_id: string
           created_at: string
           customer_id: string
           dealer_id: string
           id: string
-          match_reasons: Json
-          match_score: number
           milestone_months: number
           selected: boolean
           sequence_id: string | null
         }
         Insert: {
-          best_stock_id?: string | null
           cohort_id: string
           created_at?: string
           customer_id: string
           dealer_id: string
           id?: string
-          match_reasons?: Json
-          match_score?: number
           milestone_months: number
           selected?: boolean
           sequence_id?: string | null
         }
         Update: {
-          best_stock_id?: string | null
           cohort_id?: string
           created_at?: string
           customer_id?: string
           dealer_id?: string
           id?: string
-          match_reasons?: Json
-          match_score?: number
           milestone_months?: number
           selected?: boolean
           sequence_id?: string | null
         }
         Relationships: [
-          {
-            foreignKeyName: "cohort_customers_best_stock_id_fkey"
-            columns: ["best_stock_id"]
-            isOneToOne: false
-            referencedRelation: "stock"
-            referencedColumns: ["id"]
-          },
           {
             foreignKeyName: "cohort_customers_cohort_id_fkey"
             columns: ["cohort_id"]
@@ -226,7 +210,6 @@ export type Database = {
           notification_email: string | null
           onboarded_at: string | null
           salesperson_name: string | null
-          stock_page_url: string | null
           updated_at: string
           user_id: string
           website_url: string | null
@@ -239,7 +222,6 @@ export type Database = {
           notification_email?: string | null
           onboarded_at?: string | null
           salesperson_name?: string | null
-          stock_page_url?: string | null
           updated_at?: string
           user_id: string
           website_url?: string | null
@@ -252,7 +234,6 @@ export type Database = {
           notification_email?: string | null
           onboarded_at?: string | null
           salesperson_name?: string | null
-          stock_page_url?: string | null
           updated_at?: string
           user_id?: string
           website_url?: string | null
@@ -444,7 +425,6 @@ export type Database = {
           id: string
           started_at: string
           status: Database["public"]["Enums"]["sequence_status"]
-          stock_id: string | null
           stopped_reason: string | null
           updated_at: string
         }
@@ -455,7 +435,6 @@ export type Database = {
           id?: string
           started_at?: string
           status?: Database["public"]["Enums"]["sequence_status"]
-          stock_id?: string | null
           stopped_reason?: string | null
           updated_at?: string
         }
@@ -466,7 +445,6 @@ export type Database = {
           id?: string
           started_at?: string
           status?: Database["public"]["Enums"]["sequence_status"]
-          stock_id?: string | null
           stopped_reason?: string | null
           updated_at?: string
         }
@@ -487,107 +465,6 @@ export type Database = {
           },
           {
             foreignKeyName: "sequences_dealer_id_fkey"
-            columns: ["dealer_id"]
-            isOneToOne: false
-            referencedRelation: "dealers"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "sequences_stock_id_fkey"
-            columns: ["stock_id"]
-            isOneToOne: false
-            referencedRelation: "stock"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      stock: {
-        Row: {
-          active: boolean
-          dealer_id: string
-          first_seen_at: string
-          id: string
-          image_url: string | null
-          last_seen_at: string
-          listing_url: string | null
-          make: string
-          model: string
-          price: number | null
-          source: Database["public"]["Enums"]["stock_source"]
-          trim: string | null
-          year: number | null
-        }
-        Insert: {
-          active?: boolean
-          dealer_id: string
-          first_seen_at?: string
-          id?: string
-          image_url?: string | null
-          last_seen_at?: string
-          listing_url?: string | null
-          make: string
-          model: string
-          price?: number | null
-          source?: Database["public"]["Enums"]["stock_source"]
-          trim?: string | null
-          year?: number | null
-        }
-        Update: {
-          active?: boolean
-          dealer_id?: string
-          first_seen_at?: string
-          id?: string
-          image_url?: string | null
-          last_seen_at?: string
-          listing_url?: string | null
-          make?: string
-          model?: string
-          price?: number | null
-          source?: Database["public"]["Enums"]["stock_source"]
-          trim?: string | null
-          year?: number | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "stock_dealer_id_fkey"
-            columns: ["dealer_id"]
-            isOneToOne: false
-            referencedRelation: "dealers"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      stock_syncs: {
-        Row: {
-          dealer_id: string
-          error: string | null
-          id: string
-          items_found: number
-          ran_at: string
-          source_url: string | null
-          status: string
-        }
-        Insert: {
-          dealer_id: string
-          error?: string | null
-          id?: string
-          items_found?: number
-          ran_at?: string
-          source_url?: string | null
-          status?: string
-        }
-        Update: {
-          dealer_id?: string
-          error?: string | null
-          id?: string
-          items_found?: number
-          ran_at?: string
-          source_url?: string | null
-          status?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "stock_syncs_dealer_id_fkey"
             columns: ["dealer_id"]
             isOneToOne: false
             referencedRelation: "dealers"

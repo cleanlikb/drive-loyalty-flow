@@ -24,7 +24,6 @@ function Settings() {
     dealership_name: "",
     salesperson_name: "",
     website_url: "",
-    stock_page_url: "",
     notification_email: "",
     forward_replies: true,
   });
@@ -33,7 +32,6 @@ function Settings() {
       dealership_name: data.dealership_name ?? "",
       salesperson_name: data.salesperson_name ?? "",
       website_url: data.website_url ?? "",
-      stock_page_url: data.stock_page_url ?? "",
       notification_email: (data as any).notification_email ?? "",
       forward_replies: (data as any).forward_replies ?? true,
     });
@@ -63,10 +61,6 @@ function Settings() {
         <div className="space-y-1.5">
           <Label>Website</Label>
           <Input value={form.website_url} onChange={(e) => setForm({ ...form, website_url: e.target.value })} placeholder="https://…" />
-        </div>
-        <div className="space-y-1.5">
-          <Label>Stock page URL</Label>
-          <Input value={form.stock_page_url} onChange={(e) => setForm({ ...form, stock_page_url: e.target.value })} placeholder="https://…/used-cars" />
         </div>
       </Card>
 

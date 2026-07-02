@@ -27,7 +27,6 @@ const OnboardSchema = z.object({
   dealership_name: z.string().trim().min(1).max(120),
   salesperson_name: z.string().trim().min(1).max(120),
   website_url: z.string().trim().max(500).optional().nullable(),
-  stock_page_url: z.string().trim().max(500).optional().nullable(),
   notification_email: z.string().trim().email().max(200).optional().nullable().or(z.literal("")),
   forward_replies: z.boolean().optional(),
 });
@@ -43,7 +42,6 @@ export const completeOnboarding = createServerFn({ method: "POST" })
         dealership_name: data.dealership_name,
         salesperson_name: data.salesperson_name,
         website_url: data.website_url ?? null,
-        stock_page_url: data.stock_page_url ?? null,
         onboarded_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
       })
