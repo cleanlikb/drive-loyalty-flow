@@ -410,7 +410,8 @@ function CalculatorSection() {
     const monthlyEmails = monthlyLeads * 3;
     const monthlySales = Math.round(monthlyLeads * 0.01);
     const yearlySales = monthlySales * 12;
-    return { totalCustomers, monthlyLeads, monthlyEmails, monthlySales, yearlySales };
+    const auctionFeesSaved = yearlySales * 500; // illustrative saving per buy-back
+    return { totalCustomers, monthlyLeads, monthlyEmails, monthlySales, yearlySales, auctionFeesSaved };
   }, [carsPerMonth]);
 
   return (
@@ -421,9 +422,9 @@ function CalculatorSection() {
             <Calculator className="h-3.5 w-3.5" />
             Revenue calculator
           </span>
-          <h2 className="mt-4 text-3xl md:text-4xl font-semibold tracking-tight">See what your CRM could be worth</h2>
+          <h2 className="mt-4 text-3xl md:text-4xl font-semibold tracking-tight">See what your past sales could be worth</h2>
           <p className="mt-4 text-lg text-muted-foreground">
-            Slide your average monthly sales. We assume that volume over 5 years, then surface anniversary buyers each month.
+            Slide your average monthly sales. ReDrive re-engages those same customers at key milestones, turning history into a steady stream of extra sales and buy-back opportunities.
           </p>
         </div>
 
@@ -454,11 +455,12 @@ function CalculatorSection() {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-            <StatBox label="Total customers in CRM" value={stats.totalCustomers.toLocaleString()} />
-            <StatBox label="People emailed / month" value={stats.monthlyLeads.toLocaleString()} />
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-4 md:gap-6">
+            <StatBox label="Customers in your CRM" value={stats.totalCustomers.toLocaleString()} />
+            <StatBox label="People re-engaged / month" value={stats.monthlyLeads.toLocaleString()} />
             <StatBox label="Emails sent / month" value={stats.monthlyEmails.toLocaleString()} />
             <StatBox label="Estimated extra sales / month" value={stats.monthlySales.toLocaleString()} highlight />
+            <StatBox label="Illustrative auction fees saved / year" value={`£${stats.auctionFeesSaved.toLocaleString()}`} />
           </div>
 
           <div className="mt-8 p-4 rounded-xl bg-primary/5 border border-primary/10 text-center">
@@ -467,7 +469,7 @@ function CalculatorSection() {
               <span className="font-semibold text-foreground">{stats.monthlySales} extra sales per month</span>{" "}
               and{" "}
               <span className="font-semibold text-foreground">{stats.yearlySales} extra sales per year</span>{" "}
-              from customers you already have.
+              from customers you already have — plus the chance to buy back familiar stock before it reaches auction.
             </p>
           </div>
         </div>
