@@ -55,8 +55,8 @@ function Landing() {
         <PainSection />
         <SolutionSection />
         <BenefitsSection />
-        <CalculatorSection />
         <PricingSection />
+        <CalculatorSection />
         <PricingFAQ />
         <FinalCTASection />
       </main>
