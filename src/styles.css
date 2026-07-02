@@ -96,6 +96,46 @@
   --chart-5: oklch(0.55 0.18 20);
 }
 
+.dark {
+  color-scheme: dark;
+  --background: oklch(0.14 0.03 270);
+  --foreground: oklch(0.97 0.01 270);
+  --card: oklch(0.20 0.04 270);
+  --card-foreground: oklch(0.97 0.01 270);
+  --popover: oklch(0.18 0.03 270);
+  --popover-foreground: oklch(0.97 0.01 270);
+  --primary: oklch(0.58 0.24 265);
+  --primary-foreground: oklch(1 0 0);
+  --secondary: oklch(0.24 0.04 270);
+  --secondary-foreground: oklch(0.92 0.02 270);
+  --muted: oklch(0.24 0.03 270);
+  --muted-foreground: oklch(0.68 0.02 270);
+  --accent: oklch(0.35 0.08 270);
+  --accent-foreground: oklch(0.97 0.01 270);
+  --destructive: oklch(0.62 0.22 25);
+  --destructive-foreground: oklch(0.99 0.005 90);
+  --success: oklch(0.65 0.15 155);
+  --success-foreground: oklch(0.99 0.005 90);
+  --warning: oklch(0.8 0.15 75);
+  --warning-foreground: oklch(0.22 0.03 275);
+  --border: oklch(0.26 0.03 270);
+  --input: oklch(0.26 0.03 270);
+  --ring: oklch(0.58 0.24 265);
+  --sidebar: oklch(0.16 0.03 270);
+  --sidebar-foreground: oklch(0.92 0.02 270);
+  --sidebar-primary: oklch(0.58 0.24 265);
+  --sidebar-primary-foreground: oklch(1 0 0);
+  --sidebar-accent: oklch(0.24 0.04 270);
+  --sidebar-accent-foreground: oklch(0.92 0.02 270);
+  --sidebar-border: oklch(0.26 0.03 270);
+  --sidebar-ring: oklch(0.58 0.24 265);
+  --chart-1: oklch(0.55 0.2 265);
+  --chart-2: oklch(0.68 0.14 175);
+  --chart-3: oklch(0.75 0.15 65);
+  --chart-4: oklch(0.6 0.2 340);
+  --chart-5: oklch(0.55 0.18 20);
+}
+
 @layer base {
   * { border-color: var(--color-border); }
   body {
@@ -104,8 +144,24 @@
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
     -webkit-font-smoothing: antialiased;
   }
-  h1, h2, h3, h4 { letter-spacing: -0.01em; }
+  h1, h2, h3, h4 { letter-spacing: -0.02em; }
 }
+
+@utility bg-grid {
+  background-image: linear-gradient(to right, var(--color-border) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--color-border) 1px, transparent 1px);
+  background-size: 48px 48px;
+  -webkit-mask-image: radial-gradient(ellipse at center, black 0%, transparent 70%);
+  mask-image: radial-gradient(ellipse at center, black 0%, transparent 70%);
+}
+
+@utility text-gradient {
+  background: linear-gradient(135deg, var(--color-foreground) 30%, var(--color-primary) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
 
 /* Milestone badge tints */
 @utility milestone-12 { background: oklch(0.94 0.04 155); color: oklch(0.35 0.1 155); }
