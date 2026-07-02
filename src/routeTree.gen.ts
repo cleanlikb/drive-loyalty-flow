@@ -12,7 +12,6 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as AuthenticatedStockRouteImport } from './routes/_authenticated/stock'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as AuthenticatedRepliesRouteImport } from './routes/_authenticated/replies'
 import { Route as AuthenticatedOnboardingRouteImport } from './routes/_authenticated/onboarding'
@@ -39,11 +38,6 @@ const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
-} as any)
-const AuthenticatedStockRoute = AuthenticatedStockRouteImport.update({
-  id: '/stock',
-  path: '/stock',
-  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
   id: '/settings',
@@ -121,7 +115,6 @@ export interface FileRoutesByFullPath {
   '/onboarding': typeof AuthenticatedOnboardingRoute
   '/replies': typeof AuthenticatedRepliesRoute
   '/settings': typeof AuthenticatedSettingsRoute
-  '/stock': typeof AuthenticatedStockRoute
   '/sequences/$id': typeof AuthenticatedSequencesIdRoute
   '/sequences/': typeof AuthenticatedSequencesIndexRoute
   '/api/public/cron/dispatch-emails': typeof ApiPublicCronDispatchEmailsRoute
@@ -138,7 +131,6 @@ export interface FileRoutesByTo {
   '/onboarding': typeof AuthenticatedOnboardingRoute
   '/replies': typeof AuthenticatedRepliesRoute
   '/settings': typeof AuthenticatedSettingsRoute
-  '/stock': typeof AuthenticatedStockRoute
   '/sequences/$id': typeof AuthenticatedSequencesIdRoute
   '/sequences': typeof AuthenticatedSequencesIndexRoute
   '/api/public/cron/dispatch-emails': typeof ApiPublicCronDispatchEmailsRoute
@@ -157,7 +149,6 @@ export interface FileRoutesById {
   '/_authenticated/onboarding': typeof AuthenticatedOnboardingRoute
   '/_authenticated/replies': typeof AuthenticatedRepliesRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
-  '/_authenticated/stock': typeof AuthenticatedStockRoute
   '/_authenticated/sequences/$id': typeof AuthenticatedSequencesIdRoute
   '/_authenticated/sequences/': typeof AuthenticatedSequencesIndexRoute
   '/api/public/cron/dispatch-emails': typeof ApiPublicCronDispatchEmailsRoute
@@ -176,7 +167,6 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/replies'
     | '/settings'
-    | '/stock'
     | '/sequences/$id'
     | '/sequences/'
     | '/api/public/cron/dispatch-emails'
@@ -193,7 +183,6 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/replies'
     | '/settings'
-    | '/stock'
     | '/sequences/$id'
     | '/sequences'
     | '/api/public/cron/dispatch-emails'
@@ -211,7 +200,6 @@ export interface FileRouteTypes {
     | '/_authenticated/onboarding'
     | '/_authenticated/replies'
     | '/_authenticated/settings'
-    | '/_authenticated/stock'
     | '/_authenticated/sequences/$id'
     | '/_authenticated/sequences/'
     | '/api/public/cron/dispatch-emails'
@@ -252,13 +240,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
-    }
-    '/_authenticated/stock': {
-      id: '/_authenticated/stock'
-      path: '/stock'
-      fullPath: '/stock'
-      preLoaderRoute: typeof AuthenticatedStockRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/settings': {
       id: '/_authenticated/settings'
@@ -354,7 +335,6 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedOnboardingRoute: typeof AuthenticatedOnboardingRoute
   AuthenticatedRepliesRoute: typeof AuthenticatedRepliesRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
-  AuthenticatedStockRoute: typeof AuthenticatedStockRoute
   AuthenticatedSequencesIdRoute: typeof AuthenticatedSequencesIdRoute
   AuthenticatedSequencesIndexRoute: typeof AuthenticatedSequencesIndexRoute
 }
@@ -366,7 +346,6 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedOnboardingRoute: AuthenticatedOnboardingRoute,
   AuthenticatedRepliesRoute: AuthenticatedRepliesRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
-  AuthenticatedStockRoute: AuthenticatedStockRoute,
   AuthenticatedSequencesIdRoute: AuthenticatedSequencesIdRoute,
   AuthenticatedSequencesIndexRoute: AuthenticatedSequencesIndexRoute,
 }
