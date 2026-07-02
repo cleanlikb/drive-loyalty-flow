@@ -134,12 +134,12 @@ function MobileNavLink({
 
 function HeroSection() {
   return (
-    <section className="relative overflow-hidden pt-24 pb-20 md:pt-32 md:pb-28">
-      <div className="absolute inset-0 bg-grid opacity-25 pointer-events-none" />
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[900px] h-[520px] bg-primary/15 rounded-full blur-3xl pointer-events-none" />
+    <section className="relative overflow-hidden bg-white pt-24 pb-20 md:pt-32 md:pb-28">
+      <div className="absolute inset-0 bg-grid opacity-40 pointer-events-none" />
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[900px] h-[520px] bg-primary/8 rounded-full blur-3xl pointer-events-none" />
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <span className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-4 py-1.5 text-xs font-semibold tracking-wide uppercase text-primary">
+        <span className="inline-flex items-center gap-2 rounded-full border border-primary/25 bg-primary/10 px-4 py-1.5 text-xs font-semibold tracking-wide uppercase text-primary">
           For UK independent dealerships
         </span>
         <h1 className="mt-6 text-4xl md:text-5xl lg:text-6xl font-semibold tracking-tight text-foreground max-w-4xl mx-auto">
@@ -149,7 +149,7 @@ function HeroSection() {
           Stop burning money on third-party leads. Our software finds every past customer hitting a 12 to 60-month ownership anniversary this month, automatically writes a personalised 3-email sequence, and lets you launch it in one click.
         </p>
         <div className="mt-9 flex flex-col sm:flex-row items-center justify-center gap-4">
-          <Button asChild size="lg" className="h-12 px-8 text-base shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-shadow">
+          <Button asChild size="lg" className="h-12 px-8 text-base shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-shadow">
             <Link to="/auth">
               Start your free account
               <ArrowRight className="h-4 w-4" />
