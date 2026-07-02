@@ -55,11 +55,16 @@ function Onboarding() {
   async function finish() {
     setLoading(true);
     try {
-      await saveProfile({ data: {
+      const result = await saveProfile({ data: {
         dealership_name: dealership,
         salesperson_name: salesperson,
         website_url: website || null,
       }});
+
+      if (result?.dealer) {
+        qc.setQueryData(["dealer"], result.dealer);
+        qc.invalidateQueries({ queryKey: ["dealer"] });
+      }
 
       if (rawRows.length > 0) {
         const mapped = mapRows(rawRows, mapping);
