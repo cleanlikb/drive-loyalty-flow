@@ -225,20 +225,20 @@ function SolutionSection() {
         <div className="grid md:grid-cols-3 gap-8">
           <StepCard
             step={1}
-            title="Upload or sync your customer list"
-            body="Securely import your previous sales. We keep the data safe and only ever email on your behalf."
+            title="Securely upload or sync your previous customer list"
+            body="Upload once or connect your sales data. We keep every record secure and only ever email on your behalf."
             mockup={<UploadMockup />}
           />
           <StepCard
             step={2}
-            title="We flag the milestone buyers"
+            title="Our system automatically flags buyers hitting key finance or ownership milestones"
             body="Every month we surface customers at 12, 18, 24, 36, 48 or 60 months since their last purchase."
             mockup={<MilestoneMockup />}
           />
           <StepCard
             step={3}
-            title="Approve the AI-written sequence"
-            body="Review three personalised emails per customer, then hit one button to schedule the entire month."
+            title="Review the AI-generated, personalised 3-email sequence and tap 'Approve' to send"
+            body="Check three warm, personalised emails per customer, then hit one button to schedule the entire month."
             mockup={<SequenceMockup />}
           />
         </div>
