@@ -20,7 +20,7 @@ export const Route = createFileRoute("/_authenticated/sequences/$id")({
   component: SequenceDetail,
 });
 
-function EmailCard({ e, onSave }: { e: any; onSave: (payload: { id: string; subject: string; body: string }) => Promise<void> }) {
+function EmailCard({ e, onSave, onRegen }: { e: any; onSave: (payload: { id: string; subject: string; body: string }) => Promise<void>; onRegen: (payload: { id: string; instruction?: string }) => Promise<void> }) {
   const [editing, setEditing] = useState(false);
   const [subject, setSubject] = useState(e.subject);
   const [body, setBody] = useState(e.body);
