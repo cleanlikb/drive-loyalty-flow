@@ -66,7 +66,7 @@ function Landing() {
             { title: "Matched to your live stock", body: "We score each lead against the cars you have today — same make + newer year wins." },
             { title: "AI-written, dealer-approved", body: "Three warm emails per customer, in your voice, with real prices from your database." },
           ].map((f) => (
-            <div key={f.title} className="rounded-lg border bg-card p-6">
+            <div key={f.title} className="rounded-xl border border-border/70 bg-card/80 backdrop-blur p-6 shadow-sm hover:shadow-md transition-shadow">
               <h3 className="font-semibold">{f.title}</h3>
               <p className="mt-2 text-sm text-muted-foreground">{f.body}</p>
             </div>
