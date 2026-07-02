@@ -30,6 +30,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import logo from "@/assets/redrive-logo.png";
+import explainerAsset from "@/assets/redrive-explainer.mp4.asset.json";
 
 export const Route = createFileRoute("/")({
   component: Landing,
