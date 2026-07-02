@@ -14,6 +14,7 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedStockRouteImport } from './routes/_authenticated/stock'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
+import { Route as AuthenticatedRepliesRouteImport } from './routes/_authenticated/replies'
 import { Route as AuthenticatedOnboardingRouteImport } from './routes/_authenticated/onboarding'
 import { Route as AuthenticatedLeadsRouteImport } from './routes/_authenticated/leads'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
@@ -46,6 +47,11 @@ const AuthenticatedStockRoute = AuthenticatedStockRouteImport.update({
 const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedRepliesRoute = AuthenticatedRepliesRouteImport.update({
+  id: '/replies',
+  path: '/replies',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedOnboardingRoute = AuthenticatedOnboardingRouteImport.update({
@@ -106,6 +112,7 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/leads': typeof AuthenticatedLeadsRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
+  '/replies': typeof AuthenticatedRepliesRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/stock': typeof AuthenticatedStockRoute
   '/sequences/$id': typeof AuthenticatedSequencesIdRoute
@@ -121,6 +128,7 @@ export interface FileRoutesByTo {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/leads': typeof AuthenticatedLeadsRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
+  '/replies': typeof AuthenticatedRepliesRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/stock': typeof AuthenticatedStockRoute
   '/sequences/$id': typeof AuthenticatedSequencesIdRoute
@@ -138,6 +146,7 @@ export interface FileRoutesById {
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/leads': typeof AuthenticatedLeadsRoute
   '/_authenticated/onboarding': typeof AuthenticatedOnboardingRoute
+  '/_authenticated/replies': typeof AuthenticatedRepliesRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/_authenticated/stock': typeof AuthenticatedStockRoute
   '/_authenticated/sequences/$id': typeof AuthenticatedSequencesIdRoute
@@ -155,6 +164,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/leads'
     | '/onboarding'
+    | '/replies'
     | '/settings'
     | '/stock'
     | '/sequences/$id'
@@ -170,6 +180,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/leads'
     | '/onboarding'
+    | '/replies'
     | '/settings'
     | '/stock'
     | '/sequences/$id'
@@ -186,6 +197,7 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard'
     | '/_authenticated/leads'
     | '/_authenticated/onboarding'
+    | '/_authenticated/replies'
     | '/_authenticated/settings'
     | '/_authenticated/stock'
     | '/_authenticated/sequences/$id'
@@ -239,6 +251,13 @@ declare module '@tanstack/react-router' {
       path: '/settings'
       fullPath: '/settings'
       preLoaderRoute: typeof AuthenticatedSettingsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/replies': {
+      id: '/_authenticated/replies'
+      path: '/replies'
+      fullPath: '/replies'
+      preLoaderRoute: typeof AuthenticatedRepliesRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/onboarding': {
@@ -312,6 +331,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedLeadsRoute: typeof AuthenticatedLeadsRoute
   AuthenticatedOnboardingRoute: typeof AuthenticatedOnboardingRoute
+  AuthenticatedRepliesRoute: typeof AuthenticatedRepliesRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
   AuthenticatedStockRoute: typeof AuthenticatedStockRoute
   AuthenticatedSequencesIdRoute: typeof AuthenticatedSequencesIdRoute
@@ -323,6 +343,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedLeadsRoute: AuthenticatedLeadsRoute,
   AuthenticatedOnboardingRoute: AuthenticatedOnboardingRoute,
+  AuthenticatedRepliesRoute: AuthenticatedRepliesRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
   AuthenticatedStockRoute: AuthenticatedStockRoute,
   AuthenticatedSequencesIdRoute: AuthenticatedSequencesIdRoute,

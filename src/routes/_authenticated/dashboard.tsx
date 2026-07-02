@@ -4,11 +4,12 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getDashboardStats } from "@/lib/dashboard.functions";
 import { getMyDealer } from "@/lib/dealer.functions";
 import { loadDemoData } from "@/lib/demo.functions";
+import { listHotLeads, clearHotLead } from "@/lib/replies.functions";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { formatDateTime } from "@/lib/format";
 import { toast } from "sonner";
-import { ArrowRight, Sparkles } from "lucide-react";
+import { ArrowRight, Sparkles, Flame, X } from "lucide-react";
 import { useEffect } from "react";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
