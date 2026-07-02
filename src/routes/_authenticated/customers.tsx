@@ -23,12 +23,22 @@ function Customers() {
   const qc = useQueryClient();
   const fetch = useServerFn(listCustomers);
   const setStatus = useServerFn(setCustomerStatus);
+  const uploadCustomers = useServerFn(bulkInsertCustomers);
   const { data = [] } = useQuery({ queryKey: ["customers"], queryFn: () => fetch() });
   const [q, setQ] = useState("");
 
   const mut = useMutation({
     mutationFn: (v: { id: string; status: any }) => setStatus({ data: v }),
     onSuccess: () => { toast.success("Updated"); qc.invalidateQueries({ queryKey: ["customers"] }); },
+  });
+
+  const importMut = useMutation({
+    mutationFn: async (rows: Array<Record<string, any>>) => {
+      for (let i = 0; i < rows.length; i += 500) {
+        await uploadCustomers({ data: { rows: rows.slice(i, i + 500) } });
+      }
+    },
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ["customers"] }); },
   });
 
   const filtered = q ? data.filter((c: any) =>
