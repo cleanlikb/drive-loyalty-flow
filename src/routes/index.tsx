@@ -22,6 +22,7 @@ import {
   Calculator,
 } from "lucide-react";
 import logo from "@/assets/redrive-logo.png";
+import heroImage from "@/assets/hero-dealership.jpg";
 
 export const Route = createFileRoute("/")({
   component: Landing,
