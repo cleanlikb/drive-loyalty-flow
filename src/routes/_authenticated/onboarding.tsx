@@ -17,20 +17,7 @@ export const Route = createFileRoute("/_authenticated/onboarding")({
   component: Onboarding,
 });
 
-type Row = Record<string, string>;
-
-const FIELDS = [
-  { key: "name", label: "Customer name", required: true },
-  { key: "email", label: "Email" },
-  { key: "vehicle_reg", label: "Vehicle registration" },
-  { key: "make", label: "Make" },
-  { key: "model", label: "Model" },
-  { key: "trim", label: "Trim" },
-  { key: "sale_date", label: "Sale date (YYYY-MM-DD or DD/MM/YYYY)" },
-  { key: "sale_price", label: "Sale price (£)" },
-  { key: "finance_type", label: "Finance type" },
-  { key: "finance_term_months", label: "Finance term (months)" },
-] as const;
+function Onboarding() {
 
 function guessMapping(header: string): string | null {
   const h = header.toLowerCase().trim();
