@@ -419,13 +419,15 @@ function CalculatorSection() {
     const totalCustomers = carsPerMonth * 12 * 5;
     const monthlyLeads = carsPerMonth * 6; // 6 milestone cohorts surface each month
     const monthlyEmails = monthlyLeads * 3;
-    const monthlySales = Math.round(monthlyLeads * CONVERSION_RATE);
+    const monthlySales = monthlyLeads * CONVERSION_RATE;
     const yearlySales = monthlySales * 12;
     const yearlyProfit = yearlySales * PROFIT_PER_SALE;
     const yearlyCost = monthlyPayment * 12;
     const netAnnualProfit = yearlyProfit - yearlyCost;
     return { totalCustomers, monthlyLeads, monthlyEmails, monthlySales, yearlySales, yearlyProfit, yearlyCost, netAnnualProfit };
   }, [carsPerMonth, monthlyPayment]);
+
+  const formatSales = (n: number) => (n < 1 ? n.toFixed(1) : Math.round(n).toLocaleString());
 
   const plans = [
     { name: "Starter", price: 99 },
