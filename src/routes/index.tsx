@@ -29,7 +29,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import logo from "@/assets/redrive-logo.png";
+import logo from "@/assets/redrive-icon.png.asset.json";
 import explainerAsset from "@/assets/redrive-explainer.mp4.asset.json";
 
 export const Route = createFileRoute("/")({

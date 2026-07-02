@@ -20,7 +20,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
-import logo from "@/assets/redrive-logo.png";
+import logo from "@/assets/redrive-icon.png.asset.json";
 
 
 const nav = [
