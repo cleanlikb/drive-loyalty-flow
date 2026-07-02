@@ -45,11 +45,39 @@ Their car: ${input.customerCarYearMakeModelTrim}
 Purchased: ${formatDate(input.purchaseDate)} (${input.monthsSincePurchase} months ago)
 
 Write three emails:
-- Email 1 (day 0): warm check-in referencing their exact car and how long they've had it. Mention that we've had strong part-exchange demand for their model recently. No pitch.
-- Email 2 (day 4): ask what they'd want in their next car — same make, an upgrade, something different. Offer to keep an eye out. No specific vehicle.
-- Email 3 (day 10): low-friction close — ask them to reply with current mileage so we can send a personalised part-exchange figure. One line.`;
+- Email 1 (day 0): warm check-in referencing their exact car and how long they've had it. Mention that we've had strong part-exchange demand for their model recently. Soft CTA.
+- Email 2 (day 4): ask what they'd want in their next car — same make, an upgrade, something different. Offer to keep an eye out. Soft CTA.
+- Email 3 (day 10): low-friction soft close — invite them to reply with current mileage so we can share a ballpark part-exchange figure. Soft CTA, no pressure.`;
 
   return await chatJson<GeneratedSequence>({ system: SYSTEM, user });
+}
+
+export interface RegenerateEmailInput extends SequenceInputs {
+  step: 1 | 2 | 3;
+  currentSubject?: string;
+  currentBody?: string;
+  instruction?: string;
+}
+
+export async function regenerateEmail(input: RegenerateEmailInput): Promise<GeneratedEmail> {
+  const stepBrief =
+    input.step === 1
+      ? "Day 0 warm check-in referencing their exact car and how long they've had it. Mention strong part-exchange demand for their model recently. Soft CTA."
+      : input.step === 2
+      ? "Day 4: ask what they'd want in their next car — same make, an upgrade, or something different. Offer to keep an eye out. Soft CTA."
+      : "Day 10: low-friction soft close — invite them to reply with current mileage so we can share a ballpark part-exchange figure. Soft CTA, no pressure.";
+
+  const user = `Dealership: ${input.dealership}
+Salesperson: ${input.salesperson} (sign as "${firstName(input.salesperson)}")
+Customer: ${input.customerName} (address as "${firstName(input.customerName)}")
+Their car: ${input.customerCarYearMakeModelTrim}
+Purchased: ${formatDate(input.purchaseDate)} (${input.monthsSincePurchase} months ago)
+
+Rewrite email step ${input.step}. Brief: ${stepBrief}
+${input.currentSubject ? `Current subject (avoid repeating verbatim): ${input.currentSubject}` : ""}
+${input.instruction ? `Extra instruction from the dealer: ${input.instruction}` : "Produce a fresh variation with different wording and angle."}`;
+
+  return await chatJson<GeneratedEmail>({ system: SINGLE_SYSTEM, user });
 }
 
 export type ReplyClass = "replied" | "no_longer_owns" | "unsubscribe" | "interested" | "hot_lead";
