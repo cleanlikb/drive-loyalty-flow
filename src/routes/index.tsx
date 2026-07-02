@@ -188,7 +188,7 @@ function VideoSection() {
           See how it works in 60 seconds
         </h2>
         <p className="mt-3 text-base md:text-lg text-muted-foreground max-w-2xl mx-auto">
-          Watch how ReDrive turns your existing customer list into a predictable pipeline of warm leads every month.
+          Watch how ReDrive turns your existing customer list into a reliable, low-cost source of extra sales and stock opportunities.
         </p>
         <div className="mt-10 rounded-2xl border border-border bg-card p-2 md:p-3 shadow-sm">
           <div className="relative aspect-video overflow-hidden rounded-xl bg-black">
