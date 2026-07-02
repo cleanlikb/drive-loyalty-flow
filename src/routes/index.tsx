@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Slider } from "@/components/ui/slider";
 import { Mail, Calendar, ShieldCheck, Calculator } from "lucide-react";
+import logo from "@/assets/redrive-logo.png";
+
 
 export const Route = createFileRoute("/")({
   component: Landing,
