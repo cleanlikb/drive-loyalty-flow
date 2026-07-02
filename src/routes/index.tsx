@@ -51,6 +51,7 @@ function Landing() {
       <Header mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />
       <main>
         <HeroSection />
+        <VideoSection />
         <PainSection />
         <SolutionSection />
         <BenefitsSection />
