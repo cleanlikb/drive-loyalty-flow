@@ -225,7 +225,7 @@ function Onboarding() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {FIELDS.map((f) => (
                 <div key={f.key} className="space-y-1.5">
-                  <Label>{f.label}{f.required && <span className="text-destructive ml-1">*</span>}</Label>
+                  <Label>{f.label}{"required" in f && f.required && <span className="text-destructive ml-1">*</span>}</Label>
                   <Select value={mapping[f.key] ?? "__none"} onValueChange={(v) => setMapping((m) => ({ ...m, [f.key]: v === "__none" ? "" : v }))}>
                     <SelectTrigger><SelectValue placeholder="— not in file —" /></SelectTrigger>
                     <SelectContent>
