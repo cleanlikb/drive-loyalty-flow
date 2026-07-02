@@ -161,10 +161,16 @@ function SequenceDetail() {
 
       <div className="space-y-4">
         {(data.sequence_emails ?? []).map((e: any) => (
-          <EmailCard key={e.id} e={e} onSave={async (payload) => {
-            await update({ data: payload });
-            qc.invalidateQueries({ queryKey: ["sequence", id] });
-          }} />
+          <EmailCard key={e.id} e={e}
+            onSave={async (payload) => {
+              await update({ data: payload });
+              qc.invalidateQueries({ queryKey: ["sequence", id] });
+            }}
+            onRegen={async (payload) => {
+              await regen({ data: payload });
+              qc.invalidateQueries({ queryKey: ["sequence", id] });
+            }}
+          />
         ))}
       </div>
 
