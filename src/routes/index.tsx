@@ -20,7 +20,15 @@ import {
   CheckCircle2,
   Mail,
   Calculator,
+  Check,
+  Sparkles,
 } from "lucide-react";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import logo from "@/assets/redrive-logo.png";
 
 export const Route = createFileRoute("/")({
@@ -46,6 +54,8 @@ function Landing() {
         <SolutionSection />
         <BenefitsSection />
         <CalculatorSection />
+        <PricingSection />
+        <PricingFAQ />
         <FinalCTASection />
       </main>
       <Footer />
@@ -485,6 +495,176 @@ function FinalCTASection() {
             <p className="mt-3 text-sm text-muted-foreground">No credit card required</p>
           </div>
         </div>
+      </div>
+    </section>
+  );
+}
+
+function PricingSection() {
+  const [annual, setAnnual] = useState(false);
+
+  const tiers = [
+    {
+      name: "Starter",
+      monthly: 99,
+      limit: "1,000 past customers",
+      popular: false,
+      features: [
+        "Automated milestone tracking",
+        "AI 3-email generation",
+        "1-click approval dashboard",
+      ],
+    },
+    {
+      name: "Growth",
+      monthly: 149,
+      limit: "2,500 past customers",
+      popular: true,
+      features: [
+        "Everything in Starter",
+        "Custom dealer email domains",
+        "Faster AI generation",
+        "Open & click analytics",
+      ],
+    },
+    {
+      name: "Pro",
+      monthly: 299,
+      limit: "5,000 past customers",
+      popular: false,
+      features: [
+        "Everything in Growth",
+        "Multi-site lot support",
+        "Priority processing",
+        "Smart follow-up logic",
+      ],
+    },
+  ];
+
+  return (
+    <section id="pricing" className="py-24 bg-white">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-3xl mx-auto text-center mb-12">
+          <span className="text-sm font-semibold text-primary uppercase tracking-wide">Pricing</span>
+          <h2 className="mt-3 text-3xl md:text-4xl font-semibold tracking-tight">Simple plans that grow with your dealership</h2>
+          <p className="mt-4 text-lg text-muted-foreground">Pick a plan based on how many past customers you have. Upgrade or downgrade anytime.</p>
+        </div>
+
+        <div className="flex justify-center mb-12">
+          <div className="inline-flex items-center gap-1 rounded-full border border-border bg-secondary/50 p-1">
+            <button
+              onClick={() => setAnnual(false)}
+              className={`px-5 py-2 rounded-full text-sm font-medium transition-all ${!annual ? "bg-white text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
+            >
+              Billed monthly
+            </button>
+            <button
+              onClick={() => setAnnual(true)}
+              className={`px-5 py-2 rounded-full text-sm font-medium transition-all inline-flex items-center gap-2 ${annual ? "bg-white text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
+            >
+              Billed annually
+              <span className="inline-flex items-center rounded-full bg-primary/10 text-primary px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide">Save 20%</span>
+            </button>
+          </div>
+        </div>
+
+        <div className="grid md:grid-cols-3 gap-6 lg:gap-8 items-stretch">
+          {tiers.map((tier) => {
+            const price = annual ? Math.round(tier.monthly * 0.8) : tier.monthly;
+            return (
+              <div
+                key={tier.name}
+                className={`relative flex flex-col rounded-2xl border bg-card p-8 transition-all ${
+                  tier.popular
+                    ? "border-primary/40 shadow-xl shadow-primary/20 ring-1 ring-primary/30 md:-translate-y-2"
+                    : "border-border hover:border-primary/20 hover:shadow-lg"
+                }`}
+              >
+                {tier.popular && (
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+                    <span className="inline-flex items-center gap-1 rounded-full bg-primary px-3 py-1 text-xs font-semibold text-primary-foreground shadow-md">
+                      <Sparkles className="h-3 w-3" />
+                      Most Popular
+                    </span>
+                  </div>
+                )}
+                <h3 className="text-xl font-semibold">{tier.name}</h3>
+                <p className="mt-1 text-sm text-muted-foreground">{tier.limit}</p>
+                <div className="mt-6 flex items-baseline gap-1">
+                  <span className="text-4xl md:text-5xl font-semibold tracking-tight">£{price}</span>
+                  <span className="text-muted-foreground">/mo</span>
+                </div>
+                <p className="mt-1 text-xs text-muted-foreground h-4">
+                  {annual ? `Billed £${price * 12} yearly` : "\u00A0"}
+                </p>
+
+                <ul className="mt-6 space-y-3 flex-1">
+                  {tier.features.map((f) => (
+                    <li key={f} className="flex items-start gap-3 text-sm">
+                      <span className={`mt-0.5 h-5 w-5 rounded-full grid place-items-center flex-shrink-0 ${tier.popular ? "bg-primary text-primary-foreground" : "bg-primary/10 text-primary"}`}>
+                        <Check className="h-3 w-3" />
+                      </span>
+                      <span className="text-foreground/90">{f}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                <div className="mt-8">
+                  <Button
+                    asChild
+                    size="lg"
+                    variant={tier.popular ? "default" : "outline"}
+                    className={`w-full h-12 ${tier.popular ? "shadow-lg shadow-primary/25" : ""}`}
+                  >
+                    <Link to="/auth">Get started</Link>
+                  </Button>
+                  <p className="mt-3 text-center text-xs text-muted-foreground">
+                    No setup fees. Cancel or change plans anytime.
+                  </p>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function PricingFAQ() {
+  const faqs = [
+    {
+      q: "What happens if my database exceeds 5,000 customers?",
+      a: "Contact us for custom enterprise scaling — we'll tailor a plan around your volume and processing needs.",
+    },
+    {
+      q: "How secure is my customer data?",
+      a: "Fully GDPR compliant, encrypted at rest and in transit, and never shared or sold to third parties.",
+    },
+    {
+      q: "Do I need any marketing experience?",
+      a: "None. Our AI writes everything for you — you just click 'Approve' to send.",
+    },
+  ];
+
+  return (
+    <section className="py-16 bg-secondary/30">
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-10">
+          <h2 className="text-2xl md:text-3xl font-semibold tracking-tight">Frequently asked questions</h2>
+        </div>
+        <Accordion type="single" collapsible className="rounded-2xl border border-border bg-card divide-y divide-border">
+          {faqs.map((faq, i) => (
+            <AccordionItem key={i} value={`item-${i}`} className="border-0 px-6">
+              <AccordionTrigger className="text-left text-base font-medium hover:no-underline py-5">
+                {faq.q}
+              </AccordionTrigger>
+              <AccordionContent className="text-muted-foreground leading-relaxed pb-5">
+                {faq.a}
+              </AccordionContent>
+            </AccordionItem>
+          ))}
+        </Accordion>
       </div>
     </section>
   );
