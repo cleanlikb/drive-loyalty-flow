@@ -528,9 +528,10 @@ function PricingSection() {
       limit: "1,000 past customers",
       popular: false,
       features: [
-        "Automated milestone tracking",
-        "AI 3-email generation",
-        "1-click approval dashboard",
+        "Automated monthly anniversary leads",
+        "AI-generated 3-email sequences",
+        "1-click approve & send",
+        "Reply detection & unsubscribe handling",
       ],
     },
     {
@@ -540,9 +541,10 @@ function PricingSection() {
       popular: true,
       features: [
         "Everything in Starter",
-        "Custom dealer email domains",
+        "Custom dealer email domain",
         "Faster AI generation",
         "Open & click analytics",
+        "Hot lead flagging",
       ],
     },
     {
@@ -552,9 +554,10 @@ function PricingSection() {
       popular: false,
       features: [
         "Everything in Growth",
-        "Multi-site lot support",
+        "Multi-site dealership support",
         "Priority processing",
-        "Smart follow-up logic",
+        "Advanced re-engagement logic",
+        "Dedicated onboarding support",
       ],
     },
   ];
@@ -564,8 +567,8 @@ function PricingSection() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="max-w-3xl mx-auto text-center mb-12">
           <span className="text-sm font-semibold text-primary uppercase tracking-wide">Pricing</span>
-          <h2 className="mt-3 text-3xl md:text-4xl font-semibold tracking-tight">Simple plans that grow with your dealership</h2>
-          <p className="mt-4 text-lg text-muted-foreground">Pick a plan based on how many past customers you have. Upgrade or downgrade anytime.</p>
+          <h2 className="mt-3 text-3xl md:text-4xl font-semibold tracking-tight">A small monthly fee, a measurable sales uplift</h2>
+          <p className="mt-4 text-lg text-muted-foreground">One extra sale usually pays for the entire year. Pick a plan based on how many past customers you have.</p>
         </div>
 
         <div className="flex justify-center mb-12">
