@@ -1,7 +1,8 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
+import { Slider } from "@/components/ui/slider";
 import {
   Menu,
   X,
@@ -18,6 +19,7 @@ import {
   ArrowRight,
   CheckCircle2,
   Mail,
+  Calculator,
 } from "lucide-react";
 import logo from "@/assets/redrive-logo.png";
 
@@ -43,6 +45,7 @@ function Landing() {
         <PainSection />
         <SolutionSection />
         <BenefitsSection />
+        <CalculatorSection />
         <FinalCTASection />
       </main>
       <Footer />
@@ -369,6 +372,92 @@ function BenefitsSection() {
         </div>
       </div>
     </section>
+  );
+}
+
+function CalculatorSection() {
+  const [carsPerMonth, setCarsPerMonth] = useState(20);
+
+  const stats = useMemo(() => {
+    const totalCustomers = carsPerMonth * 12 * 5;
+    const monthlyLeads = carsPerMonth * 6; // 6 milestone cohorts surface each month
+    const monthlyEmails = monthlyLeads * 3;
+    const monthlySales = Math.round(monthlyLeads * 0.01);
+    const yearlySales = monthlySales * 12;
+    return { totalCustomers, monthlyLeads, monthlyEmails, monthlySales, yearlySales };
+  }, [carsPerMonth]);
+
+  return (
+    <section id="calculator" className="py-24 bg-secondary/30">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-3xl mx-auto text-center mb-12">
+          <span className="inline-flex items-center gap-2 rounded-full border border-primary/25 bg-primary/10 px-4 py-1.5 text-xs font-semibold tracking-wide uppercase text-primary">
+            <Calculator className="h-3.5 w-3.5" />
+            Revenue calculator
+          </span>
+          <h2 className="mt-4 text-3xl md:text-4xl font-semibold tracking-tight">See what your CRM could be worth</h2>
+          <p className="mt-4 text-lg text-muted-foreground">
+            Slide your average monthly sales. We assume that volume over 5 years, then surface anniversary buyers each month.
+          </p>
+        </div>
+
+        <div className="rounded-3xl border border-border bg-card p-8 md:p-12 shadow-xl shadow-primary/5">
+          <div className="mb-10">
+            <label htmlFor="sales-slider" className="block text-sm font-medium text-muted-foreground mb-4">
+              Average cars sold per month
+            </label>
+            <div className="flex items-center gap-6">
+              <Slider
+                id="sales-slider"
+                value={[carsPerMonth]}
+                onValueChange={(value) => setCarsPerMonth(value[0])}
+                min={1}
+                max={200}
+                step={1}
+                className="flex-1"
+              />
+              <div className="flex items-center gap-2 min-w-[100px] justify-end">
+                <input
+                  type="number"
+                  value={carsPerMonth}
+                  onChange={(e) => setCarsPerMonth(Math.max(1, Math.min(200, Number(e.target.value) || 0)))}
+                  className="w-20 h-10 rounded-lg border border-input bg-background px-3 text-right font-semibold focus:outline-none focus:ring-2 focus:ring-ring"
+                />
+                <span className="text-sm text-muted-foreground">/mo</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+            <StatBox label="Total customers in CRM" value={stats.totalCustomers.toLocaleString()} />
+            <StatBox label="People emailed / month" value={stats.monthlyLeads.toLocaleString()} />
+            <StatBox label="Emails sent / month" value={stats.monthlyEmails.toLocaleString()} />
+            <StatBox label="Estimated extra sales / month" value={stats.monthlySales.toLocaleString()} highlight />
+          </div>
+
+          <div className="mt-8 p-4 rounded-xl bg-primary/5 border border-primary/10 text-center">
+            <p className="text-sm text-muted-foreground">
+              At a 1% conversion rate, that&apos;s approximately{" "}
+              <span className="font-semibold text-foreground">{stats.monthlySales} extra sales per month</span>{" "}
+              and{" "}
+              <span className="font-semibold text-foreground">{stats.yearlySales} extra sales per year</span>{" "}
+              from customers you already have.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function StatBox({ label, value, highlight }: { label: string; value: string; highlight?: boolean }) {
+  return (
+    <div className={`rounded-2xl p-6 text-center border ${highlight ? "bg-primary/10 border-primary/20" : "bg-background/50 border-border"}`}>
+      <div className={`text-3xl md:text-4xl font-semibold tracking-tight ${highlight ? "text-primary" : "text-foreground"}`}>
+        {value}
+      </div>
+      <div className="mt-2 text-sm text-muted-foreground leading-tight">{label}</div>
+    </div>
   );
 }
 
