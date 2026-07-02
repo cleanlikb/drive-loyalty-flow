@@ -12,6 +12,7 @@ export const Route = createFileRoute("/_authenticated/sequences/")({
 
 function Sequences() {
   const fetchSeqs = useServerFn(listSequences);
+  const navigate = useNavigate();
   const { data = [] } = useQuery({ queryKey: ["sequences"], queryFn: () => fetchSeqs() });
 
   return (
