@@ -25,6 +25,7 @@ function EmailCard({ e, onSave, onRegen }: { e: any; onSave: (payload: { id: str
   const [subject, setSubject] = useState(e.subject);
   const [body, setBody] = useState(e.body);
   const [saving, setSaving] = useState(false);
+  const [regenerating, setRegenerating] = useState(false);
   const canEdit = e.status === "draft" || e.status === "scheduled";
   return (
     <Card className="p-5">
