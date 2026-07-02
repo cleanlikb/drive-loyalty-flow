@@ -102,6 +102,35 @@ function Dashboard() {
         ))}
       </div>
 
+      {hotLeads.length > 0 && (
+        <Card className="border-orange-200 bg-orange-50/50">
+          <div className="px-5 py-4 border-b border-orange-200 flex items-center justify-between">
+            <h2 className="font-semibold flex items-center gap-2 text-orange-900">
+              <Flame className="h-5 w-5 text-orange-600" /> Hot leads ({hotLeads.length})
+            </h2>
+            <Link to="/replies" className="text-xs text-orange-700 hover:underline">View all replies →</Link>
+          </div>
+          <div className="divide-y divide-orange-100">
+            {hotLeads.map((l: any) => (
+              <div key={l.id} className="px-5 py-3 flex items-center justify-between gap-3 text-sm">
+                <div className="min-w-0 flex-1">
+                  <div className="font-medium">{l.name} <span className="text-muted-foreground font-normal">— {l.make} {l.model}</span></div>
+                  {l.next_car_notes && <div className="text-xs text-orange-800 mt-0.5 truncate">💡 {l.next_car_notes}</div>}
+                </div>
+                <span className="text-xs text-muted-foreground">{formatDateTime(l.hot_lead_at)}</span>
+                <button
+                  onClick={() => clearMut.mutate(l.id)}
+                  className="p-1 rounded hover:bg-orange-100 text-muted-foreground"
+                  title="Dismiss"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
+            ))}
+          </div>
+        </Card>
+      )}
+
       <Card>
         <div className="px-5 py-4 border-b">
           <h2 className="font-semibold">Recent activity</h2>
