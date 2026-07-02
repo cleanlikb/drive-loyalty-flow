@@ -158,13 +158,10 @@ function HeroSection() {
           For UK independent dealerships
         </span>
         <h1 className="mt-6 text-4xl md:text-5xl lg:text-6xl font-semibold tracking-tight text-white">
-          Turn past customers into your next month&apos;s sales.
+          When did you last hear from a customer you sold a car to two years ago?
         </h1>
         <p className="mt-6 text-lg md:text-xl text-white/80 max-w-2xl mx-auto leading-relaxed">
-          ReDrive automatically re-engages the customers you&apos;ve already sold to, 
-          surfacing warm leads at 12, 18, 24, 36, 48 and 60-month ownership milestones. 
-          More sales, stronger relationships, and first refusal on cars you previously 
-          sold — without paying a penny in auction fees.
+          They&apos;re due a new car right now. Someone&apos;s about to sell it to them. Is it you?
         </p>
         <div className="mt-9 flex flex-col sm:flex-row items-center justify-center gap-4">
           <Button asChild size="lg" className="h-12 px-8 text-base bg-white text-primary hover:bg-white/90 shadow-lg shadow-black/10 hover:shadow-black/20 transition-shadow">
@@ -212,22 +209,22 @@ function PainSection() {
   const pains = [
     {
       icon: Zap,
-      title: "You're buying the same car twice at auction",
+      title: "How many of last year’s buyers are due a new car right now — and don’t know you’re still here?",
       body: "Most dealers pay auction fees and transport costs to source stock they've already sold once. ReDrive puts you back in touch with the owner before they trade it elsewhere.",
     },
     {
       icon: Database,
-      title: "Your CRM is a goldmine nobody is mining",
+      title: "If a customer’s ready to upgrade next month, who finds out first — you, or the dealer who emails them first?",
       body: "Thousands of past buyers sit idle while you spend thousands on portals to find new ones. Past customers convert faster, trust you already, and cost almost nothing to reach.",
     },
     {
       icon: Users,
-      title: "Relationships walk out the door with staff",
+      title: "What’s it costing you to buy back at auction the same car you already sold once?",
       body: "When a salesperson leaves, their contact book often leaves too. ReDrive institutionalises the follow-up so your dealership owns the relationship, not the individual.",
     },
     {
       icon: PenTool,
-      title: "You know you should follow up — but it's never the priority",
+      title: "Your CRM has the data. When’s the last time it actually sold you a car?",
       body: "Milestones pass, finance deals expire, and customers slip away. ReDrive automates the timing and the copy so it happens without eating your day.",
     },
   ];
@@ -265,7 +262,8 @@ function SolutionSection() {
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="max-w-3xl mx-auto text-center mb-16">
           <span className="text-sm font-semibold text-primary uppercase tracking-wide">How it works</span>
-          <h2 className="mt-3 text-3xl md:text-4xl font-semibold tracking-tight text-foreground">More sales, better relationships, cheaper stock — in 3 simple steps</h2>
+          <h2 className="mt-3 text-3xl md:text-4xl font-semibold tracking-tight text-foreground">So how do you get there before We Buy Any Car does?</h2>
+          <p className="mt-4 text-lg text-muted-foreground">More sales, better relationships, cheaper stock — in 3 simple steps.</p>
         </div>
 
         <div className="grid md:grid-cols-3 gap-8">
@@ -544,7 +542,7 @@ function FinalCTASection() {
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[500px] h-[300px] bg-primary/20 rounded-full blur-3xl pointer-events-none" />
           <div className="relative">
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-semibold tracking-tight">
-              More sales. Better relationships. Cheaper stock.
+              Your next customer already owns a car. It’s yours. Are you going to remind them?
             </h2>
             <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
               Your customers are already changing cars. Let ReDrive make sure they change them with you.
@@ -614,7 +612,7 @@ function PricingSection() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="max-w-3xl mx-auto text-center mb-12">
           <span className="text-sm font-semibold text-primary uppercase tracking-wide">Pricing</span>
-          <h2 className="mt-3 text-3xl md:text-4xl font-semibold tracking-tight">A small monthly fee, a measurable sales uplift</h2>
+          <h2 className="mt-3 text-3xl md:text-4xl font-semibold tracking-tight">Worth more than one extra sale a month?</h2>
           <p className="mt-4 text-lg text-muted-foreground">One extra sale usually pays for the entire year. Pick a plan based on how many past customers you have.</p>
         </div>
 
