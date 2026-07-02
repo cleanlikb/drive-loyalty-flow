@@ -349,15 +349,15 @@ function ScreenshotFrame({
 }
 
 function UploadMockup() {
-  return <ScreenshotFrame src={stepCustomersAsset.url} alt="ReDrive customers page showing imported sales history" objectPosition="center 35%" scale={1.35} />;
+  return <ScreenshotFrame src={stepCustomersAsset.url} alt="ReDrive customers page showing imported sales history" objectPosition="60% 40%" scale={1.8} />;
 }
 
 function MilestoneMockup() {
-  return <ScreenshotFrame src={stepLeadsAsset.url} alt="ReDrive monthly leads grouped by ownership milestone" objectPosition="center 40%" scale={1.45} />;
+  return <ScreenshotFrame src={stepLeadsAsset.url} alt="ReDrive monthly leads grouped by ownership milestone" objectPosition="60% 35%" scale={2.0} />;
 }
 
 function SequenceMockup() {
-  return <ScreenshotFrame src={stepSequencesAsset.url} alt="ReDrive AI-generated 3-email sequence preview" objectPosition="center 25%" scale={1.25} />;
+  return <ScreenshotFrame src={stepSequencesAsset.url} alt="ReDrive AI-generated 3-email sequence preview" objectPosition="65% 30%" scale={1.7} />;
 }
 
 
