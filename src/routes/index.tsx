@@ -112,7 +112,7 @@ function Landing() {
       <header className="border-b border-border bg-card/80 backdrop-blur">
         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2">
-            <div className="h-8 w-8 rounded-md bg-primary grid place-items-center text-primary-foreground font-bold">S</div>
+            <img src={logo} alt="ReDrive" className="h-8 w-8 object-contain" />
             <span className="font-semibold tracking-tight text-foreground">ReDrive</span>
           </Link>
           <div className="flex items-center gap-2">
