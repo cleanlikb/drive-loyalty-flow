@@ -1,5 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import Papa from "papaparse";
 import { useServerFn } from "@tanstack/react-start";
 import { completeOnboarding } from "@/lib/dealer.functions";
