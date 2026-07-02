@@ -11,6 +11,7 @@ import { Card } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import { Check } from "lucide-react";
+import { FIELDS, guessMapping, Row, mapRows } from "@/lib/csv-import";
 
 export const Route = createFileRoute("/_authenticated/onboarding")({
   component: Onboarding,
