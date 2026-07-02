@@ -336,12 +336,12 @@ function ScreenshotFrame({
   scale?: number;
 }) {
   return (
-    <div className="rounded-xl border border-border bg-background overflow-hidden shadow-sm aspect-[16/10]">
+    <div className="rounded-xl border border-border bg-background overflow-hidden shadow-sm aspect-[16/11]">
       <img
         src={src}
         alt={alt}
         loading="lazy"
-        className="w-full h-full object-cover"
+        className="w-full h-full object-cover transition-transform duration-500"
         style={{ objectPosition, width: `${scale * 100}%`, height: `${scale * 100}%`, maxWidth: "none" }}
       />
     </div>
@@ -349,15 +349,15 @@ function ScreenshotFrame({
 }
 
 function UploadMockup() {
-  return <ScreenshotFrame src={stepCustomersAsset.url} alt="ReDrive customers page showing imported sales history" objectPosition="60% 40%" scale={1.8} />;
+  return <ScreenshotFrame src={stepCustomersAsset.url} alt="ReDrive customers page showing imported sales history" objectPosition="65% 35%" scale={2.2} />;
 }
 
 function MilestoneMockup() {
-  return <ScreenshotFrame src={stepLeadsAsset.url} alt="ReDrive monthly leads grouped by ownership milestone" objectPosition="60% 35%" scale={2.0} />;
+  return <ScreenshotFrame src={stepLeadsAsset.url} alt="ReDrive monthly leads grouped by ownership milestone" objectPosition="72% 30%" scale={2.6} />;
 }
 
 function SequenceMockup() {
-  return <ScreenshotFrame src={stepSequencesAsset.url} alt="ReDrive AI-generated 3-email sequence preview" objectPosition="65% 30%" scale={1.7} />;
+  return <ScreenshotFrame src={stepSequencesAsset.url} alt="ReDrive AI-generated 3-email sequence preview" objectPosition="72% 25%" scale={2.2} />;
 }
 
 
