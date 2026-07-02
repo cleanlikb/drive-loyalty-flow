@@ -410,6 +410,9 @@ function BenefitsSection() {
 
 function CalculatorSection() {
   const [carsPerMonth, setCarsPerMonth] = useState(20);
+  const [monthlyPayment, setMonthlyPayment] = useState(149);
+
+  const PROFIT_PER_SALE = 2000;
 
   const stats = useMemo(() => {
     const totalCustomers = carsPerMonth * 12 * 5;
@@ -417,9 +420,17 @@ function CalculatorSection() {
     const monthlyEmails = monthlyLeads * 3;
     const monthlySales = Math.round(monthlyLeads * 0.01);
     const yearlySales = monthlySales * 12;
-    const auctionFeesSaved = yearlySales * 500; // illustrative saving per buy-back
-    return { totalCustomers, monthlyLeads, monthlyEmails, monthlySales, yearlySales, auctionFeesSaved };
-  }, [carsPerMonth]);
+    const yearlyProfit = yearlySales * PROFIT_PER_SALE;
+    const yearlyCost = monthlyPayment * 12;
+    const annualRoi = yearlyCost > 0 ? Math.round(((yearlyProfit - yearlyCost) / yearlyCost) * 100) : 0;
+    return { totalCustomers, monthlyLeads, monthlyEmails, monthlySales, yearlySales, yearlyProfit, yearlyCost, annualRoi };
+  }, [carsPerMonth, monthlyPayment]);
+
+  const plans = [
+    { name: "Starter", price: 99 },
+    { name: "Growth", price: 149 },
+    { name: "Pro", price: 299 },
+  ];
 
   return (
     <section id="calculator" className="py-24 bg-secondary/30">
@@ -427,11 +438,11 @@ function CalculatorSection() {
         <div className="max-w-3xl mx-auto text-center mb-12">
           <span className="inline-flex items-center gap-2 rounded-full border border-primary/25 bg-primary/10 px-4 py-1.5 text-xs font-semibold tracking-wide uppercase text-primary">
             <Calculator className="h-3.5 w-3.5" />
-            Revenue calculator
+            ROI calculator
           </span>
           <h2 className="mt-4 text-3xl md:text-4xl font-semibold tracking-tight">See what your past sales could be worth</h2>
           <p className="mt-4 text-lg text-muted-foreground">
-            Slide your average monthly sales. ReDrive re-engages those same customers at key milestones, turning history into a steady stream of extra sales and buy-back opportunities.
+            Slide your average monthly sales and pick a plan. ReDrive re-engages those same customers at key milestones, turning history into a measurable return.
           </p>
         </div>
 
@@ -462,21 +473,44 @@ function CalculatorSection() {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-4 md:gap-6">
-            <StatBox label="Customers in your CRM" value={stats.totalCustomers.toLocaleString()} />
+          <div className="mb-10">
+            <label className="block text-sm font-medium text-muted-foreground mb-4">
+              Your monthly ReDrive plan
+            </label>
+            <div className="flex flex-wrap gap-3">
+              {plans.map((plan) => (
+                <button
+                  key={plan.name}
+                  onClick={() => setMonthlyPayment(plan.price)}
+                  className={`px-5 py-2.5 rounded-xl text-sm font-semibold border transition-all ${
+                    monthlyPayment === plan.price
+                      ? "bg-primary text-primary-foreground border-primary shadow-md"
+                      : "bg-background border-border hover:border-primary/30"
+                  }`}
+                >
+                  {plan.name} — £{plan.price}/mo
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
             <StatBox label="People re-engaged / month" value={stats.monthlyLeads.toLocaleString()} />
-            <StatBox label="Emails sent / month" value={stats.monthlyEmails.toLocaleString()} />
-            <StatBox label="Estimated extra sales / month" value={stats.monthlySales.toLocaleString()} highlight />
-            <StatBox label="Illustrative auction fees saved / year" value={`£${stats.auctionFeesSaved.toLocaleString()}`} />
+            <StatBox label="Estimated extra sales / month" value={stats.monthlySales.toLocaleString()} />
+            <StatBox label="Estimated profit / year" value={`£${stats.yearlyProfit.toLocaleString()}`} highlight />
+            <StatBox label="Annual ROI" value={`${stats.annualRoi}%`} />
           </div>
 
           <div className="mt-8 p-4 rounded-xl bg-primary/5 border border-primary/10 text-center">
             <p className="text-sm text-muted-foreground">
-              At a 1% conversion rate, that&apos;s approximately{" "}
-              <span className="font-semibold text-foreground">{stats.monthlySales} extra sales per month</span>{" "}
-              and{" "}
+              At a 1% conversion rate and{" "}
+              <span className="font-semibold text-foreground">£{PROFIT_PER_SALE.toLocaleString()} profit per sale</span>,
+              that&apos;s approximately{" "}
               <span className="font-semibold text-foreground">{stats.yearlySales} extra sales per year</span>{" "}
-              from customers you already have — plus the chance to buy back familiar stock before it reaches auction.
+              generating{" "}
+              <span className="font-semibold text-foreground">£{stats.yearlyProfit.toLocaleString()} profit</span>{" "}
+              on a{" "}
+              <span className="font-semibold text-foreground">£{stats.yearlyCost.toLocaleString()} annual subscription</span>.
             </p>
           </div>
         </div>
@@ -484,6 +518,7 @@ function CalculatorSection() {
     </section>
   );
 }
+
 
 function StatBox({ label, value, highlight }: { label: string; value: string; highlight?: boolean }) {
   return (
