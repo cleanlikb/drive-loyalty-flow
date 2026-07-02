@@ -214,12 +214,12 @@ function PainSection() {
 
 function SolutionSection() {
   return (
-    <section id="how-it-works" className="py-24 relative overflow-hidden">
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/5 rounded-full blur-3xl pointer-events-none" />
+    <section id="how-it-works" className="py-24 relative overflow-hidden bg-white">
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/10 rounded-full blur-3xl pointer-events-none" />
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="max-w-3xl mx-auto text-center mb-16">
           <span className="text-sm font-semibold text-primary uppercase tracking-wide">How it works</span>
-          <h2 className="mt-3 text-3xl md:text-4xl font-semibold tracking-tight">From dusty CRM to booked appointments in 3 steps</h2>
+          <h2 className="mt-3 text-3xl md:text-4xl font-semibold tracking-tight text-foreground">From dusty CRM to booked appointments in 3 steps</h2>
         </div>
 
         <div className="grid md:grid-cols-3 gap-8">
