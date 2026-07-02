@@ -20,6 +20,9 @@ import { Route as AuthenticatedDashboardRouteImport } from './routes/_authentica
 import { Route as AuthenticatedCustomersRouteImport } from './routes/_authenticated/customers'
 import { Route as AuthenticatedSequencesIndexRouteImport } from './routes/_authenticated/sequences.index'
 import { Route as AuthenticatedSequencesIdRouteImport } from './routes/_authenticated/sequences.$id'
+import { Route as ApiPublicWebhooksInboundReplyRouteImport } from './routes/api/public/webhooks/inbound-reply'
+import { Route as ApiPublicCronMonthlyCohortRouteImport } from './routes/api/public/cron/monthly-cohort'
+import { Route as ApiPublicCronDispatchEmailsRouteImport } from './routes/api/public/cron/dispatch-emails'
 
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
@@ -77,6 +80,24 @@ const AuthenticatedSequencesIdRoute =
     path: '/sequences/$id',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const ApiPublicWebhooksInboundReplyRoute =
+  ApiPublicWebhooksInboundReplyRouteImport.update({
+    id: '/api/public/webhooks/inbound-reply',
+    path: '/api/public/webhooks/inbound-reply',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicCronMonthlyCohortRoute =
+  ApiPublicCronMonthlyCohortRouteImport.update({
+    id: '/api/public/cron/monthly-cohort',
+    path: '/api/public/cron/monthly-cohort',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicCronDispatchEmailsRoute =
+  ApiPublicCronDispatchEmailsRouteImport.update({
+    id: '/api/public/cron/dispatch-emails',
+    path: '/api/public/cron/dispatch-emails',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -89,6 +110,9 @@ export interface FileRoutesByFullPath {
   '/stock': typeof AuthenticatedStockRoute
   '/sequences/$id': typeof AuthenticatedSequencesIdRoute
   '/sequences/': typeof AuthenticatedSequencesIndexRoute
+  '/api/public/cron/dispatch-emails': typeof ApiPublicCronDispatchEmailsRoute
+  '/api/public/cron/monthly-cohort': typeof ApiPublicCronMonthlyCohortRoute
+  '/api/public/webhooks/inbound-reply': typeof ApiPublicWebhooksInboundReplyRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -101,6 +125,9 @@ export interface FileRoutesByTo {
   '/stock': typeof AuthenticatedStockRoute
   '/sequences/$id': typeof AuthenticatedSequencesIdRoute
   '/sequences': typeof AuthenticatedSequencesIndexRoute
+  '/api/public/cron/dispatch-emails': typeof ApiPublicCronDispatchEmailsRoute
+  '/api/public/cron/monthly-cohort': typeof ApiPublicCronMonthlyCohortRoute
+  '/api/public/webhooks/inbound-reply': typeof ApiPublicWebhooksInboundReplyRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -115,6 +142,9 @@ export interface FileRoutesById {
   '/_authenticated/stock': typeof AuthenticatedStockRoute
   '/_authenticated/sequences/$id': typeof AuthenticatedSequencesIdRoute
   '/_authenticated/sequences/': typeof AuthenticatedSequencesIndexRoute
+  '/api/public/cron/dispatch-emails': typeof ApiPublicCronDispatchEmailsRoute
+  '/api/public/cron/monthly-cohort': typeof ApiPublicCronMonthlyCohortRoute
+  '/api/public/webhooks/inbound-reply': typeof ApiPublicWebhooksInboundReplyRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -129,6 +159,9 @@ export interface FileRouteTypes {
     | '/stock'
     | '/sequences/$id'
     | '/sequences/'
+    | '/api/public/cron/dispatch-emails'
+    | '/api/public/cron/monthly-cohort'
+    | '/api/public/webhooks/inbound-reply'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -141,6 +174,9 @@ export interface FileRouteTypes {
     | '/stock'
     | '/sequences/$id'
     | '/sequences'
+    | '/api/public/cron/dispatch-emails'
+    | '/api/public/cron/monthly-cohort'
+    | '/api/public/webhooks/inbound-reply'
   id:
     | '__root__'
     | '/'
@@ -154,12 +190,18 @@ export interface FileRouteTypes {
     | '/_authenticated/stock'
     | '/_authenticated/sequences/$id'
     | '/_authenticated/sequences/'
+    | '/api/public/cron/dispatch-emails'
+    | '/api/public/cron/monthly-cohort'
+    | '/api/public/webhooks/inbound-reply'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
+  ApiPublicCronDispatchEmailsRoute: typeof ApiPublicCronDispatchEmailsRoute
+  ApiPublicCronMonthlyCohortRoute: typeof ApiPublicCronMonthlyCohortRoute
+  ApiPublicWebhooksInboundReplyRoute: typeof ApiPublicWebhooksInboundReplyRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -241,6 +283,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedSequencesIdRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/api/public/webhooks/inbound-reply': {
+      id: '/api/public/webhooks/inbound-reply'
+      path: '/api/public/webhooks/inbound-reply'
+      fullPath: '/api/public/webhooks/inbound-reply'
+      preLoaderRoute: typeof ApiPublicWebhooksInboundReplyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/cron/monthly-cohort': {
+      id: '/api/public/cron/monthly-cohort'
+      path: '/api/public/cron/monthly-cohort'
+      fullPath: '/api/public/cron/monthly-cohort'
+      preLoaderRoute: typeof ApiPublicCronMonthlyCohortRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/cron/dispatch-emails': {
+      id: '/api/public/cron/dispatch-emails'
+      path: '/api/public/cron/dispatch-emails'
+      fullPath: '/api/public/cron/dispatch-emails'
+      preLoaderRoute: typeof ApiPublicCronDispatchEmailsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -273,6 +336,9 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
+  ApiPublicCronDispatchEmailsRoute: ApiPublicCronDispatchEmailsRoute,
+  ApiPublicCronMonthlyCohortRoute: ApiPublicCronMonthlyCohortRoute,
+  ApiPublicWebhooksInboundReplyRoute: ApiPublicWebhooksInboundReplyRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
