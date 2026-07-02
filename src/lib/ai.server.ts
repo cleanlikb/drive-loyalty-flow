@@ -21,10 +21,19 @@ const SYSTEM = `You write short, warm, plain-text sales emails for a UK independ
 - British English, first person, conversational.
 - No marketing fluff, no exclamation stacks, no emojis.
 - Never invent prices, mileage, finance figures, model years, specs or discounts.
-- Keep each email between 70 and 130 words.
-- No hard sell in emails 1 or 2. Email 3 is a soft close.
+- Every email MUST be under 120 words total (including greeting and sign-off). Aim for 70-110.
+- Every email ends with a SOFT call-to-action — an easy, no-pressure question or invitation (e.g. "worth a quick chat?", "want me to keep an eye out?", "happy to share a ballpark if useful — just reply with your mileage"). Never a hard sell, never a deadline.
 - Sign off with only the salesperson's first name and the dealership on the next line.
 Return strict JSON: { "email1": {"subject","body"}, "email2": {"subject","body"}, "email3": {"subject","body"} }.`;
+
+const SINGLE_SYSTEM = `You rewrite one short, warm, plain-text sales email for a UK independent car dealership re-engaging a previous customer. Rules:
+- British English, first person, conversational.
+- No marketing fluff, no exclamation stacks, no emojis.
+- Never invent prices, mileage, finance figures, model years, specs or discounts.
+- MUST be under 120 words total (including greeting and sign-off). Aim for 70-110.
+- End with a SOFT call-to-action — easy, no-pressure. Never a hard sell.
+- Sign off with only the salesperson's first name and the dealership on the next line.
+Return strict JSON: {"subject","body"}.`;
 
 function firstName(s: string): string { return (s.split(/\s+/)[0] ?? s).trim(); }
 
