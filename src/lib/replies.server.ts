@@ -65,7 +65,12 @@ export async function processReply(
 
   // Customer + sequence status updates by classification.
   let stoppedReason = source === "inbound_email" ? "Customer replied via email" : "Customer replied";
-  const custPatch: Record<string, unknown> = {};
+  const custPatch: {
+    status?: "active" | "no_longer_owns" | "unsubscribed";
+    is_hot_lead?: boolean;
+    hot_lead_at?: string;
+    next_car_notes?: string;
+  } = {};
   if (classification.next_car_notes) custPatch.next_car_notes = classification.next_car_notes;
 
   switch (classification.classification) {
