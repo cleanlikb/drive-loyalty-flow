@@ -419,13 +419,15 @@ function CalculatorSection() {
     const totalCustomers = carsPerMonth * 12 * 5;
     const monthlyLeads = carsPerMonth * 6; // 6 milestone cohorts surface each month
     const monthlyEmails = monthlyLeads * 3;
-    const monthlySales = Math.round(monthlyLeads * CONVERSION_RATE);
+    const monthlySales = monthlyLeads * CONVERSION_RATE;
     const yearlySales = monthlySales * 12;
     const yearlyProfit = yearlySales * PROFIT_PER_SALE;
     const yearlyCost = monthlyPayment * 12;
     const netAnnualProfit = yearlyProfit - yearlyCost;
     return { totalCustomers, monthlyLeads, monthlyEmails, monthlySales, yearlySales, yearlyProfit, yearlyCost, netAnnualProfit };
   }, [carsPerMonth, monthlyPayment]);
+
+  const formatSales = (n: number) => (n < 1 ? n.toFixed(1) : Math.round(n).toLocaleString());
 
   const plans = [
     { name: "Starter", price: 99 },
@@ -497,9 +499,9 @@ function CalculatorSection() {
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
             <StatBox label="People re-engaged / month" value={stats.monthlyLeads.toLocaleString()} />
-            <StatBox label="Estimated extra sales / month" value={stats.monthlySales.toLocaleString()} />
-            <StatBox label="Estimated profit / year" value={`£${stats.yearlyProfit.toLocaleString()}`} highlight />
-            <StatBox label="Profit after subscription" value={`£${stats.netAnnualProfit.toLocaleString()}`} />
+            <StatBox label="Estimated extra sales / month" value={formatSales(stats.monthlySales)} />
+            <StatBox label="Estimated profit / year" value={`£${Math.round(stats.yearlyProfit).toLocaleString()}`} highlight />
+            <StatBox label="Profit after subscription" value={`£${Math.round(stats.netAnnualProfit).toLocaleString()}`} />
           </div>
 
           <div className="mt-8 p-4 rounded-xl bg-primary/5 border border-primary/10 text-center">
@@ -507,13 +509,13 @@ function CalculatorSection() {
               At a 0.5% conversion rate and{" "}
               <span className="font-semibold text-foreground">£{PROFIT_PER_SALE.toLocaleString()} profit per sale</span>,
               that&apos;s approximately{" "}
-              <span className="font-semibold text-foreground">{stats.yearlySales} extra sales per year</span>{" "}
+              <span className="font-semibold text-foreground">{formatSales(stats.yearlySales)} extra sales per year</span>{" "}
               generating{" "}
-              <span className="font-semibold text-foreground">£{stats.yearlyProfit.toLocaleString()} profit</span>{" "}
+              <span className="font-semibold text-foreground">£{Math.round(stats.yearlyProfit).toLocaleString()} profit</span>{" "}
               after your{" "}
               <span className="font-semibold text-foreground">£{stats.yearlyCost.toLocaleString()} annual subscription</span>,
               leaving{" "}
-              <span className="font-semibold text-foreground">£{stats.netAnnualProfit.toLocaleString()} net profit</span>.
+              <span className="font-semibold text-foreground">£{Math.round(stats.netAnnualProfit).toLocaleString()} net profit</span>.
             </p>
           </div>
         </div>
