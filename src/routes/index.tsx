@@ -542,7 +542,7 @@ function FinalCTASection() {
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[500px] h-[300px] bg-primary/20 rounded-full blur-3xl pointer-events-none" />
           <div className="relative">
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-semibold tracking-tight">
-              More sales. Better relationships. Cheaper stock.
+              Your next customer already owns a car. It’s yours. Are you going to remind them?
             </h2>
             <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
               Your customers are already changing cars. Let ReDrive make sure they change them with you.
