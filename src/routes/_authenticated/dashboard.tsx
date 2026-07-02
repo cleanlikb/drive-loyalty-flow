@@ -32,10 +32,13 @@ function Dashboard() {
   const qc = useQueryClient();
   const fetchStats = useServerFn(getDashboardStats);
   const fetchDealer = useServerFn(getMyDealer);
+  const fetchHot = useServerFn(listHotLeads);
+  const clearHot = useServerFn(clearHotLead);
   const runDemo = useServerFn(loadDemoData);
 
   const { data: dealer } = useQuery({ queryKey: ["dealer"], queryFn: () => fetchDealer() });
   const { data: stats } = useQuery({ queryKey: ["dashboard"], queryFn: () => fetchStats() });
+  const { data: hotLeads = [] } = useQuery({ queryKey: ["hot-leads"], queryFn: () => fetchHot() });
 
   useEffect(() => {
     if (dealer && !dealer.onboarded_at) navigate({ to: "/onboarding" });
@@ -48,6 +51,11 @@ function Dashboard() {
       qc.invalidateQueries();
     },
     onError: (e: any) => toast.error(e?.message ?? "Failed"),
+  });
+
+  const clearMut = useMutation({
+    mutationFn: (customerId: string) => clearHot({ data: { customerId } }),
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ["hot-leads"] }); },
   });
 
   const cards = [
