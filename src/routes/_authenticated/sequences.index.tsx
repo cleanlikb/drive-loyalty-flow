@@ -29,7 +29,6 @@ function Sequences() {
               <tr>
                 <th className="text-left px-4 py-2 font-medium">Customer</th>
                 <th className="text-left px-4 py-2 font-medium">Their car</th>
-                <th className="text-left px-4 py-2 font-medium">Matched to</th>
                 <th className="text-left px-4 py-2 font-medium">Timeline</th>
                 <th className="text-left px-4 py-2 font-medium">Started</th>
                 <th className="text-left px-4 py-2 font-medium">Status</th>
@@ -49,7 +48,6 @@ function Sequences() {
                       <div className="text-xs text-muted-foreground">{s.customer?.email}</div>
                     </td>
                     <td className="px-4 py-3">{s.customer?.make} {s.customer?.model}</td>
-                    <td className="px-4 py-3">{s.stock ? `${s.stock.year ?? ""} ${s.stock.make} ${s.stock.model}` : "—"}</td>
                     <td className="px-4 py-3">
                       <div className="flex gap-1">
                         {emails.map((e: any) => (
@@ -65,7 +63,7 @@ function Sequences() {
                 );
               })}
               {data.length === 0 && (
-                <tr><td colSpan={6} className="text-center py-10 text-muted-foreground">No sequences yet. Start one from the Leads page.</td></tr>
+                <tr><td colSpan={5} className="text-center py-10 text-muted-foreground">No sequences yet. Start one from the Leads page.</td></tr>
               )}
             </tbody>
           </table>

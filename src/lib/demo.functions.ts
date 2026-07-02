@@ -53,7 +53,7 @@ export const loadDemoData = createServerFn({ method: "POST" })
     await context.supabase.from("cohort_customers").delete().eq("dealer_id", dealer.id);
     await context.supabase.from("cohorts").delete().eq("dealer_id", dealer.id);
     await context.supabase.from("customers").delete().eq("dealer_id", dealer.id);
-    await context.supabase.from("stock").delete().eq("dealer_id", dealer.id);
+    
     await context.supabase.from("notifications").delete().eq("dealer_id", dealer.id);
     await context.supabase.from("activity_log").delete().eq("dealer_id", dealer.id);
 
@@ -105,10 +105,6 @@ export const loadDemoData = createServerFn({ method: "POST" })
     });
     const { data: insertedCustomers } = await context.supabase.from("customers").insert(customers).select();
 
-    // Stock
-    const stockRows = DEMO_STOCK.map((s) => ({ ...s, dealer_id: dealer.id, source: "seed" as const, active: true }));
-    const { data: insertedStock } = await context.supabase.from("stock").insert(stockRows).select();
-
     // Notification
     await context.supabase.from("notifications").insert({
       dealer_id: dealer.id,
@@ -119,41 +115,39 @@ export const loadDemoData = createServerFn({ method: "POST" })
 
     // Activity
     await context.supabase.from("activity_log").insert([
-      { dealer_id: dealer.id, kind: "demo_loaded", payload: { customers: insertedCustomers?.length, stock: insertedStock?.length } },
-      { dealer_id: dealer.id, kind: "stock_synced", payload: { items: insertedStock?.length }, created_at: daysAgo(1) + "T09:00:00Z" },
+      { dealer_id: dealer.id, kind: "demo_loaded", payload: { customers: insertedCustomers?.length } },
     ]);
 
     // One active sequence mid-flight
     const firstCustomer = insertedCustomers?.find((c: any) => c.make === "Nissan");
-    const matchedStock = insertedStock?.find((s: any) => s.make === "Nissan");
-    if (firstCustomer && matchedStock) {
+    if (firstCustomer) {
       const now = new Date();
       const day0 = new Date(now); day0.setDate(day0.getDate() - 2);
       const { data: seq } = await context.supabase.from("sequences").insert({
         dealer_id: dealer.id,
-        customer_id: firstCustomer.id,
-        stock_id: matchedStock.id,
+        customer_id: (firstCustomer as any).id,
         status: "active",
         started_at: day0.toISOString(),
       }).select().single();
       if (seq) {
+        const fc = firstCustomer as any;
         await context.supabase.from("sequence_emails").insert([
           {
             sequence_id: seq.id, dealer_id: dealer.id, step: 1, send_offset_days: 0,
-            subject: `Checking in — how's the ${firstCustomer.model}?`,
-            body: `Hi ${firstCustomer.name.split(" ")[0]},\n\nJames here from Whitfield Motors. It's been a while since you picked up your ${firstCustomer.make} ${firstCustomer.model} — just a quick note to see how you're getting on with it.\n\nWe've had strong demand for ${firstCustomer.model}s in part-exchange lately, so I wanted to keep in touch. No pitch — just wanted to check in.\n\nJames\nWhitfield Motors`,
+            subject: `Checking in — how's the ${fc.model}?`,
+            body: `Hi ${fc.name.split(" ")[0]},\n\nJames here from Whitfield Motors. It's been a while since you picked up your ${fc.make} ${fc.model} — just a quick note to see how you're getting on with it.\n\nWe've had strong demand for ${fc.model}s in part-exchange lately, so I wanted to keep in touch. No pitch — just wanted to check in.\n\nJames\nWhitfield Motors`,
             status: "sent", scheduled_for: day0.toISOString(), sent_at: day0.toISOString(),
           },
           {
             sequence_id: seq.id, dealer_id: dealer.id, step: 2, send_offset_days: 4,
-            subject: `Something you might like`,
-            body: `Hi ${firstCustomer.name.split(" ")[0]},\n\nA quick follow-up — we've just taken in a ${matchedStock.year} ${matchedStock.make} ${matchedStock.model} ${matchedStock.trim ?? ""} at £${Number(matchedStock.price ?? 0).toLocaleString()}. Given you've had your ${firstCustomer.model} for a couple of years now, I thought it might be worth flagging.\n\nSame make, newer year, similar price bracket. No rush — just thought I'd mention it.\n\nJames\nWhitfield Motors`,
+            subject: `What's next on your list?`,
+            body: `Hi ${fc.name.split(" ")[0]},\n\nQuick follow-up — if you were to change the ${fc.model} in the next few months, what would you be looking at? Same make, an upgrade, something different entirely?\n\nHappy to keep an eye out and drop you a line when something suitable lands.\n\nJames\nWhitfield Motors`,
             status: "scheduled", scheduled_for: new Date(day0.getTime() + 4 * 86400000).toISOString(),
           },
           {
             sequence_id: seq.id, dealer_id: dealer.id, step: 3, send_offset_days: 10,
             subject: `Part-exchange figure?`,
-            body: `Hi ${firstCustomer.name.split(" ")[0]},\n\nLast one from me — if you'd like a rough part-exchange figure on your ${firstCustomer.model}, just reply with your current mileage and I'll come back with a number.\n\nJames\nWhitfield Motors`,
+            body: `Hi ${fc.name.split(" ")[0]},\n\nLast one from me — if you'd like a rough part-exchange figure on your ${fc.model}, just reply with your current mileage and I'll come back with a number.\n\nJames\nWhitfield Motors`,
             status: "scheduled", scheduled_for: new Date(day0.getTime() + 10 * 86400000).toISOString(),
           },
         ]);
@@ -163,5 +157,5 @@ export const loadDemoData = createServerFn({ method: "POST" })
       }
     }
 
-    return { ok: true, customers: customers.length, stock: DEMO_STOCK.length };
+    return { ok: true, customers: customers.length };
   });

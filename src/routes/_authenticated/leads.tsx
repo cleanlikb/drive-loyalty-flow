@@ -134,8 +134,6 @@ function Leads() {
                     <th className="text-left px-4 py-2 font-medium">Customer</th>
                     <th className="text-left px-4 py-2 font-medium">Their car</th>
                     <th className="text-left px-4 py-2 font-medium">Purchase date</th>
-                    <th className="text-left px-4 py-2 font-medium">Best stock match</th>
-                    <th className="text-left px-4 py-2 font-medium">Score</th>
                     <th className="text-left px-4 py-2 font-medium">Status</th>
                   </tr>
                 </thead>
@@ -158,17 +156,6 @@ function Leads() {
                         <div className="text-xs text-muted-foreground">{r.customer?.trim ?? ""} · {formatGbp(r.customer?.sale_price)}</div>
                       </td>
                       <td className="px-4 py-3 text-muted-foreground">{formatDate(r.customer?.sale_date)}</td>
-                      <td className="px-4 py-3">
-                        {r.stock ? (
-                          <>
-                            <div>{r.stock.year} {r.stock.make} {r.stock.model}</div>
-                            <div className="text-xs text-muted-foreground">{formatGbp(r.stock.price)}</div>
-                          </>
-                        ) : <span className="text-muted-foreground">No match</span>}
-                      </td>
-                      <td className="px-4 py-3">
-                        <span className={`inline-block rounded px-2 py-0.5 text-xs font-medium ${r.match_score >= 70 ? "bg-success/15 text-success" : r.match_score >= 40 ? "bg-warning/25 text-warning-foreground" : "bg-muted text-muted-foreground"}`}>{r.match_score}</span>
-                      </td>
                       <td className="px-4 py-3 text-xs text-muted-foreground">
                         {r.sequence_id ? "In sequence" : "Ready"}
                       </td>
