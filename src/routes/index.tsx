@@ -510,7 +510,7 @@ function CalculatorSection() {
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
             <StatBox label="People re-engaged / month" value={stats.monthlyLeads.toLocaleString()} />
-            <StatBox label="Estimated extra sales / month" value={formatSales(stats.monthlySales)} />
+            <StatBox label="Estimated extra sales / year" value={formatSales(stats.yearlySales)} />
             <StatBox label="Estimated profit / year" value={`£${Math.round(stats.yearlyProfit).toLocaleString()}`} highlight />
             <StatBox label="Profit after subscription" value={`£${Math.round(stats.netAnnualProfit).toLocaleString()}`} />
           </div>
