@@ -167,8 +167,6 @@ export const startSequencesForSelected = createServerFn({ method: "POST" })
         }));
         await context.supabase.from("sequence_emails").insert(emailRows);
         await context.supabase.from("cohort_customers").update({ sequence_id: seqRow.id, selected: false }).eq("id", row.id);
-
-        await context.supabase.from("customers").update({ last_contacted_at: now.toISOString() }).eq("id", c.id);
         created++;
       } catch (e) {
         console.error("Sequence gen failed", e);
@@ -177,10 +175,47 @@ export const startSequencesForSelected = createServerFn({ method: "POST" })
     }
 
     await context.supabase.from("activity_log").insert({
-      dealer_id: dealer.id, kind: "sequences_started", payload: { created, failed },
+      dealer_id: dealer.id, kind: "sequences_generated", payload: { created, failed },
     });
     return { created, failed };
   });
+
+export const startSequence = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) => z.object({ id: z.string().uuid() }).parse(d))
+  .handler(async ({ data, context }) => {
+    const { data: seq, error } = await context.supabase
+      .from("sequences")
+      .select("id, status, sequence_emails(id, step, send_offset_days, status)")
+      .eq("id", data.id)
+      .single();
+    if (error) throw error;
+    if (seq.status !== "drafting") throw new Error("Sequence already started");
+
+    const now = new Date();
+    for (const e of seq.sequence_emails ?? []) {
+      if (e.status !== "draft") continue;
+      await context.supabase.from("sequence_emails").update({
+        status: "scheduled",
+        scheduled_for: addDays(now, e.send_offset_days).toISOString(),
+      }).eq("id", e.id);
+    }
+    await context.supabase.from("sequences").update({
+      status: "active",
+      started_at: now.toISOString(),
+      updated_at: now.toISOString(),
+    }).eq("id", data.id);
+
+    const { data: dealer } = await context.supabase.from("dealers").select("id").eq("user_id", context.userId).single();
+    if (dealer) {
+      await context.supabase.from("activity_log").insert({
+        dealer_id: dealer.id, kind: "sequence_started", payload: { sequence_id: data.id },
+      });
+    }
+    return { ok: true };
+  });
+
+
 
 const dispatchEmail = async (supabase: any, email: any) => {
   // ABSTRACTED DISPATCH — v1 marks sent. Replace with Resend/SMTP later.
