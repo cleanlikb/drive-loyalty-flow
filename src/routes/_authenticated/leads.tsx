@@ -8,9 +8,16 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { MilestoneBadge } from "@/components/MilestoneBadge";
 import { MILESTONES, formatDate, formatGbp } from "@/lib/format";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import { RefreshCw, Send } from "lucide-react";
+
+type SequenceType = "trade_in" | "buy_back";
+const SEQUENCE_TYPE_OPTIONS: { value: SequenceType; label: string; description: string }[] = [
+  { value: "trade_in", label: "Trade-in / Upgrade", description: "Values still strong — swap into a newer model on similar monthlies." },
+  { value: "buy_back", label: "Buy-back offer", description: "We'll buy their car back directly — no auction fees, no WeBuyAnyCar." },
+];
 
 export const Route = createFileRoute("/_authenticated/leads")({
   component: Leads,

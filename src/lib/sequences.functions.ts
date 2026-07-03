@@ -91,6 +91,7 @@ export const regenerateSequenceEmail = createServerFn({ method: "POST" })
       customerCarYearMakeModelTrim: [c.make, c.model, c.trim].filter(Boolean).join(" "),
       purchaseDate: c.sale_date ?? new Date().toISOString(),
       monthsSincePurchase: c.sale_date ? monthsAgo(c.sale_date) : 12,
+      sequenceType: (email.sequence?.sequence_type ?? "trade_in") as "trade_in" | "buy_back",
       step: email.step as 1 | 2 | 3,
       currentSubject: email.subject,
       currentBody: email.body,
@@ -111,7 +112,10 @@ function addDays(base: Date, days: number): Date {
 
 export const startSequencesForSelected = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: unknown) => z.object({ cohortCustomerIds: z.array(z.string().uuid()).min(1).max(200) }).parse(d))
+  .inputValidator((d: unknown) => z.object({
+    cohortCustomerIds: z.array(z.string().uuid()).min(1).max(200),
+    sequenceType: z.enum(["trade_in", "buy_back"]).default("trade_in"),
+  }).parse(d))
   .handler(async ({ data, context }) => {
     const dealer = await getDealerFull(context.supabase, context.userId);
     if (!dealer) throw new Error("Dealer not found");
@@ -139,6 +143,7 @@ export const startSequencesForSelected = createServerFn({ method: "POST" })
           customerCarYearMakeModelTrim: [c.make, c.model, c.trim].filter(Boolean).join(" "),
           purchaseDate: c.sale_date ?? new Date().toISOString(),
           monthsSincePurchase: c.sale_date ? monthsAgo(c.sale_date) : row.milestone_months,
+          sequenceType: data.sequenceType,
         });
 
         const { data: seqRow, error: seqErr } = await context.supabase.from("sequences").insert({
@@ -146,6 +151,7 @@ export const startSequencesForSelected = createServerFn({ method: "POST" })
           customer_id: c.id,
           cohort_customer_id: row.id,
           status: "drafting",
+          sequence_type: data.sequenceType,
           started_at: now.toISOString(),
         }).select("id").single();
         if (seqErr) throw seqErr;
@@ -175,10 +181,11 @@ export const startSequencesForSelected = createServerFn({ method: "POST" })
     }
 
     await context.supabase.from("activity_log").insert({
-      dealer_id: dealer.id, kind: "sequences_generated", payload: { created, failed },
+      dealer_id: dealer.id, kind: "sequences_generated", payload: { created, failed, type: data.sequenceType },
     });
     return { created, failed };
   });
+
 
 export const startSequence = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
