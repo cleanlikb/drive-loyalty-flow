@@ -68,9 +68,10 @@ async function rebuildCohortInternal(supabase: any, dealerId: string, milestoneM
 export const rebuildCurrentCohort = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    const { data: dealer } = await context.supabase.from("dealers").select("id").eq("user_id", context.userId).single();
+    const { data: dealer } = await context.supabase.from("dealers").select("id, milestone_months").eq("user_id", context.userId).single();
     if (!dealer) throw new Error("Dealer not found");
-    const result = await rebuildCohortInternal(context.supabase, dealer.id);
+    const result = await rebuildCohortInternal(context.supabase, dealer.id, (dealer as any).milestone_months);
+
     await context.supabase.from("activity_log").insert({
       dealer_id: dealer.id, kind: "leads_generated", payload: { added: result.added },
     });
