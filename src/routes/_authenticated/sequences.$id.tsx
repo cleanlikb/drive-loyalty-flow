@@ -200,7 +200,7 @@ function SequenceDetail() {
 
       <div className="space-y-4">
         {(data.sequence_emails ?? []).map((e: any) => (
-          <EmailCard key={e.id} e={e}
+          <EmailCard key={e.id} e={e} seqType={(data.sequence_type ?? "trade_in") as "trade_in" | "buy_back"}
             onSave={async (payload) => {
               await update({ data: payload });
               qc.invalidateQueries({ queryKey: ["sequence", id] });
