@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { generateReplyAlias, plainTextToHtml, replyToAddress, sendResendEmail } from "@/lib/resend.server";
 
 // Called every 15 minutes by pg_cron. Sends all scheduled emails whose time is due.
 export const Route = createFileRoute("/api/public/cron/dispatch-emails")({
@@ -9,39 +10,120 @@ export const Route = createFileRoute("/api/public/cron/dispatch-emails")({
         if (!cronSecret || !process.env.CRON_SECRET || cronSecret !== process.env.CRON_SECRET) {
           return new Response("Unauthorized", { status: 401 });
         }
+
+        const fromAddress = process.env.RESEND_FROM;
+        if (!fromAddress) {
+          return new Response("RESEND_FROM not configured", { status: 500 });
+        }
+
         const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+        const db = supabaseAdmin as any;
         const now = new Date().toISOString();
-        const { data: due } = await supabaseAdmin
+
+        const { data: due } = await db
           .from("sequence_emails")
-          .select("id, sequence_id, dealer_id")
+          .select(`
+            id,
+            sequence_id,
+            dealer_id,
+            step,
+            subject,
+            body,
+            reply_alias,
+            dealer:dealers(id, slug, dealership_name, notification_email),
+            customer:customers(id, name, email)
+          `)
           .eq("status", "scheduled")
           .lte("scheduled_for", now)
+          .order("scheduled_for", { ascending: true })
           .limit(500);
 
         const sentByDealer = new Map<string, number>();
+        let sent = 0;
+        let failed = 0;
+
         for (const e of due ?? []) {
-          // Abstracted dispatch — v1 marks sent. Replace with Resend later.
-          await supabaseAdmin.from("sequence_emails").update({ status: "sent", sent_at: now }).eq("id", e.id);
-          sentByDealer.set(e.dealer_id, (sentByDealer.get(e.dealer_id) ?? 0) + 1);
+          const customer = e.customer as any;
+          const dealer = e.dealer as any;
+          if (!customer?.email) {
+            await db.from("sequence_emails").update({ status: "failed", updated_at: now }).eq("id", e.id);
+            failed++;
+            continue;
+          }
+
+          let alias: string = e.reply_alias;
+          if (!alias) {
+            if (!dealer?.slug) {
+              await db.from("sequence_emails").update({ status: "failed", updated_at: now }).eq("id", e.id);
+              failed++;
+              continue;
+            }
+            alias = generateReplyAlias(dealer.slug);
+            // Reserve the alias immediately so the next email doesn't collide.
+            const { error: aliasErr } = await db.from("sequence_emails")
+              .update({ reply_alias: alias, updated_at: now })
+              .eq("id", e.id)
+              .is("reply_alias", null);
+            if (aliasErr) {
+              console.error("Failed to reserve reply alias", aliasErr);
+              failed++;
+              continue;
+            }
+          }
+
+          try {
+            const replyTo = replyToAddress(alias);
+            const { resendEmailId, messageId } = await sendResendEmail({
+              to: customer.email,
+              from: `${dealer?.dealership_name ?? "Wynback"} <${fromAddress}>`,
+              subject: e.subject,
+              text: e.body,
+              html: plainTextToHtml(e.body),
+              replyTo,
+              tags: [
+                { name: "dealer_id", value: String(dealer?.id ?? "") },
+                { name: "customer_id", value: String(customer?.id ?? "") },
+                { name: "sequence_email_id", value: String(e.id) },
+                { name: "step", value: String(e.step) },
+              ],
+            });
+
+            await db.from("sequence_emails").update({
+              status: "sent",
+              sent_at: now,
+              message_id: messageId,
+              resend_email_id: resendEmailId,
+              updated_at: now,
+            }).eq("id", e.id);
+
+            sentByDealer.set(e.dealer_id, (sentByDealer.get(e.dealer_id) ?? 0) + 1);
+            sent++;
+          } catch (err: any) {
+            console.error("Resend send failed for sequence_email", e.id, err?.message);
+            await db.from("sequence_emails").update({
+              status: "failed",
+              updated_at: now,
+            }).eq("id", e.id);
+            failed++;
+          }
         }
 
         for (const [dealerId, count] of sentByDealer.entries()) {
-          await supabaseAdmin.from("activity_log").insert({
+          await db.from("activity_log").insert({
             dealer_id: dealerId, kind: "emails_sent", payload: { count },
           });
         }
 
-        // Auto-complete sequences with all emails sent/cancelled
-        const seqIds = Array.from(new Set((due ?? []).map((e) => e.sequence_id)));
+        // Auto-complete sequences with all emails sent/cancelled/failed
+        const seqIds = Array.from(new Set((due ?? []).map((e: any) => e.sequence_id)));
         for (const sid of seqIds) {
-          const { data: remaining } = await supabaseAdmin.from("sequence_emails").select("id").eq("sequence_id", sid).in("status", ["draft", "scheduled"]);
+          const { data: remaining } = await db.from("sequence_emails").select("id").eq("sequence_id", sid).in("status", ["draft", "scheduled"]);
           if (!remaining || remaining.length === 0) {
-            await supabaseAdmin.from("sequences").update({ status: "completed", updated_at: now }).eq("id", sid).eq("status", "active");
+            await db.from("sequences").update({ status: "completed", updated_at: now }).eq("id", sid).eq("status", "active");
           }
         }
 
-        return Response.json({ ok: true, sent: due?.length ?? 0 });
-
+        return Response.json({ ok: true, sent, failed });
       },
     },
   },

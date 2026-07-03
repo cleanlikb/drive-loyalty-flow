@@ -11,14 +11,26 @@ import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
-import { Check } from "lucide-react";
+import { Check, Mail, Info } from "lucide-react";
 import { FIELDS, guessMapping, Row, mapRows } from "@/lib/csv-import";
+
 
 export const Route = createFileRoute("/_authenticated/onboarding")({
   component: Onboarding,
 });
 
+function makeReplyAliasPreview(dealershipName: string): string {
+  const slug = dealershipName
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .replace(/-+/g, "-")
+    .slice(0, 30);
+  return `${slug || "your-dealer"}-abc123@reply.wynback.co.uk`;
+}
+
 function Onboarding() {
+
   const navigate = useNavigate();
   const qc = useQueryClient();
   const [step, setStep] = useState(0);
@@ -128,12 +140,24 @@ function Onboarding() {
               <Label>Salesperson name</Label>
               <Input value={salesperson} onChange={(e) => setSalesperson(e.target.value)} placeholder="James Whitfield" />
             </div>
+            <Card className="p-4 bg-muted/40 border-dashed">
+              <div className="flex items-start gap-3">
+                <div className="mt-0.5"><Mail className="h-4 w-4 text-primary" /></div>
+                <div className="space-y-1">
+                  <div className="text-sm font-medium flex items-center gap-1.5"><Info className="h-3.5 w-3.5 text-muted-foreground" /> Replies are captured automatically</div>
+                  <p className="text-sm text-muted-foreground">
+                    Customer replies go to a unique Wynback address like <code className="text-xs bg-muted px-1 py-0.5 rounded">{dealership ? makeReplyAliasPreview(dealership) : "your-dealer-abc123@reply.wynback.co.uk"}</code> and are forwarded straight to your inbox. No DNS changes needed.
+                  </p>
+                </div>
+              </div>
+            </Card>
             <div className="flex justify-between">
               <Button variant="ghost" onClick={() => setStep(0)}>Back</Button>
               <Button disabled={!salesperson.trim()} onClick={() => setStep(2)}>Continue</Button>
             </div>
           </div>
         )}
+
         {step === 2 && (
           <div className="space-y-4">
             <div>

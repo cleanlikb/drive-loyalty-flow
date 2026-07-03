@@ -368,9 +368,42 @@ export const startSequencesBulk = createServerFn({ method: "POST" })
 
 
 
-const dispatchEmail = async (supabase: any, email: any) => {
-  // ABSTRACTED DISPATCH — v1 marks sent. Replace with Resend/SMTP later.
-  await supabase.from("sequence_emails").update({ status: "sent", sent_at: new Date().toISOString() }).eq("id", email.id);
+const dispatchEmailViaResend = async (supabase: any, email: any) => {
+  const { generateReplyAlias, plainTextToHtml, replyToAddress, sendResendEmail } = await import("./resend.server");
+  const fromAddress = process.env.RESEND_FROM;
+  if (!fromAddress) throw new Error("RESEND_FROM not configured");
+
+  const { data: full } = await (supabase as any)
+    .from("sequence_emails")
+    .select("*, dealer:dealers(id, slug, dealership_name), customer:customers(id, name, email)")
+    .eq("id", email.id)
+    .single();
+
+  if (!full) throw new Error("Email not found");
+  if (!full.customer?.email) throw new Error("Customer has no email");
+
+  let alias = full.reply_alias;
+  if (!alias) {
+    if (!full.dealer?.slug) throw new Error("Dealer has no slug");
+    alias = generateReplyAlias(full.dealer.slug);
+    await supabase.from("sequence_emails").update({ reply_alias: alias }).eq("id", email.id);
+  }
+
+  const { resendEmailId, messageId } = await sendResendEmail({
+    to: full.customer.email,
+    from: `${full.dealer?.dealership_name ?? "Wynback"} <${fromAddress}>`,
+    subject: full.subject,
+    text: full.body,
+    html: plainTextToHtml(full.body),
+    replyTo: replyToAddress(alias),
+  });
+
+  await supabase.from("sequence_emails").update({
+    status: "sent",
+    sent_at: new Date().toISOString(),
+    message_id: messageId,
+    resend_email_id: resendEmailId,
+  }).eq("id", email.id);
 };
 
 export const dispatchDueEmails = createServerFn({ method: "POST" })
@@ -381,22 +414,31 @@ export const dispatchDueEmails = createServerFn({ method: "POST" })
     if (!dealer) throw new Error("Dealer not found");
     const { data: due } = await context.supabase
       .from("sequence_emails")
-      .select("*")
+      .select("id, sequence_id, dealer_id")
       .eq("dealer_id", dealer.id)
       .eq("status", "scheduled")
       .lte("scheduled_for", now);
     let sent = 0;
+    let failed = 0;
     for (const e of due ?? []) {
-      await dispatchEmail(context.supabase, e);
-      sent++;
+      try {
+        await dispatchEmailViaResend(context.supabase, e);
+        sent++;
+      } catch (err: any) {
+        console.error("Manual dispatch failed", e.id, err?.message);
+        await (context.supabase as any).from("sequence_emails").update({ status: "failed", updated_at: now }).eq("id", e.id);
+        failed++;
+      }
+
     }
     if (sent > 0) {
       await context.supabase.from("activity_log").insert({
         dealer_id: dealer.id, kind: "emails_sent", payload: { count: sent },
       });
     }
-    return { sent };
+    return { sent, failed };
   });
+
 
 
 export const logReply = createServerFn({ method: "POST" })

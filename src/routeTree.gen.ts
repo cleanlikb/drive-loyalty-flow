@@ -21,6 +21,7 @@ import { Route as AuthenticatedDashboardRouteImport } from './routes/_authentica
 import { Route as AuthenticatedCustomersRouteImport } from './routes/_authenticated/customers'
 import { Route as AuthenticatedSequencesIndexRouteImport } from './routes/_authenticated/sequences.index'
 import { Route as AuthenticatedSequencesIdRouteImport } from './routes/_authenticated/sequences.$id'
+import { Route as ApiPublicWebhooksResendRouteImport } from './routes/api/public/webhooks/resend'
 import { Route as ApiPublicWebhooksInboundReplyRouteImport } from './routes/api/public/webhooks/inbound-reply'
 import { Route as ApiPublicCronRescanRepliesRouteImport } from './routes/api/public/cron/rescan-replies'
 import { Route as ApiPublicCronMonthlyCohortRouteImport } from './routes/api/public/cron/monthly-cohort'
@@ -87,6 +88,11 @@ const AuthenticatedSequencesIdRoute =
     path: '/sequences/$id',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const ApiPublicWebhooksResendRoute = ApiPublicWebhooksResendRouteImport.update({
+  id: '/api/public/webhooks/resend',
+  path: '/api/public/webhooks/resend',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicWebhooksInboundReplyRoute =
   ApiPublicWebhooksInboundReplyRouteImport.update({
     id: '/api/public/webhooks/inbound-reply',
@@ -128,6 +134,7 @@ export interface FileRoutesByFullPath {
   '/api/public/cron/monthly-cohort': typeof ApiPublicCronMonthlyCohortRoute
   '/api/public/cron/rescan-replies': typeof ApiPublicCronRescanRepliesRoute
   '/api/public/webhooks/inbound-reply': typeof ApiPublicWebhooksInboundReplyRoute
+  '/api/public/webhooks/resend': typeof ApiPublicWebhooksResendRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -145,6 +152,7 @@ export interface FileRoutesByTo {
   '/api/public/cron/monthly-cohort': typeof ApiPublicCronMonthlyCohortRoute
   '/api/public/cron/rescan-replies': typeof ApiPublicCronRescanRepliesRoute
   '/api/public/webhooks/inbound-reply': typeof ApiPublicWebhooksInboundReplyRoute
+  '/api/public/webhooks/resend': typeof ApiPublicWebhooksResendRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -164,6 +172,7 @@ export interface FileRoutesById {
   '/api/public/cron/monthly-cohort': typeof ApiPublicCronMonthlyCohortRoute
   '/api/public/cron/rescan-replies': typeof ApiPublicCronRescanRepliesRoute
   '/api/public/webhooks/inbound-reply': typeof ApiPublicWebhooksInboundReplyRoute
+  '/api/public/webhooks/resend': typeof ApiPublicWebhooksResendRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -183,6 +192,7 @@ export interface FileRouteTypes {
     | '/api/public/cron/monthly-cohort'
     | '/api/public/cron/rescan-replies'
     | '/api/public/webhooks/inbound-reply'
+    | '/api/public/webhooks/resend'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -200,6 +210,7 @@ export interface FileRouteTypes {
     | '/api/public/cron/monthly-cohort'
     | '/api/public/cron/rescan-replies'
     | '/api/public/webhooks/inbound-reply'
+    | '/api/public/webhooks/resend'
   id:
     | '__root__'
     | '/'
@@ -218,6 +229,7 @@ export interface FileRouteTypes {
     | '/api/public/cron/monthly-cohort'
     | '/api/public/cron/rescan-replies'
     | '/api/public/webhooks/inbound-reply'
+    | '/api/public/webhooks/resend'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -229,6 +241,7 @@ export interface RootRouteChildren {
   ApiPublicCronMonthlyCohortRoute: typeof ApiPublicCronMonthlyCohortRoute
   ApiPublicCronRescanRepliesRoute: typeof ApiPublicCronRescanRepliesRoute
   ApiPublicWebhooksInboundReplyRoute: typeof ApiPublicWebhooksInboundReplyRoute
+  ApiPublicWebhooksResendRoute: typeof ApiPublicWebhooksResendRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -317,6 +330,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedSequencesIdRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/api/public/webhooks/resend': {
+      id: '/api/public/webhooks/resend'
+      path: '/api/public/webhooks/resend'
+      fullPath: '/api/public/webhooks/resend'
+      preLoaderRoute: typeof ApiPublicWebhooksResendRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/webhooks/inbound-reply': {
       id: '/api/public/webhooks/inbound-reply'
       path: '/api/public/webhooks/inbound-reply'
@@ -382,6 +402,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicCronMonthlyCohortRoute: ApiPublicCronMonthlyCohortRoute,
   ApiPublicCronRescanRepliesRoute: ApiPublicCronRescanRepliesRoute,
   ApiPublicWebhooksInboundReplyRoute: ApiPublicWebhooksInboundReplyRoute,
+  ApiPublicWebhooksResendRoute: ApiPublicWebhooksResendRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

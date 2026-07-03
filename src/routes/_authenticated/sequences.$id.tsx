@@ -11,11 +11,12 @@ import { StatusBadge } from "@/components/StatusBadge";
 import { formatDateTime, formatGbp, formatDate } from "@/lib/format";
 import { toast } from "sonner";
 import { useState } from "react";
-import { ArrowLeft, Sparkles } from "lucide-react";
+import { ArrowLeft, Sparkles, Eye, MousePointerClick, MessageSquare, Send } from "lucide-react";
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogTrigger,
 } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+
 
 export const Route = createFileRoute("/_authenticated/sequences/$id")({
   component: SequenceDetail,
@@ -43,11 +44,13 @@ function EmailCard({ e, seqType, onSave, onRegen }: { e: any; seqType: "trade_in
         </div>
         <div className="flex items-center gap-3">
           <StatusBadge status={e.status} />
+          {e.status === "sent" && <EngagementTimeline e={e} />}
           <span className="text-xs text-muted-foreground">
             {e.sent_at ? `Sent ${formatDateTime(e.sent_at)}` : e.scheduled_for ? `Scheduled ${formatDateTime(e.scheduled_for)}` : ""}
           </span>
         </div>
       </div>
+
       {editing ? (
         <div className="space-y-3">
           <div className="space-y-1.5"><Label>Subject</Label><Input value={subject} onChange={(ev) => setSubject(ev.target.value)} /></div>
@@ -129,7 +132,34 @@ function EmailCard({ e, seqType, onSave, onRegen }: { e: any; seqType: "trade_in
 }
 
 
+function EngagementTimeline({ e }: { e: any }) {
+  const nodes = [
+    { icon: Send, label: "Sent", active: !!e.sent_at, at: e.sent_at },
+    { icon: Eye, label: "Opened", active: !!e.opened_at, at: e.opened_at, count: e.open_count },
+    { icon: MousePointerClick, label: "Clicked", active: !!e.first_clicked_at, at: e.first_clicked_at, count: e.click_count },
+    { icon: MessageSquare, label: "Replied", active: !!e.replied_at, at: e.replied_at },
+  ];
+  return (
+    <div className="flex items-center gap-1" aria-label="Engagement timeline">
+      {nodes.map((n, i) => (
+        <div key={n.label} className="flex items-center">
+          <div
+            className={`flex items-center justify-center h-6 w-6 rounded-full border ${n.active ? "bg-primary/10 border-primary text-primary" : "bg-muted border-muted-foreground/20 text-muted-foreground/40"}`}
+            title={`${n.label}${n.at ? ` — ${formatDateTime(n.at)}` : ""}${n.count && n.count > 1 ? ` (${n.count} times)` : ""}`}
+          >
+            <n.icon className="h-3 w-3" />
+          </div>
+          {i < nodes.length - 1 && (
+            <div className={`w-3 h-px ${n.active ? "bg-primary/30" : "bg-muted-foreground/20"}`} />
+          )}
+        </div>
+      ))}
+    </div>
+  );
+}
+
 function SequenceDetail() {
+
   const { id } = Route.useParams();
   const navigate = useNavigate();
   const qc = useQueryClient();
