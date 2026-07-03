@@ -182,11 +182,23 @@ export async function findSequenceForInbound(
   const candidates = [args.inReplyTo, ...(args.references?.split(/\s+/) ?? [])].filter(Boolean) as string[];
   for (const mid of candidates) {
     const clean = mid.replace(/^<|>$/g, "");
-    const { data: em } = await supabase
+    const { data: exact } = await supabase
       .from("sequence_emails")
       .select("id, sequence_id")
-      .or(`message_id.eq.${clean},message_id.eq.<${clean}>,resend_email_id.eq.${clean}`)
+      .eq("message_id", clean)
       .limit(1);
+    const em = exact?.[0]
+      ? exact
+      : (await supabase
+        .from("sequence_emails")
+        .select("id, sequence_id")
+        .eq("message_id", `<${clean}>`)
+        .limit(1)).data
+        ?? (await supabase
+          .from("sequence_emails")
+          .select("id, sequence_id")
+          .eq("resend_email_id", clean)
+          .limit(1)).data;
     if (em?.[0]?.sequence_id) return { id: em[0].sequence_id, sequenceEmailId: em[0].id };
   }
 
