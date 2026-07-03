@@ -14,7 +14,7 @@ function monthsAgoAt(months: number, ref: Date = new Date()): { start: string; e
   return { start, end };
 }
 
-async function rebuildCohortInternal(supabase: any, dealerId: string) {
+async function rebuildCohortInternal(supabase: any, dealerId: string, milestoneMonths?: number[] | null) {
   const monthDate = firstOfMonth();
   const { data: existing } = await supabase.from("cohorts").select("id").eq("dealer_id", dealerId).eq("month", monthDate).maybeSingle();
   let cohortId = existing?.id;
