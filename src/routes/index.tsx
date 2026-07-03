@@ -258,27 +258,43 @@ function VideoSection() {
   );
 }
 
+function FounderSection() {
+  return (
+    <section className="py-20 bg-white border-t border-border/60">
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <span className="text-sm font-semibold text-primary uppercase tracking-wide">From the founder</span>
+        <h2 className="mt-3 text-3xl md:text-4xl font-semibold tracking-tight">
+          Built by someone who&apos;s stood on the forecourt, not just studied it.
+        </h2>
+        <p className="mt-6 text-lg text-muted-foreground leading-relaxed">
+          I spent 14 years in car sales — from sales executive to running my own dealership. I&apos;ve lived the problem Wynback solves: good customers slip away simply because no one followed up. That&apos;s why Wynback runs itself — because I know you don&apos;t have a spare afternoon a month to chase your own database.
+        </p>
+      </div>
+    </section>
+  );
+}
+
 function PainSection() {
   const pains = [
     {
       icon: Zap,
       title: "How many of last year’s buyers are due a new car right now — and don’t know you’re still here?",
-      body: "Most dealers pay auction fees and transport costs to source stock they've already sold once. Wynback puts you back in touch with the owner before they trade it elsewhere.",
+      body: "You’re paying auction fees and transport costs to source stock you’ve already sold once. Wynback puts you back in touch with the owner before they trade it elsewhere.",
     },
     {
       icon: Database,
       title: "If a customer’s ready to upgrade next month, who finds out first — you, or the dealer who emails them first?",
-      body: "Thousands of past buyers sit idle while you spend thousands on portals to find new ones. Past customers convert faster, trust you already, and cost almost nothing to reach.",
+      body: "Thousands of past buyers sit idle while you spend thousands on portals to find strangers. Past customers convert faster, trust you already, and cost almost nothing to reach.",
     },
     {
       icon: Users,
       title: "What’s it costing you to buy back at auction the same car you already sold once?",
-      body: "When a salesperson leaves, their contact book often leaves too. Wynback institutionalises the follow-up so your dealership owns the relationship, not the individual.",
+      body: "You already know its history, its condition, and its owner. Buying it back at auction means paying transport, auction fees, and a stranger’s premium for a car you could have sourced directly from someone who already trusts you.",
     },
     {
       icon: PenTool,
       title: "Your CRM has the data. When’s the last time it actually sold you a car?",
-      body: "Milestones pass, finance deals expire, and customers slip away. Wynback automates the timing and the copy so it happens without eating your day.",
+      body: "Milestones pass, finance deals expire, and customers quietly slip away. Wynback automates the timing and the copy so it happens without eating your day.",
     },
   ];
 
@@ -286,7 +302,7 @@ function PainSection() {
     <section className="py-24 bg-secondary/30">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="max-w-3xl mx-auto text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-semibold tracking-tight">Why most independent dealers are leaving money on the table</h2>
+          <h2 className="text-3xl md:text-4xl font-semibold tracking-tight">How many of last year’s buyers are due a new car right now — and don’t know you’re still here?</h2>
           <p className="mt-4 text-lg text-muted-foreground">Wynback fixes the four leaks that quietly drain profit from every dealership.</p>
         </div>
         <div className="grid md:grid-cols-2 gap-6">
