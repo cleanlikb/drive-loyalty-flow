@@ -83,6 +83,30 @@ export const deleteReply = createServerFn({ method: "POST" })
     return { ok: true };
   });
 
+export const deleteReplies = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) => z.object({ ids: z.array(z.string().uuid()).min(1).max(500) }).parse(d))
+  .handler(async ({ data, context }) => {
+    const { error } = await context.supabase.from("replies").delete().in("id", data.ids);
+    if (error) throw error;
+    return { ok: true, count: data.ids.length };
+  });
+
+export const markRepliesRead = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) => z.object({
+    ids: z.array(z.string().uuid()).min(1).max(500),
+    read: z.boolean().default(true),
+  }).parse(d))
+  .handler(async ({ data, context }) => {
+    const { error } = await context.supabase
+      .from("replies")
+      .update({ read_at: data.read ? new Date().toISOString() : null })
+      .in("id", data.ids);
+    if (error) throw error;
+    return { ok: true };
+  });
+
 export const sendReplyMessage = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) => z.object({
