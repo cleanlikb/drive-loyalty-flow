@@ -136,8 +136,9 @@ function Settings() {
 
 
       <div className="flex justify-end">
-        <Button onClick={() => mut.mutate()} disabled={mut.isPending}>{mut.isPending ? "Saving…" : "Save changes"}</Button>
+        <Button onClick={() => mut.mutate()} disabled={mut.isPending || form.milestone_months.length === 0}>{mut.isPending ? "Saving…" : "Save changes"}</Button>
       </div>
+
     </div>
   );
 }
