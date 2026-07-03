@@ -278,22 +278,22 @@ function PainSection() {
   const pains = [
     {
       icon: Zap,
-      title: "How many of last year’s buyers are due a new car right now — and don’t know you’re still here?",
-      body: "You’re paying auction fees and transport costs to source stock you’ve already sold once. Wynback puts you back in touch with the owner before they trade it elsewhere.",
+      title: "How many of last year's buyers are due a new car right now — and don't know you're still here?",
+      body: "They've had the car three years, made their final payment, and started browsing online — without a single email from you reminding them you're still there. Wynback reaches out automatically, before they start looking elsewhere.",
     },
     {
       icon: Database,
-      title: "If a customer’s ready to upgrade next month, who finds out first — you, or the dealer who emails them first?",
-      body: "Thousands of past buyers sit idle while you spend thousands on portals to find strangers. Past customers convert faster, trust you already, and cost almost nothing to reach.",
+      title: "If a customer's ready to upgrade next month, what do they do — search Autotrader, or think of you first?",
+      body: "Without a reminder, even a happy past customer just starts scrolling listings like a stranger would — despite already knowing and trusting you. Wynback puts you in their inbox before they open Autotrader.",
     },
     {
       icon: Users,
-      title: "What’s it costing you to buy back at auction the same car you already sold once?",
-      body: "You already know its history, its condition, and its owner. Buying it back at auction means paying transport, auction fees, and a stranger’s premium for a car you could have sourced directly from someone who already trusts you.",
+      title: "What's it costing you to buy back at auction the same car you already sold once?",
+      body: "You already know its history, its condition, and its owner. Instead of trading it in with you, they take it to We Buy Any Car — and you end up paying transport, auction fees, and a stranger's premium to buy back a car you could have sourced directly, for a fraction of the cost.",
     },
     {
       icon: PenTool,
-      title: "Your CRM has the data. When’s the last time it actually sold you a car?",
+      title: "Your CRM has the data. When's the last time it actually sold you a car?",
       body: "Milestones pass, finance deals expire, and customers quietly slip away. Wynback automates the timing and the copy so it happens without eating your day.",
     },
   ];
