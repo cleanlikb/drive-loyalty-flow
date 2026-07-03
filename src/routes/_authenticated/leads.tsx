@@ -33,6 +33,7 @@ function Leads() {
 
   const { data, isLoading } = useQuery({ queryKey: ["cohort"], queryFn: () => fetchCohort() });
   const [busy, setBusy] = useState(false);
+  const [sequenceType, setSequenceType] = useState<SequenceType>("trade_in");
 
   const generateLeads = useMutation({
     mutationFn: () => rebuild(),
@@ -73,7 +74,7 @@ function Leads() {
     if (selectedIds.length === 0) return;
     setBusy(true);
     try {
-      const r = await startSeq({ data: { cohortCustomerIds: selectedIds } });
+      const r = await startSeq({ data: { cohortCustomerIds: selectedIds, sequenceType } });
       toast.success(`${r.created} draft sequences generated — review and start them on the Sequences page`);
       qc.invalidateQueries();
       navigate({ to: "/sequences" });
@@ -122,14 +123,35 @@ function Leads() {
 
 
       {totalActive > 0 && (
-        <Card className="p-4 flex items-center gap-3 bg-accent/30">
-          <Checkbox
-            checked={selectedIds.length === totalActive}
-            onCheckedChange={(v) => toggleAll(Boolean(v))}
-          />
-          <span className="text-sm font-medium">Select all ({totalActive})</span>
+        <Card className="p-4 flex flex-col sm:flex-row sm:items-center gap-3 bg-accent/30">
+          <div className="flex items-center gap-3 flex-1">
+            <Checkbox
+              checked={selectedIds.length === totalActive}
+              onCheckedChange={(v) => toggleAll(Boolean(v))}
+            />
+            <span className="text-sm font-medium">Select all ({totalActive})</span>
+          </div>
+          <div className="flex items-center gap-2 sm:min-w-[320px]">
+            <span className="text-sm text-muted-foreground whitespace-nowrap">Sequence type</span>
+            <Select value={sequenceType} onValueChange={(v) => setSequenceType(v as SequenceType)}>
+              <SelectTrigger className="bg-background">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {SEQUENCE_TYPE_OPTIONS.map((o) => (
+                  <SelectItem key={o.value} value={o.value}>
+                    <div className="flex flex-col">
+                      <span className="font-medium">{o.label}</span>
+                      <span className="text-xs text-muted-foreground">{o.description}</span>
+                    </div>
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
         </Card>
       )}
+
 
       {MILESTONES.map((m) => {
         const rows = grouped[m] ?? [];
