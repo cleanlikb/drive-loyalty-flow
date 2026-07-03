@@ -94,7 +94,7 @@ function Leads() {
 
           <Button onClick={startForSelected} disabled={selectedIds.length === 0 || busy}>
             <Send className="h-4 w-4 mr-2" />
-            {busy ? "Generating…" : `Start sequences for selected (${selectedIds.length})`}
+            {busy ? "Generating…" : `Generate sequences for selected (${selectedIds.length})`}
           </Button>
         </div>
       </div>
