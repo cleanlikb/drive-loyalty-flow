@@ -36,7 +36,12 @@ function RepliesPage() {
   const qc = useQueryClient();
   const fetch = useServerFn(listReplies);
   const override = useServerFn(overrideReplyClassification);
-  const { data: replies = [], isLoading } = useQuery({ queryKey: ["replies"], queryFn: () => fetch() });
+  const { data: replies = [], isLoading } = useQuery({
+    queryKey: ["replies"],
+    queryFn: () => fetch(),
+    refetchInterval: 5000,
+    refetchOnWindowFocus: true,
+  });
 
   const mut = useMutation({
     mutationFn: (v: { id: string; classification: any }) => override({ data: v }),

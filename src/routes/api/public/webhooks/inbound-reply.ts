@@ -180,7 +180,7 @@ async function fetchReceivedEmail(id: string): Promise<any | null> {
     console.warn("[inbound-reply] missing LOVABLE_API_KEY or RESEND_API_KEY");
     return null;
   }
-  const res = await fetch(`https://connector-gateway.lovable.dev/resend/emails/received/${id}?html_format=data_uri`, {
+  const res = await fetch(`https://connector-gateway.lovable.dev/resend/emails/receiving/${id}?html_format=data_uri`, {
     headers: {
       Authorization: `Bearer ${lovableKey}`,
       "X-Connection-Api-Key": resendKey,
