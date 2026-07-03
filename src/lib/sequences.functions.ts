@@ -369,7 +369,7 @@ export const startSequencesBulk = createServerFn({ method: "POST" })
 
 
 const dispatchEmailViaResend = async (supabase: any, email: any) => {
-  const { generateReplyAlias, plainTextToHtml, replyToAddress, sendResendEmail } = await import("./resend.server");
+  const { plainTextToHtml, replyToAddress, sendResendEmail } = await import("./resend.server");
 
   const { data: full } = await (supabase as any)
     .from("sequence_emails")
