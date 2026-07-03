@@ -13,6 +13,7 @@ import { DEFAULT_MILESTONES } from "@/lib/format";
 import { X, CheckCircle2, AlertCircle } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 
 
 export const Route = createFileRoute("/_authenticated/settings")({
@@ -275,6 +276,15 @@ function SenderEmailCard({ dealer }: { dealer: any }) {
 
   const [email, setEmail] = useState("");
   const [result, setResult] = useState<null | { ok: boolean; message?: string; verifiedDomains?: string[] }>(null);
+  const [accountDomain, setAccountDomain] = useState<string | null>(null);
+
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data }) => {
+      const em = data.user?.email ?? "";
+      const dom = em.split("@")[1]?.toLowerCase() ?? null;
+      setAccountDomain(dom);
+    });
+  }, []);
 
   useEffect(() => {
     setEmail(dealer?.sender_email ?? "");
@@ -324,7 +334,7 @@ function SenderEmailCard({ dealer }: { dealer: any }) {
       <div>
         <h2 className="font-semibold">Sender email</h2>
         <p className="text-sm text-muted-foreground mt-1">
-          The address customers see in the From line. Must be on a domain verified with the email provider — sends are blocked until this is verified.
+          The address customers see in the From line. Must be on your own domain{accountDomain ? ` (${accountDomain} or a subdomain of it, e.g. sales@${accountDomain})` : ""} and verified with the email provider — sends are blocked until this is verified.
         </p>
       </div>
 

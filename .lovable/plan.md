@@ -1,90 +1,34 @@
-# Soldbook — Build Plan
+## Problem
 
-A UK dealership re-engagement SaaS. Full-stack on TanStack Start + Lovable Cloud (Supabase) + Lovable AI. Below is the shipping plan for v1.
+Right now, once a domain is verified in Resend (for any dealer), *any* dealer using Wynback could enter a sender address on that domain in Settings and start sending as it. Since all dealers share one Resend account, there's nothing tying the domain they claim to the domain they actually own.
 
-## Assumptions
-- Single-tenant per dealer account (one dealership per user, no team seats in v1).
-- Emails are "dispatched" via an abstracted function that just marks sent + timestamp (no Resend wired yet); dispatch function is structured so a provider can be plugged in later.
-- Stock URL scraping uses a generic HTML parser (cheerio-style regex + JSON-LD detection) inside a server function. Best-effort; CSV fallback always available.
-- Reply handling in v1 = manual "log reply" action, AI-classified. Structured so an inbound webhook route can replace it.
-- British English throughout, GBP.
+## Safety measure
 
-## Design system
-- Light B2B SaaS. Deep navy primary (`oklch(0.28 0.08 255)`), warm off-white background, subtle borders, one accent (amber for milestone badges by tier). Inter for body, tighter tracking on headings. No gradients, no purple. Strong tables with zebra + sticky headers.
-- Update `src/styles.css` tokens; add milestone badge variants (12/18/24/36/48/60) with distinct muted hues.
+Tie the sender domain to the domain of the dealer's own Wynback login email. A dealer signed in as `sarah@bbb.co.uk` can only save a sender address whose domain is `bbb.co.uk` or a subdomain of it (e.g. `sales@bbb.co.uk`, `noreply@mail.bbb.co.uk`). Any other domain is rejected up front, before we even check Resend.
 
-## Data model (Supabase)
-Tables (all with RLS scoped to `auth.uid()` via `dealer_id` FK → `dealers.user_id`; GRANTs to authenticated + service_role):
+This works because the login email is verified by Lovable Cloud auth (via magic link / OAuth), so we know the person controls that inbox. Free-mail domains (gmail, outlook, hotmail, yahoo, icloud, etc.) are blocked entirely — a `@gmail.com` dealer can't claim any domain this way and would need a manual/admin override.
 
-- `dealers` — user_id, dealership_name, salesperson_name, website_url, onboarded_at.
-- `customers` — dealer_id, name, email, vehicle_reg, make, model, trim, sale_date, sale_price, finance_type, finance_term_months, status enum (`active`, `no_longer_owns`, `unsubscribed`), last_contacted_at.
-- `stock` — dealer_id, make, model, year, trim, price, image_url, listing_url, source (`scrape`/`csv`), first_seen_at, last_seen_at, active.
-- `stock_syncs` — dealer_id, source_url, ran_at, items_found, status, error.
-- `cohorts` — dealer_id, month (date, 1st of month), created_at.
-- `cohort_customers` — cohort_id, customer_id, milestone_months, best_stock_id, match_score, match_reasons (jsonb), selected, sequence_id nullable.
-- `sequences` — dealer_id, customer_id, cohort_customer_id, stock_id, status (`drafting`, `scheduled`, `active`, `completed`, `stopped`, `paused_rematch`), started_at, stopped_reason.
-- `sequence_emails` — sequence_id, step (1/2/3), send_offset_days, subject, body, status (`draft`, `scheduled`, `sent`, `cancelled`), scheduled_for, sent_at.
-- `replies` — sequence_id, customer_id, raw_text, classification (`replied`, `no_longer_owns`, `unsubscribe`, `interested`), created_at.
-- `notifications` — dealer_id, kind, title, body, read_at, created_at.
-- `activity_log` — dealer_id, kind, payload jsonb, created_at.
+### Rules
 
-Trigger: on `auth.users` insert → create `dealers` row.
+1. Get the dealer's auth email from the session (`context.claims.email` — server-side, not client input).
+2. Reject if that email is on a public/free-mail domain from a small blocklist.
+3. Extract the dealer domain (e.g. `bbb.co.uk`).
+4. Accept the sender address only if its domain equals the dealer domain or ends with `.<dealer domain>`.
+5. Only after that passes, run the existing Resend "is this domain verified?" check and save.
 
-## Server functions & routes
-Client-safe `.functions.ts` under `src/lib/`:
-- `onboarding.functions.ts` — save wizard, ingest customers CSV with column mapping.
-- `stock.functions.ts` — save stock URL, trigger scrape, upload CSV, list stock.
-- `cohorts.functions.ts` — build current cohort, list cohorts, toggle selection.
-- `sequences.functions.ts` — start sequences for selected (calls AI), list, get, update draft, stop, log reply (with AI classification).
-- `dashboard.functions.ts` — stats + activity feed.
-- `notifications.functions.ts` — list, mark read.
+### Where the check goes
 
-Public/cron server routes under `src/routes/api/public/`:
-- `cron/monthly-cohort.ts` — HMAC-verified; runs 1st of month, rebuilds cohorts + notifications for every dealer.
-- `cron/stock-refresh.ts` — daily; re-scrapes each dealer's saved stock URL.
-- `cron/dispatch-emails.ts` — every 15 min; sends `scheduled` emails whose time is due (marks sent).
-- `webhooks/inbound-reply.ts` — placeholder route for future email provider webhooks.
+- **`src/lib/sender.functions.ts` → `verifySenderEmail`**: add the new check before the existing `fetchVerifiedDomains()` call. Return a clear error like *"You can only send from an address on bbb.co.uk — sarah@bbb.co.uk isn't allowed to send as @ccc.co.uk."*
+- **`src/routes/_authenticated/settings.tsx`**: surface the same rule as helper text under the sender-email field ("Must be on your own domain, e.g. …@bbb.co.uk") and show the server error inline.
+- **Optional hardening**: same check in the cron dispatcher before sending, so an already-saved-but-now-invalid `sender_email` can't sneak through if we ever loosen things later.
 
-AI (Lovable AI Gateway, `google/gemini-3-flash-preview`) in a `.server.ts` helper:
-- `generateSequence(customer, stockMatch, dealer)` → 3 emails with strict rule: prices/specs/dates injected verbatim as template placeholders the AI must copy, validated post-generation (regex-check that quoted price matches stock price).
-- `classifyReply(text)` → one of the 4 classes + confidence.
+### Edge cases
 
-## UI routes (under `_authenticated/`)
-- `/onboarding` — 4-step wizard (dealership → salesperson/site → CSV upload → column mapping preview → confirm).
-- `/` (dashboard) — stats cards + activity feed + "View this month's leads" CTA.
-- `/leads` — current cohort grouped by milestone; select-all, per-milestone select, bulk start.
-- `/stock` — table + "Sync now", add URL, upload CSV.
-- `/sequences` — list active + completed; row → detail.
-- `/sequences/$id` — 3-email timeline, editable drafts, stop button, log-reply action.
-- `/customers` — full list, filter, per-customer detail with history + flags.
-- `/settings` — dealership + salesperson + website.
-- `/auth` — email/password sign in + sign up (public route).
+- Dealer signs up with `@gmail.com` → we tell them they need to sign in with a business email before connecting a sender domain, or contact support for a manual override.
+- Dealer legitimately owns multiple brands on different domains → out of scope for this change; they'd need a manual override / admin flag.
+- Subdomains like `notify.bbb.co.uk` are allowed because they're under the same registered domain.
 
-## Seed data
-Migration inserts, for a special demo dealer created on first signup OR via a "Load demo data" button on empty dashboard (button preferred so it's per-user):
-- 20 UK customers spanning the 6 milestone anchors for current month.
-- 10 stock vehicles (mix of exact upgrades, similar models, mismatches).
-- 1 active sequence mid-flight (email 1 sent, email 2 scheduled).
-- 1 customer flagged `no_longer_owns`.
-- 1 unread notification.
+## Not in scope
 
-## Build order (single pass)
-1. Enable Lovable Cloud.
-2. Migration: enums, all tables, GRANTs, RLS, signup trigger.
-3. Design tokens in `styles.css`, shared layout shell (sidebar nav, top bar with notifications bell).
-4. Auth pages + `_authenticated` gate is integration-managed.
-5. Onboarding wizard + CSV parsing (papaparse) + column mapping.
-6. Stock ingestion (URL + CSV) + stock page.
-7. Cohort builder logic + Leads page.
-8. Matching algorithm (pure TS in `.server.ts`).
-9. AI sequence generation + Sequences pages + reply logging with AI classify.
-10. Dashboard + notifications.
-11. Cron routes + `CRON_SECRET`.
-12. "Load demo data" server fn + button.
-
-## Out of scope for v1 (explicit)
-- Real email sending (Resend hookup) — abstracted dispatcher only.
-- Real inbound email webhook — route stub only.
-- Multi-user teams, billing, custom domains.
-
-Shall I proceed with this plan?
+- Full public-suffix-list parsing (e.g. distinguishing `bbb.co.uk` from `co.uk`). A simple "same domain or ends with `.<domain>`" check plus the free-mail blocklist covers ~all real cases and is much simpler. If needed later we can add `psl` as a dependency.
+- Multi-tenant Resend accounts (one Resend account per dealer). That's a bigger architectural change; this domain check is the lightweight safeguard for the current shared setup.

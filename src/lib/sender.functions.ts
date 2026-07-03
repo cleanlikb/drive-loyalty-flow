@@ -55,6 +55,22 @@ export const listVerifiedSenderDomains = createServerFn({ method: "GET" })
     return await fetchVerifiedDomains();
   });
 
+const FREE_MAIL_DOMAINS = new Set([
+  "gmail.com", "googlemail.com",
+  "outlook.com", "hotmail.com", "hotmail.co.uk", "live.com", "live.co.uk", "msn.com",
+  "yahoo.com", "yahoo.co.uk", "ymail.com",
+  "icloud.com", "me.com", "mac.com",
+  "aol.com", "aol.co.uk",
+  "proton.me", "protonmail.com",
+  "gmx.com", "gmx.co.uk",
+  "mail.com", "zoho.com", "yandex.com", "fastmail.com",
+  "btinternet.com", "sky.com", "virginmedia.com", "talktalk.net", "ntlworld.com", "tiscali.co.uk",
+]);
+
+function domainMatches(senderDomain: string, dealerDomain: string): boolean {
+  return senderDomain === dealerDomain || senderDomain.endsWith("." + dealerDomain);
+}
+
 export const verifySenderEmail = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) =>
@@ -66,10 +82,38 @@ export const verifySenderEmail = createServerFn({ method: "POST" })
       return { ok: false as const, reason: "invalid_format", message: "Enter a valid email address (e.g. hello@yourdomain.com)." };
     }
     const domain = email.split("@")[1];
+
+    // Domain-ownership guard: the sender address must be on the same domain
+    // (or a subdomain of) the dealer's own signed-in account email.
+    const authEmail = String((context.claims as any)?.email ?? "").trim().toLowerCase();
+    const authDomain = authEmail.split("@")[1] ?? "";
+    if (!authEmail || !authDomain) {
+      return {
+        ok: false as const,
+        reason: "no_account_email",
+        message: "We couldn't read your account email. Please sign out and back in, then try again.",
+      };
+    }
+    if (FREE_MAIL_DOMAINS.has(authDomain)) {
+      return {
+        ok: false as const,
+        reason: "free_mail_account",
+        message: `Your account uses a personal email domain (${authDomain}), so we can't verify you own a sending domain. Sign in with your business email (e.g. you@${domain}) before connecting a sender address, or contact support for a manual override.`,
+      };
+    }
+    if (!domainMatches(domain, authDomain)) {
+      return {
+        ok: false as const,
+        reason: "domain_mismatch",
+        message: `You can only send from an address on ${authDomain} (or a subdomain of it). ${authEmail} isn't allowed to send as @${domain}.`,
+      };
+    }
+
     const result = await fetchVerifiedDomains();
     if (!result.ok) {
       return { ok: false as const, reason: "provider_error", message: result.error };
     }
+
 
     // When the provider key can't list domains (restricted key), trust the
     // user's input — sends will surface any Resend-side error clearly.
