@@ -32,7 +32,9 @@ function Leads() {
   const toggle = useServerFn(toggleCohortSelection);
   const startSeq = useServerFn(startSequencesForSelected);
 
+  const fetchPast = useServerFn(getPastCohorts);
   const { data, isLoading } = useQuery({ queryKey: ["cohort"], queryFn: () => fetchCohort() });
+  const { data: pastData } = useQuery({ queryKey: ["cohort-past"], queryFn: () => fetchPast() });
   const [busy, setBusy] = useState(false);
   const [sequenceType, setSequenceType] = useState<SequenceType>("trade_in");
 
