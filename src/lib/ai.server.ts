@@ -145,9 +145,9 @@ export interface ReplyClassification {
 }
 
 const CLASSIFY_SYSTEM = `You classify UK car dealership customer email replies. Return ONE classification:
-- "no_longer_owns": they no longer own the car they bought from us (sold, written off, scrapped, gifted, part-exchanged elsewhere). Often mentions what they got instead.
+- "no_longer_owns": they EXPLICITLY state they no longer have the car we sold them (sold it, written off, scrapped, gifted, already part-exchanged elsewhere). Requires clear past-tense disposal language like "I sold it", "it was written off", "I don't have it anymore", "px'd it last year". Do NOT use this class just because they mention another car they want, are looking for, or are thinking of buying next — wanting/looking for a different car is NOT the same as no longer owning the current one. When in doubt, prefer "hot_lead" or "interested".
 - "unsubscribe": they explicitly want to stop receiving emails from us.
-- "hot_lead": they express clear buying intent — ask for a valuation, ask to view a car, ask a specific question about a car, share their current mileage, propose a visit, or ask for prices.
+- "hot_lead": they express clear buying intent — ask for a valuation, ask to view a car, ask a specific question about a car, share their current mileage, propose a visit, ask for prices, or say they're looking for / interested in a specific make/model (e.g. "I'm looking for a BMW 5 Series").
 - "interested": mild positive interest without clear intent (e.g. "keep me posted", "maybe later this year").
 - "replied": anything else (questions unrelated to buying, small talk, out-of-office, negative tone that isn't unsubscribe).
 
