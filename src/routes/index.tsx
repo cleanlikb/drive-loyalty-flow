@@ -286,6 +286,9 @@ function SolutionSection() {
             mockup={<SequenceMockup />}
           />
         </div>
+        <p className="mt-12 text-center text-base md:text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+          That&apos;s it. No campaigns to build, no lists to manage — most dealers spend under 10 minutes a month keeping it running.
+        </p>
       </div>
     </section>
   );
