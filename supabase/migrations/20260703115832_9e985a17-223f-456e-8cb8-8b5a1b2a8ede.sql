@@ -1,0 +1,1 @@
+ALTER TABLE public.sequences ADD COLUMN IF NOT EXISTS sequence_type text NOT NULL DEFAULT 'trade_in';

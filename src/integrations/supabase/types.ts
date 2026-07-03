@@ -426,6 +426,7 @@ export type Database = {
           customer_id: string
           dealer_id: string
           id: string
+          sequence_type: string
           started_at: string
           status: Database["public"]["Enums"]["sequence_status"]
           stopped_reason: string | null
@@ -436,6 +437,7 @@ export type Database = {
           customer_id: string
           dealer_id: string
           id?: string
+          sequence_type?: string
           started_at?: string
           status?: Database["public"]["Enums"]["sequence_status"]
           stopped_reason?: string | null
@@ -446,6 +448,7 @@ export type Database = {
           customer_id?: string
           dealer_id?: string
           id?: string
+          sequence_type?: string
           started_at?: string
           status?: Database["public"]["Enums"]["sequence_status"]
           stopped_reason?: string | null
