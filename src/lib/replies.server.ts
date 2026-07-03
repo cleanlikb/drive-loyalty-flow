@@ -197,17 +197,40 @@ export const findActiveSequenceByEmail = async (supabase: any, email: string) =>
   findSequenceForInbound(supabase, { fromEmail: email });
 
 // -----------------------------------------------------------------------------
-// Forwarding — best-effort. Uses Resend if RESEND_API_KEY + RESEND_FROM are set.
-// Otherwise logs and returns.
+// Forwarding — best-effort. Uses Resend if RESEND_API_KEY + a sender are set.
 // -----------------------------------------------------------------------------
-async function forwardReply(args: { to: string; fromLabel: string; subject: string; text: string }) {
+function sanitizeLabel(s: string): string {
+  return s.replace(/[<>"\r\n]/g, "").replace(/\s+/g, " ").trim().slice(0, 60) || "Wynback";
+}
+
+async function forwardReply(args: {
+  to: string;
+  fromLabel: string;
+  fromAddress: string;
+  subject: string;
+  text: string;
+  replyTo?: string | null;
+}) {
   const lovableKey = process.env.LOVABLE_API_KEY;
   const resendKey = process.env.RESEND_API_KEY;
-  const from = process.env.RESEND_FROM;
-  if (!lovableKey || !resendKey || !from) {
-    console.log("[forwardReply] skipped — RESEND_FROM not set", { to: args.to });
+  if (!lovableKey || !resendKey) {
+    console.log("[forwardReply] skipped — missing API keys");
     return;
   }
+  if (!args.fromAddress) {
+    console.log("[forwardReply] skipped — no verified sender configured");
+    return;
+  }
+  const label = sanitizeLabel(args.fromLabel);
+  const from = `${label} <${args.fromAddress}>`;
+  const body: any = {
+    from,
+    to: [args.to],
+    subject: args.subject.replace(/[\r\n]/g, " ").slice(0, 300),
+    text: args.text,
+  };
+  if (args.replyTo) body.reply_to = args.replyTo;
+
   const res = await fetch("https://connector-gateway.lovable.dev/resend/emails", {
     method: "POST",
     headers: {
@@ -215,12 +238,7 @@ async function forwardReply(args: { to: string; fromLabel: string; subject: stri
       "X-Connection-Api-Key": resendKey,
       "content-type": "application/json",
     },
-    body: JSON.stringify({
-      from: `${args.fromLabel} <${from}>`,
-      to: [args.to],
-      subject: args.subject,
-      text: args.text,
-    }),
+    body: JSON.stringify(body),
   });
   if (!res.ok) throw new Error(`Resend ${res.status}: ${await res.text()}`);
 }
