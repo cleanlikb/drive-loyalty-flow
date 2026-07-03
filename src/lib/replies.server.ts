@@ -197,15 +197,20 @@ export const findActiveSequenceByEmail = async (supabase: any, email: string) =>
 // Otherwise logs and returns.
 // -----------------------------------------------------------------------------
 async function forwardReply(args: { to: string; fromLabel: string; subject: string; text: string }) {
-  const key = process.env.RESEND_API_KEY;
+  const lovableKey = process.env.LOVABLE_API_KEY;
+  const resendKey = process.env.RESEND_API_KEY;
   const from = process.env.RESEND_FROM;
-  if (!key || !from) {
-    console.log("[forwardReply] skipped — RESEND_API_KEY/RESEND_FROM not set", { to: args.to });
+  if (!lovableKey || !resendKey || !from) {
+    console.log("[forwardReply] skipped — RESEND_FROM not set", { to: args.to });
     return;
   }
-  const res = await fetch("https://api.resend.com/emails", {
+  const res = await fetch("https://connector-gateway.lovable.dev/resend/emails", {
     method: "POST",
-    headers: { Authorization: `Bearer ${key}`, "content-type": "application/json" },
+    headers: {
+      Authorization: `Bearer ${lovableKey}`,
+      "X-Connection-Api-Key": resendKey,
+      "content-type": "application/json",
+    },
     body: JSON.stringify({
       from: `${args.fromLabel} <${from}>`,
       to: [args.to],
