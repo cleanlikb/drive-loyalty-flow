@@ -83,6 +83,11 @@ function Header({
         <nav className="hidden md:flex items-center gap-1">
           <NavLink href="#how-it-works">How it works</NavLink>
           <NavLink href="#benefits">Benefits</NavLink>
+          <NavLink href="#pricing">Pricing</NavLink>
+          <NavLink href="#calculator">ROI calculator</NavLink>
+          <Link to="/contact" className="px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground rounded-md transition-colors">
+            Contact
+          </Link>
           <Link to="/auth" className="ml-2">
             <Button variant="ghost" size="sm">Sign in</Button>
           </Link>
@@ -104,6 +109,11 @@ function Header({
         <div className="md:hidden border-t border-border bg-card px-4 py-4 flex flex-col gap-2">
           <MobileNavLink href="#how-it-works" onClick={() => setMobileOpen(false)}>How it works</MobileNavLink>
           <MobileNavLink href="#benefits" onClick={() => setMobileOpen(false)}>Benefits</MobileNavLink>
+          <MobileNavLink href="#pricing" onClick={() => setMobileOpen(false)}>Pricing</MobileNavLink>
+          <MobileNavLink href="#calculator" onClick={() => setMobileOpen(false)}>ROI calculator</MobileNavLink>
+          <Link to="/contact" onClick={() => setMobileOpen(false)} className="px-3 py-2.5 text-base font-medium text-foreground hover:bg-accent rounded-md transition-colors">
+            Contact
+          </Link>
           <Link to="/auth" onClick={() => setMobileOpen(false)} className="mt-2">
             <Button className="w-full" size="lg">Get started</Button>
           </Link>
@@ -166,12 +176,12 @@ function HeroSection() {
         <div className="mt-9 flex flex-col sm:flex-row items-center justify-center gap-4">
           <Button asChild size="lg" className="h-12 px-8 text-base bg-white text-primary hover:bg-white/90 shadow-lg shadow-black/10 hover:shadow-black/20 transition-shadow">
             <Link to="/auth">
-              Start your free account
+              Get started
               <ArrowRight className="h-4 w-4" />
             </Link>
           </Button>
         </div>
-        <p className="mt-3 text-sm text-white/70">No credit card required</p>
+        <p className="mt-3 text-sm text-white/70">No setup fees</p>
       </div>
     </section>
   );
@@ -553,12 +563,12 @@ function FinalCTASection() {
             <div className="mt-9 flex flex-col sm:flex-row items-center justify-center gap-4">
               <Button asChild size="lg" className="h-12 px-8 text-base shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-shadow">
                 <Link to="/auth">
-                  Start your free account
+                  Get started
                   <ArrowRight className="h-4 w-4" />
                 </Link>
               </Button>
             </div>
-            <p className="mt-3 text-sm text-muted-foreground">No credit card required</p>
+            <p className="mt-3 text-sm text-muted-foreground">No setup fees</p>
           </div>
         </div>
       </div>
