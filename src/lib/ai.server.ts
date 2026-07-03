@@ -127,10 +127,13 @@ Rewrite email step ${input.step}. Brief: ${stepBrief}
 ${input.currentSubject ? `Current subject (avoid repeating verbatim): ${input.currentSubject}` : ""}
 ${input.instruction ? `Extra instruction from the dealer: ${input.instruction}` : "Produce a fresh variation with different wording and angle."}
 
-Remember: under 100 words, 2-4 short paragraphs separated by blank lines, soft CTA on its own line.`;
+Remember: under 100 words, greeting on its own line then a blank line, 2-4 short paragraphs separated by blank lines, soft CTA on its own line.`;
 
-  return await chatJson<GeneratedEmail>({ system: SINGLE_SYSTEM, user });
+  const out = await chatJson<GeneratedEmail>({ system: SINGLE_SYSTEM, user });
+  out.body = normaliseBody(out.body);
+  return out;
 }
+
 
 export type ReplyClass = "replied" | "no_longer_owns" | "unsubscribe" | "interested" | "hot_lead";
 
