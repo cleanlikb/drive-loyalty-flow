@@ -166,12 +166,12 @@ function HeroSection() {
         <div className="mt-9 flex flex-col sm:flex-row items-center justify-center gap-4">
           <Button asChild size="lg" className="h-12 px-8 text-base bg-white text-primary hover:bg-white/90 shadow-lg shadow-black/10 hover:shadow-black/20 transition-shadow">
             <Link to="/auth">
-              Start your free account
+              Get started
               <ArrowRight className="h-4 w-4" />
             </Link>
           </Button>
         </div>
-        <p className="mt-3 text-sm text-white/70">No credit card required</p>
+        <p className="mt-3 text-sm text-white/70">No setup fees</p>
       </div>
     </section>
   );
