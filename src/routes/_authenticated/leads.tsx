@@ -27,11 +27,12 @@ function Leads() {
   const { data, isLoading } = useQuery({ queryKey: ["cohort"], queryFn: () => fetchCohort() });
   const [busy, setBusy] = useState(false);
 
-  const rebuildMut = useMutation({
+  const generateLeads = useMutation({
     mutationFn: () => rebuild(),
-    onSuccess: (r) => { toast.success(`Cohort rebuilt — ${r.added} leads`); qc.invalidateQueries({ queryKey: ["cohort"] }); qc.invalidateQueries({ queryKey: ["dashboard"] }); },
+    onSuccess: (r) => { toast.success(`Leads generated — ${r.added} leads`); qc.invalidateQueries({ queryKey: ["cohort"] }); qc.invalidateQueries({ queryKey: ["dashboard"] }); },
     onError: (e: any) => toast.error(e?.message ?? "Failed"),
   });
+
 
   const grouped = useMemo(() => {
     const rows = data?.rows ?? [];
@@ -86,10 +87,11 @@ function Leads() {
           </p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" onClick={() => rebuildMut.mutate()} disabled={rebuildMut.isPending}>
-            <RefreshCw className={`h-4 w-4 mr-2 ${rebuildMut.isPending ? "animate-spin" : ""}`} />
-            Rebuild
+          <Button variant="outline" onClick={() => generateLeads.mutate()} disabled={generateLeads.isPending}>
+            <RefreshCw className={`h-4 w-4 mr-2 ${generateLeads.isPending ? "animate-spin" : ""}`} />
+            Generate leads
           </Button>
+
           <Button onClick={startForSelected} disabled={selectedIds.length === 0 || busy}>
             <Send className="h-4 w-4 mr-2" />
             {busy ? "Generating…" : `Start sequences for selected (${selectedIds.length})`}
@@ -99,11 +101,18 @@ function Leads() {
 
       {!isLoading && totalActive === 0 && (
         <Card className="p-8 text-center">
-          <p className="text-sm text-muted-foreground">
-            No cohort yet for this month. Import customers, then hit Rebuild.
-          </p>
+          {(data?.rows?.length ?? 0) === 0 ? (
+            <p className="text-sm text-muted-foreground">
+              No leads found for this month yet. Click <strong>Generate leads</strong> to find customers whose purchase anniversary falls this month.
+            </p>
+          ) : (
+            <p className="text-sm text-muted-foreground">
+              All available leads for this month have already had sequences started.
+            </p>
+          )}
         </Card>
       )}
+
 
       {totalActive > 0 && (
         <Card className="p-4 flex items-center gap-3 bg-accent/30">
