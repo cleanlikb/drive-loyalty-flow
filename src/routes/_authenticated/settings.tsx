@@ -105,6 +105,36 @@ function Settings() {
         </div>
       </Card>
 
+      <Card className="p-6 space-y-4">
+        <div>
+          <h2 className="font-semibold">Lead intervals</h2>
+          <p className="text-sm text-muted-foreground mt-1">
+            Choose which ownership anniversaries (in months since purchase) trigger new leads each month.
+          </p>
+        </div>
+        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2">
+          {AVAILABLE_MILESTONES.map((m) => {
+            const active = form.milestone_months.includes(m);
+            return (
+              <label
+                key={m}
+                className={`flex items-center gap-2 rounded-md border px-3 py-2 text-sm cursor-pointer transition ${active ? "bg-primary/10 border-primary/40 text-primary" : "hover:bg-accent/40"}`}
+              >
+                <Checkbox
+                  checked={active}
+                  onCheckedChange={(v) => toggleMilestone(m, Boolean(v))}
+                />
+                <span>{m} mo</span>
+              </label>
+            );
+          })}
+        </div>
+        {form.milestone_months.length === 0 && (
+          <p className="text-xs text-destructive">Select at least one interval.</p>
+        )}
+      </Card>
+
+
       <div className="flex justify-end">
         <Button onClick={() => mut.mutate()} disabled={mut.isPending}>{mut.isPending ? "Saving…" : "Save changes"}</Button>
       </div>
