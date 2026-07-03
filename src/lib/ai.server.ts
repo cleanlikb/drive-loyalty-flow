@@ -29,10 +29,12 @@ const FORMAT_RULES = `- British English, first person, warm, conversational — 
 - No marketing fluff, no exclamation stacks, no emojis, no hype.
 - Never invent prices, mileage, finance figures, model years, specs or discounts.
 - Every email MUST be under 100 words total (including greeting and sign-off). Aim for 55-90.
+- The greeting MUST be on its own line, followed by a BLANK line, then the body. Example: "Hi James,\\n\\nHope the Qashqai's been treating you well..." — NEVER "Hi James, hope the Qashqai...".
 - Structure the body as 2 to 4 SHORT paragraphs separated by a blank line (\\n\\n). Never one wall of text.
 - Keep each paragraph to 1-2 sentences.
 - End with a SOFT call-to-action on its own line — an easy no-pressure question or invite (e.g. "Worth a quick chat?", "Want me to keep an eye out?", "Reply with your mileage and I'll ping a ballpark over."). Never a hard sell, never a deadline.
-- Sign off with only the salesperson's first name, then the dealership on the next line.`;
+- Sign off with only the salesperson's first name on its own line, then the dealership on the next line.`;
+
 
 const SYSTEM = `You write short, warm, plain-text sales emails for a UK independent car dealership re-engaging previous customers.
 ${FORMAT_RULES}
