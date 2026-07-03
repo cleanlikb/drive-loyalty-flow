@@ -43,13 +43,26 @@ function Settings() {
     });
   }, [data]);
 
-  function toggleMilestone(m: number, on: boolean) {
+  const [customValue, setCustomValue] = useState("");
+
+  function removeMilestone(m: number) {
+    setForm((f) => ({ ...f, milestone_months: f.milestone_months.filter((x) => x !== m) }));
+  }
+  function addMilestone(n: number) {
+    if (!Number.isFinite(n) || n < 1 || n > 240) return;
     setForm((f) => {
-      const set = new Set(f.milestone_months);
-      if (on) set.add(m); else set.delete(m);
-      return { ...f, milestone_months: Array.from(set).sort((a, b) => a - b) };
+      if (f.milestone_months.includes(n)) return f;
+      return { ...f, milestone_months: [...f.milestone_months, n].sort((a, b) => a - b) };
     });
   }
+  function addFromInput() {
+    const n = parseInt(customValue, 10);
+    if (Number.isNaN(n)) return;
+    addMilestone(n);
+    setCustomValue("");
+  }
+  const QUICK_ADDS = [3, 6, 9, 12, 18, 24, 30, 33, 36, 42, 48, 60];
+
 
 
   const mut = useMutation({
