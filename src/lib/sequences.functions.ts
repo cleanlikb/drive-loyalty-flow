@@ -145,7 +145,7 @@ export const startSequencesForSelected = createServerFn({ method: "POST" })
           dealer_id: dealer.id,
           customer_id: c.id,
           cohort_customer_id: row.id,
-          status: "active",
+          status: "drafting",
           started_at: now.toISOString(),
         }).select("id").single();
         if (seqErr) throw seqErr;
@@ -162,11 +162,12 @@ export const startSequencesForSelected = createServerFn({ method: "POST" })
           send_offset_days: e.offset,
           subject: e.subject,
           body: e.body,
-          status: e.step === 1 ? "scheduled" as const : "scheduled" as const,
-          scheduled_for: addDays(now, e.offset).toISOString(),
+          status: "draft" as const,
+          scheduled_for: null,
         }));
         await context.supabase.from("sequence_emails").insert(emailRows);
         await context.supabase.from("cohort_customers").update({ sequence_id: seqRow.id, selected: false }).eq("id", row.id);
+
         await context.supabase.from("customers").update({ last_contacted_at: now.toISOString() }).eq("id", c.id);
         created++;
       } catch (e) {
