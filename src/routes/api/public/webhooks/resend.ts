@@ -57,8 +57,8 @@ export const Route = createFileRoute("/api/public/webhooks/resend")({
             .filter(Boolean)
             .map((v: any) => (typeof v === "string" ? v : v?.address ?? ""))
             .filter(Boolean);
-          const fromEmail = extractEmail(typeof data?.from === "string" ? data.from : data?.from?.address ?? "");
-          const subject = data?.subject ?? null;
+          let fromEmail = extractEmail(typeof data?.from === "string" ? data.from : data?.from?.address ?? "");
+          let subject = data?.subject ?? null;
           const receivedId: string | null = data?.id ?? data?.email_id ?? null;
 
           // Resend's received-email webhook is metadata-only; fetch the message body separately.
@@ -72,6 +72,8 @@ export const Route = createFileRoute("/api/public/webhooks/resend")({
                 text = extractBodyText(body);
                 headers = body.headers ?? headers;
                 messageId = body.message_id ?? messageId;
+                if (!fromEmail) fromEmail = extractEmail(typeof body?.from === "string" ? body.from : body?.from?.address ?? "");
+                subject = subject ?? body?.subject ?? null;
               }
             } catch (e) {
               console.error("Resend inbound body fetch failed", e);
@@ -123,11 +125,16 @@ export const Route = createFileRoute("/api/public/webhooks/resend")({
               fromEmail,
               inReplyTo,
               references: headerVal(headers, "References"),
+              subject,
             });
-            if (seq?.id) sequenceId = seq.id;
+            if (seq?.id) {
+              sequenceId = seq.id;
+              sequenceEmailId = seq.sequenceEmailId ?? sequenceEmailId;
+            }
           }
 
           if (!sequenceId) {
+            console.warn("Resend inbound reply skipped: no sequence match", { fromEmail, subject, inReplyTo });
             return Response.json({ ok: true, skipped: "no_sequence", fromEmail }, { status: 200 });
           }
 
@@ -228,8 +235,8 @@ function headerVal(headers: any, name: string): string | null {
   if (!headers) return null;
   if (Array.isArray(headers)) {
     const h = headers.find((h: any) => (h?.Name ?? h?.name)?.toLowerCase() === name.toLowerCase());
-    return h?.Value ?? h?.value ?? null;
+    return cleanId(h?.Value ?? h?.value ?? null);
   }
-  if (typeof headers === "object") return headers[name] ?? headers[name.toLowerCase()] ?? null;
+  if (typeof headers === "object") return cleanId(headers[name] ?? headers[name.toLowerCase()] ?? null);
   return null;
 }
