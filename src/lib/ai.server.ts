@@ -79,10 +79,29 @@ Write three emails in this angle:
 - Email 2 — ${b.two}
 - Email 3 — ${b.three}
 
-Remember: under 100 words each, 2-4 short paragraphs separated by blank lines, soft CTA on its own line.`;
+Remember: under 100 words each, greeting on its own line then a blank line, 2-4 short paragraphs separated by blank lines, soft CTA on its own line.`;
 
-  return await chatJson<GeneratedSequence>({ system: SYSTEM, user });
+  const out = await chatJson<GeneratedSequence>({ system: SYSTEM, user });
+  out.email1.body = normaliseBody(out.email1.body);
+  out.email2.body = normaliseBody(out.email2.body);
+  out.email3.body = normaliseBody(out.email3.body);
+  return out;
 }
+
+// Guarantee a blank line after the greeting ("Hi Name," / "Hello Name," / "Hey Name,")
+// and collapse accidental single-newline paragraph breaks into blank-line breaks.
+function normaliseBody(body: string): string {
+  let b = body.replace(/\r\n/g, "\n").trim();
+  // Split greeting line from the rest if the model glued it inline.
+  b = b.replace(
+    /^(Hi|Hello|Hey|Dear)\s+([^,\n]{1,40}),\s+(?=\S)/,
+    (_m, hi, name) => `${hi} ${name},\n\n`,
+  );
+  // Ensure paragraphs are separated by blank lines, not just single newlines.
+  b = b.replace(/([^\n])\n(?!\n)(?=\S)/g, "$1\n\n");
+  return b.trim();
+}
+
 
 export interface RegenerateEmailInput extends SequenceInputs {
   step: 1 | 2 | 3;
