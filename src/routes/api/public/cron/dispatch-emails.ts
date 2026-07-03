@@ -47,7 +47,7 @@ export const Route = createFileRoute("/api/public/cron/dispatch-emails")({
             body,
             reply_alias,
             dealer:dealers(id, slug, dealership_name, notification_email),
-            customer:customers(id, name, email)
+            sequence:sequences(id, customer:customers(id, name, email))
           `)
           .eq("status", "scheduled")
           .order("scheduled_for", { ascending: true })
@@ -57,14 +57,18 @@ export const Route = createFileRoute("/api/public/cron/dispatch-emails")({
           ? dueQuery.in("id", forceEmailIds)
           : dueQuery.lte("scheduled_for", now);
 
-        const { data: due } = await dueQuery;
+        const { data: due, error: dueError } = await dueQuery;
+        if (dueError) {
+          console.error("Failed to load due sequence emails", dueError);
+          return Response.json({ ok: false, sent: 0, failed: 0, error: dueError.message }, { status: 500 });
+        }
 
         const sentByDealer = new Map<string, number>();
         let sent = 0;
         let failed = 0;
 
         for (const e of due ?? []) {
-          const customer = e.customer as any;
+          const customer = (e.sequence as any)?.customer;
           const dealer = e.dealer as any;
           if (!customer?.email) {
             await db.from("sequence_emails").update({ status: "failed" }).eq("id", e.id);
