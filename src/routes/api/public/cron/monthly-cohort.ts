@@ -30,7 +30,9 @@ export const Route = createFileRoute("/api/public/cron/monthly-cohort")({
           const activeSet = new Set((active ?? []).map((r: any) => r.customer_id));
 
           const inserts: any[] = [];
-          for (const months of MILESTONES) {
+          const milestones = (d as any).milestone_months?.length ? (d as any).milestone_months : DEFAULT_MILESTONES;
+          for (const months of milestones) {
+
             const target = new Date(now.getFullYear(), now.getMonth() - months, 1);
             const start = `${target.getFullYear()}-${String(target.getMonth() + 1).padStart(2, "0")}-01`;
             const end = `${target.getFullYear()}-${String(target.getMonth() + 1).padStart(2, "0")}-${new Date(target.getFullYear(), target.getMonth() + 1, 0).getDate()}`;
