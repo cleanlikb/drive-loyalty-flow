@@ -1,121 +1,123 @@
 import { createFileRoute } from "@tanstack/react-router";
 
-// Inbound-email webhook. Providers supported (auto-detected):
-//   Postmark:  { From, TextBody, StrippedTextReply, Subject, MessageID, Headers, To }
-//   SendGrid:  { from, text, subject, headers, to }
-//   Mailgun:   { sender, "stripped-text", "body-plain", subject, "Message-Id", "In-Reply-To", recipient }
-//   Resend:    { from: { address }, text, subject, headers, to }
-//   Generic:   { from, text, subject?, messageId?, inReplyTo?, sequenceId?, to? }
+// Resend inbound email webhook.
+// Reply-to addresses use `{dealer-slug}+{customer-id}@ezeotolion.resend.app`
+// (Resend's auto-provisioned test inbound domain) so we can route replies back
+// to the right dealer + customer without any MX setup.
 //
-// Auth: ?token=<INBOUND_WEBHOOK_SECRET> or header x-webhook-secret.
+// TODO: swap ezeotolion.resend.app -> reply.wynback.co.uk once MX is verified.
 
 export const Route = createFileRoute("/api/public/webhooks/inbound-reply")({
   server: {
     handlers: {
       POST: async ({ request }) => {
-        const secret = process.env.INBOUND_WEBHOOK_SECRET;
-        if (!secret) return json({ error: "Webhook not configured" }, 500);
-
-        const token = request.headers.get("x-webhook-secret");
-        if (!token || token !== secret) return json({ error: "Unauthorized" }, 401);
-
-        const ct = request.headers.get("content-type") ?? "";
-        let payload: any = {};
+        let payload: any;
         try {
-          if (ct.includes("application/json")) payload = await request.json();
-          else if (ct.includes("form")) {
-            const fd = await request.formData();
-            payload = Object.fromEntries(fd.entries());
-          } else {
-            const raw = await request.text();
-            try { payload = JSON.parse(raw); } catch { payload = { text: raw }; }
-          }
+          payload = await request.json();
         } catch {
           return json({ error: "Invalid body" }, 400);
         }
 
-        const fromEmail = extractEmail(
-          payload.From ?? payload.from ?? payload.sender ??
-          payload.From?.address ?? payload.from?.address ?? "",
-        );
-        const text: string =
-          payload.StrippedTextReply || payload.TextBody ||
-          payload["stripped-text"] || payload["body-plain"] ||
-          payload.text || payload.body || "";
-        const subject: string = payload.Subject ?? payload.subject ?? null;
-        const messageId = cleanId(payload.MessageID ?? payload.messageId ?? payload["Message-Id"] ?? payload.message_id);
-        const inReplyTo = cleanId(
-          payload.inReplyTo ?? payload["In-Reply-To"] ?? payload.in_reply_to ??
-          headerVal(payload.Headers, "In-Reply-To") ?? headerVal(payload.headers, "In-Reply-To"),
-        );
-        const references = payload.References ?? payload.references ??
-          headerVal(payload.Headers, "References") ?? headerVal(payload.headers, "References") ?? null;
-        const explicitSeqId: string | undefined = payload.sequenceId ?? payload.sequence_id;
-
-        // Collect all To / recipient addresses so we can try reply-alias matching first.
-        const toAddresses: string[] = [
-          payload.To, payload.to, payload.recipient,
-          payload.To?.address, payload.to?.address,
-          headerVal(payload.Headers, "To"),
-          headerVal(payload.headers, "To"),
-        ].filter(Boolean).flatMap((v) => (Array.isArray(v) ? v : [v]));
-
-        if (!text || (!fromEmail && !explicitSeqId && !inReplyTo && toAddresses.length === 0)) {
-          return json({ error: "Missing from/text" }, 400);
+        if (payload?.type !== "email.received") {
+          return json({ received: true, skipped: "unhandled_type" }, 200);
         }
+
+        const data = payload.data ?? {};
+        const toAddresses: string[] = (Array.isArray(data.to) ? data.to : [data.to])
+          .filter(Boolean)
+          .map((v: any) => (typeof v === "string" ? v : v?.address ?? ""))
+          .filter(Boolean);
+
+        let dealerSlug: string | null = null;
+        let customerId: string | null = null;
+        for (const addr of toAddresses) {
+          const parsed = parseSubAddress(addr);
+          if (parsed) {
+            dealerSlug = parsed.dealerSlug;
+            customerId = parsed.customerId;
+            break;
+          }
+        }
+
+        if (!dealerSlug || !customerId) {
+          return json({ received: true, skipped: "no_sub_address" }, 200);
+        }
+
+        const fromEmail = extractEmail(
+          typeof data.from === "string" ? data.from : data.from?.address ?? "",
+        );
+        const subject: string | null = data.subject ?? null;
+        const text: string = (data.text && String(data.text).trim())
+          ? String(data.text)
+          : String(data.html ?? "");
+        const messageId = data.id ?? data.message_id ?? null;
+        const inReplyTo = headerVal(data.headers, "In-Reply-To");
 
         const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
         const db = supabaseAdmin as any;
-        const { processReply, findSequenceForInbound } = await import("@/lib/replies.server");
 
-        let sequenceId = explicitSeqId;
-        let sequenceEmailId: string | null = null;
+        const { data: dealer } = await db.from("dealers")
+          .select("id").eq("slug", dealerSlug).maybeSingle();
+        if (!dealer) return json({ received: true, skipped: "dealer_not_found" }, 200);
 
+        const { data: customer } = await db.from("customers")
+          .select("id, dealer_id").eq("id", customerId).maybeSingle();
+        if (!customer || customer.dealer_id !== dealer.id) {
+          return json({ received: true, skipped: "customer_not_found" }, 200);
+        }
+
+        // Find the most recent active sequence for this customer; fall back to the latest.
+        const { data: activeSeq } = await db.from("sequences")
+          .select("id")
+          .eq("customer_id", customer.id)
+          .eq("dealer_id", dealer.id)
+          .eq("status", "active")
+          .order("started_at", { ascending: false })
+          .limit(1);
+        let sequenceId = activeSeq?.[0]?.id as string | undefined;
         if (!sequenceId) {
-          // 1. Exact match by reply_alias in the To address.
-          for (const addr of toAddresses) {
-            const alias = extractReplyAlias(addr);
-            if (!alias) continue;
-            const { data: rows } = await db.from("sequence_emails")
-              .select("id, sequence_id")
-              .eq("reply_alias", alias)
-              .limit(1);
-            if (rows?.[0]) {
-              sequenceEmailId = rows[0].id;
-              sequenceId = rows[0].sequence_id;
-              break;
-            }
-          }
-
-          // 2. Fallback: In-Reply-To / References threading, then sender email.
-          if (!sequenceId) {
-            const seq = await findSequenceForInbound(db, { fromEmail, inReplyTo, references });
-            if (!seq) return json({ ok: true, skipped: "no_active_sequence", fromEmail }, 200);
-            sequenceId = seq.id;
-          }
+          const { data: anySeq } = await db.from("sequences")
+            .select("id")
+            .eq("customer_id", customer.id)
+            .eq("dealer_id", dealer.id)
+            .order("started_at", { ascending: false })
+            .limit(1);
+          sequenceId = anySeq?.[0]?.id;
+        }
+        if (!sequenceId) {
+          return json({ received: true, skipped: "no_sequence" }, 200);
         }
 
         try {
-          const result = await processReply(db, {
-            sequenceId: sequenceId!,
-            text: text.slice(0, 5000),
+          const { processReply } = await import("@/lib/replies.server");
+          await processReply(db, {
+            sequenceId,
+            text: (text || "(no body)").slice(0, 5000),
             source: "inbound_email",
             meta: { subject, fromEmail, messageId, inReplyTo },
           });
-          if (sequenceEmailId) {
-            await db.from("sequence_emails")
-              .update({ replied_at: new Date().toISOString(), updated_at: new Date().toISOString() })
-              .eq("id", sequenceEmailId);
-          }
-          return json({ ok: true, classification: result.classification.classification }, 200);
+          return json({ received: true }, 200);
         } catch (e: any) {
           console.error("inbound reply failed", e);
-          return json({ error: e?.message ?? "Failed" }, 500);
+          return json({ received: true, error: e?.message ?? "Failed" }, 500);
         }
       },
     },
   },
 });
+
+function parseSubAddress(email: string): { dealerSlug: string; customerId: string } | null {
+  if (!email) return null;
+  const clean = extractEmail(email);
+  const [local] = clean.split("@");
+  if (!local) return null;
+  const plus = local.indexOf("+");
+  if (plus <= 0) return null;
+  const dealerSlug = local.slice(0, plus).trim().toLowerCase();
+  const customerId = local.slice(plus + 1).trim();
+  if (!dealerSlug || !customerId) return null;
+  return { dealerSlug, customerId };
+}
 
 function extractEmail(raw: string): string {
   if (!raw) return "";
@@ -123,28 +125,23 @@ function extractEmail(raw: string): string {
   return m ? m[0].toLowerCase() : "";
 }
 
-function extractReplyAlias(email: string): string | null {
-  if (!email) return null;
-  const local = email.split("@")[0]?.trim().toLowerCase();
-  if (!local) return null;
-  // Alias format: {dealer_slug}-{hex}  e.g. smithmotors-a1b2c3d4
-  if (!/^[a-z0-9-]+-[a-f0-9]{8}$/.test(local)) return null;
-  return local;
-}
-
-function cleanId(v: any): string | null {
-  if (!v || typeof v !== "string") return null;
-  return v.replace(/^<|>$/g, "").trim() || null;
-}
 function headerVal(headers: any, name: string): string | null {
   if (!headers) return null;
   if (Array.isArray(headers)) {
     const h = headers.find((h: any) => (h?.Name ?? h?.name)?.toLowerCase() === name.toLowerCase());
-    return h?.Value ?? h?.value ?? null;
+    const v = h?.Value ?? h?.value ?? null;
+    return typeof v === "string" ? v.replace(/^<|>$/g, "") : null;
   }
-  if (typeof headers === "object") return headers[name] ?? headers[name.toLowerCase()] ?? null;
+  if (typeof headers === "object") {
+    const v = headers[name] ?? headers[name.toLowerCase()] ?? null;
+    return typeof v === "string" ? v.replace(/^<|>$/g, "") : null;
+  }
   return null;
 }
+
 function json(body: unknown, status = 200) {
-  return new Response(JSON.stringify(body), { status, headers: { "content-type": "application/json" } });
+  return new Response(JSON.stringify(body), {
+    status,
+    headers: { "content-type": "application/json" },
+  });
 }
