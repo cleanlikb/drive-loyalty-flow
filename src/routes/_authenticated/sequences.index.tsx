@@ -149,6 +149,7 @@ function Sequences() {
   const update = useServerFn(updateEmailDraft);
   const stop = useServerFn(stopSequence);
   const regen = useServerFn(regenerateSequenceEmail);
+  const startFn = useServerFn(startSequence);
   const qc = useQueryClient();
   const { data = [] } = useQuery({
     queryKey: ["sequences"],
@@ -163,6 +164,17 @@ function Sequences() {
     },
     onError: (e: any) => toast.error(e?.message ?? "Failed"),
   });
+
+  const startMut = useMutation({
+    mutationFn: (id: string) => startFn({ data: { id } }),
+    onSuccess: () => {
+      toast.success("Sequence started — emails will send on schedule");
+      qc.invalidateQueries({ queryKey: ["sequences"] });
+      qc.invalidateQueries({ queryKey: ["dashboard"] });
+    },
+    onError: (e: any) => toast.error(e?.message ?? "Failed"),
+  });
+
 
   return (
     <div className="max-w-5xl mx-auto p-6 md:p-8 space-y-6">
