@@ -95,6 +95,32 @@ export const getCurrentCohort = createServerFn({ method: "GET" })
     return { cohort, rows: rows ?? [] };
   });
 
+export const getPastCohorts = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const monthDate = firstOfMonth();
+    const { data: dealer } = await context.supabase.from("dealers").select("id").eq("user_id", context.userId).single();
+    if (!dealer) return { months: [] as { month: string; rows: any[] }[] };
+    const { data: cohorts } = await context.supabase
+      .from("cohorts")
+      .select("id, month")
+      .eq("dealer_id", dealer.id)
+      .lt("month", monthDate)
+      .order("month", { ascending: false });
+    if (!cohorts?.length) return { months: [] };
+    const ids = cohorts.map((c: any) => c.id);
+    const { data: rows } = await context.supabase
+      .from("cohort_customers")
+      .select("*, customer:customers(*)")
+      .in("cohort_id", ids)
+      .order("milestone_months", { ascending: true });
+    const byCohort: Record<string, any[]> = {};
+    for (const r of rows ?? []) (byCohort[r.cohort_id] ??= []).push(r);
+    return {
+      months: cohorts.map((c: any) => ({ month: c.month, rows: byCohort[c.id] ?? [] })),
+    };
+  });
+
 export const toggleCohortSelection = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) => z.object({ ids: z.array(z.string().uuid()), selected: z.boolean() }).parse(d))

@@ -1,17 +1,18 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getCurrentCohort, rebuildCurrentCohort, toggleCohortSelection } from "@/lib/cohorts.functions";
+import { getCurrentCohort, getPastCohorts, rebuildCurrentCohort, toggleCohortSelection } from "@/lib/cohorts.functions";
 import { startSequencesForSelected } from "@/lib/sequences.functions";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { MilestoneBadge } from "@/components/MilestoneBadge";
 import { MILESTONES, formatDate, formatGbp } from "@/lib/format";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
-import { RefreshCw, Send } from "lucide-react";
+import { ChevronDown, RefreshCw, Send } from "lucide-react";
 
 type SequenceType = "trade_in" | "buy_back";
 const SEQUENCE_TYPE_OPTIONS: { value: SequenceType; label: string; description: string }[] = [
@@ -31,7 +32,9 @@ function Leads() {
   const toggle = useServerFn(toggleCohortSelection);
   const startSeq = useServerFn(startSequencesForSelected);
 
+  const fetchPast = useServerFn(getPastCohorts);
   const { data, isLoading } = useQuery({ queryKey: ["cohort"], queryFn: () => fetchCohort() });
+  const { data: pastData } = useQuery({ queryKey: ["cohort-past"], queryFn: () => fetchPast() });
   const [busy, setBusy] = useState(false);
   const [sequenceType, setSequenceType] = useState<SequenceType>("trade_in");
 
@@ -205,6 +208,61 @@ function Leads() {
           </Card>
         );
       })}
+
+      {(pastData?.months?.length ?? 0) > 0 && (
+        <div className="pt-4 space-y-3">
+          <h2 className="text-lg font-semibold tracking-tight">Previous months</h2>
+          {pastData!.months.map((pm) => {
+            const label = new Date(pm.month).toLocaleDateString(undefined, { month: "long", year: "numeric" });
+            return (
+              <Collapsible key={pm.month}>
+                <Card>
+                  <CollapsibleTrigger className="w-full px-5 py-3 flex items-center justify-between hover:bg-accent/20 [&[data-state=open]>svg]:rotate-180">
+                    <div className="flex items-center gap-3">
+                      <span className="font-medium">{label}</span>
+                      <span className="text-xs text-muted-foreground">{pm.rows.length} lead{pm.rows.length === 1 ? "" : "s"}</span>
+                    </div>
+                    <ChevronDown className="h-4 w-4 text-muted-foreground transition-transform" />
+                  </CollapsibleTrigger>
+                  <CollapsibleContent>
+                    <div className="border-t overflow-x-auto">
+                      <table className="w-full text-sm">
+                        <thead className="bg-muted/40 text-muted-foreground">
+                          <tr>
+                            <th className="text-left px-4 py-2 font-medium">Customer</th>
+                            <th className="text-left px-4 py-2 font-medium">Their car</th>
+                            <th className="text-left px-4 py-2 font-medium">Milestone</th>
+                            <th className="text-left px-4 py-2 font-medium">Status</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y">
+                          {pm.rows.map((r: any) => (
+                            <tr key={r.id}>
+                              <td className="px-4 py-3">
+                                <div className="font-medium">{r.customer?.name}</div>
+                                <div className="text-xs text-muted-foreground">{r.customer?.email ?? "—"}</div>
+                              </td>
+                              <td className="px-4 py-3">
+                                <div>{r.customer?.make} {r.customer?.model}</div>
+                                <div className="text-xs text-muted-foreground">{formatGbp(r.customer?.sale_price)}</div>
+                              </td>
+                              <td className="px-4 py-3"><MilestoneBadge months={r.milestone_months} /></td>
+                              <td className="px-4 py-3 text-xs text-muted-foreground">{r.sequence_id ? "Sequence started" : "Not contacted"}</td>
+                            </tr>
+                          ))}
+                          {pm.rows.length === 0 && (
+                            <tr><td colSpan={4} className="px-4 py-6 text-center text-sm text-muted-foreground">No leads for this month.</td></tr>
+                          )}
+                        </tbody>
+                      </table>
+                    </div>
+                  </CollapsibleContent>
+                </Card>
+              </Collapsible>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }
