@@ -515,7 +515,7 @@ function CalculatorSection() {
           </span>
           <h2 className="mt-4 text-3xl md:text-4xl font-semibold tracking-tight">See what your past sales could be worth</h2>
           <p className="mt-4 text-lg text-muted-foreground">
-            Slide your average monthly sales and pick a plan. Wynback re-engages those same customers at key milestones, turning history into a measurable return.
+            You&apos;ve already paid to acquire these customers once. Reaching them again costs a fraction of a fresh ad — and even a modest reply rate turns into sales you&apos;d otherwise lose to a competitor. Slide your average monthly sales below to see what your own list could generate.
           </p>
         </div>
 
