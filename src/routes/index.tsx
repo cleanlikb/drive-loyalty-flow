@@ -771,19 +771,19 @@ function PricingFAQ() {
   const faqs = [
     {
       q: "What kind of results can I expect?",
-      a: "Most dealers see an immediate uplift in warm enquiries from past customers. The system is designed to create more sales, strengthen relationships, and surface buy-back opportunities — all without portal or auction fees.",
+      a: "It depends on the size and age of your customer database, but the principle is simple: you're reaching people who already bought from you once, at the exact moment they're statistically most likely to be shopping again. Use the ROI calculator above to see what your own numbers could look like based on your monthly sales volume and list size.",
     },
     {
       q: "What data do I need to upload?",
-      a: "A simple CSV of your previous sales is enough: customer name, email, car details and sale date. Wynback handles the rest and surfaces the right customers at the right milestone.",
+      a: "Just a CSV of your past sales — customer name, email, purchase date, and the vehicle they bought. That's enough for Wynback to start flagging ownership milestones and generating email sequences. No DMS integration required to get started, and we'll help you get the file into the right format if needed.",
     },
     {
       q: "How secure is my customer data?",
-      a: "Fully GDPR compliant, encrypted at rest and in transit, and never shared or sold. We only ever email your customers on your behalf.",
+      a: "Your data stays yours. All sending is GDPR-compliant, unsubscribes are handled automatically, and you can export your data or cancel at any time — there's no lock-in and we never share your customer list.",
     },
     {
       q: "Do I need marketing experience?",
-      a: "None. Wynback writes the emails, selects the timing, and manages replies. You just review and approve.",
+      a: "No. The AI writes every email for you in a warm, human tone referencing the exact car each customer bought, and we set up your entire milestone sequence when you sign up. Most dealers spend under 10 minutes a month reviewing and approving emails — no campaigns to build, no copywriting required.",
     },
   ];
 
