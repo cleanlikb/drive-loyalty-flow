@@ -203,8 +203,14 @@ export const dispatchDueEmails = createServerFn({ method: "POST" })
       await dispatchEmail(context.supabase, e);
       sent++;
     }
+    if (sent > 0) {
+      await context.supabase.from("activity_log").insert({
+        dealer_id: dealer.id, kind: "emails_sent", payload: { count: sent },
+      });
+    }
     return { sent };
   });
+
 
 export const logReply = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])

@@ -13,16 +13,22 @@ export const Route = createFileRoute("/api/public/cron/dispatch-emails")({
         const now = new Date().toISOString();
         const { data: due } = await supabaseAdmin
           .from("sequence_emails")
-          .select("id, sequence_id")
+          .select("id, sequence_id, dealer_id")
           .eq("status", "scheduled")
           .lte("scheduled_for", now)
           .limit(500);
 
-        let sent = 0;
+        const sentByDealer = new Map<string, number>();
         for (const e of due ?? []) {
           // Abstracted dispatch — v1 marks sent. Replace with Resend later.
           await supabaseAdmin.from("sequence_emails").update({ status: "sent", sent_at: now }).eq("id", e.id);
-          sent++;
+          sentByDealer.set(e.dealer_id, (sentByDealer.get(e.dealer_id) ?? 0) + 1);
+        }
+
+        for (const [dealerId, count] of sentByDealer.entries()) {
+          await supabaseAdmin.from("activity_log").insert({
+            dealer_id: dealerId, kind: "emails_sent", payload: { count },
+          });
         }
 
         // Auto-complete sequences with all emails sent/cancelled
@@ -34,7 +40,8 @@ export const Route = createFileRoute("/api/public/cron/dispatch-emails")({
           }
         }
 
-        return Response.json({ ok: true, sent });
+        return Response.json({ ok: true, sent: due?.length ?? 0 });
+
       },
     },
   },

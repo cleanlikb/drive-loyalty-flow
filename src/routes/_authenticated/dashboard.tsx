@@ -19,13 +19,18 @@ export const Route = createFileRoute("/_authenticated/dashboard")({
 function activityText(a: any) {
   switch (a.kind) {
     case "demo_loaded": return `Demo data loaded (${a.payload?.customers ?? 0} customers, ${a.payload?.stock ?? 0} stock)`;
-    case "cohort_rebuilt": return `Monthly cohort rebuilt — ${a.payload?.added ?? 0} leads`;
+    case "leads_generated": return `Leads generated — ${a.payload?.added ?? 0} leads`;
+    case "cohort_rebuilt": return `Leads generated — ${a.payload?.added ?? 0} leads`;
     case "sequences_started": return `${a.payload?.created ?? 0} sequences started${a.payload?.failed ? ` (${a.payload.failed} failed)` : ""}`;
-    case "reply_logged": return `Reply logged — classified as "${(a.payload?.classification ?? "").replaceAll("_", " ")}"`;
+    case "emails_sent": return `${a.payload?.count ?? 0} emails sent`;
+    case "reply_logged": return `Reply received — classified as "${(a.payload?.classification ?? "").replaceAll("_", " ")}"`;
+    case "reply_received": return `Reply received — classified as "${(a.payload?.classification ?? "").replaceAll("_", " ")}"`;
     case "stock_synced": return `Stock synced — ${a.payload?.items ?? 0} items`;
     default: return a.kind;
   }
 }
+
+
 
 function Dashboard() {
   const navigate = useNavigate();
@@ -59,14 +64,15 @@ function Dashboard() {
   });
 
   const cards = [
-    { label: "This month's cohort", value: stats?.cohortSize ?? 0 },
+    { label: "This month's leads", value: stats?.leads ?? 0 },
     { label: "Sequences started", value: stats?.sequencesStarted ?? 0 },
     { label: "Emails sent", value: stats?.emailsSent ?? 0 },
     { label: "Replies", value: stats?.replies ?? 0 },
     { label: "No longer owns removals", value: stats?.noLongerOwns ?? 0 },
   ];
 
-  const isEmpty = (stats?.cohortSize ?? 0) === 0 && (stats?.activity?.length ?? 0) === 0;
+
+  const isEmpty = (stats?.leads ?? 0) === 0 && (stats?.activity?.length ?? 0) === 0;
 
   return (
     <div className="max-w-6xl mx-auto p-6 md:p-8 space-y-8">

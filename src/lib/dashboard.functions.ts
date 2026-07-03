@@ -25,14 +25,15 @@ export const getDashboardStats = createServerFn({ method: "GET" })
       context.supabase.from("activity_log").select("*").eq("dealer_id", dealer.id).order("created_at", { ascending: false }).limit(20),
     ]);
 
-    const cohortSize = (cohort.data as any)?.cohort_customers?.[0]?.count ?? 0;
+    const leads = (cohort.data as any)?.cohort_customers?.[0]?.count ?? 0;
 
     return {
-      cohortSize,
+      leads,
       sequencesStarted: seqStarted.count ?? 0,
       emailsSent: emailsSent.count ?? 0,
       replies: replies.count ?? 0,
       noLongerOwns: nloRemovals.count ?? 0,
       activity: activity.data ?? [],
     };
+
   });
