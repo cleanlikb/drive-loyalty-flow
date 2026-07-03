@@ -29,7 +29,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import logo from "@/assets/redrive-icon.png.asset.json";
+import logo from "@/assets/wynback-logo.jpg.asset.json";
 import explainerAsset from "@/assets/redrive-explainer.mp4.asset.json";
 
 export const Route = createFileRoute("/")({
@@ -75,9 +75,8 @@ function Header({
   return (
     <header className="sticky top-0 z-50 border-b border-border/60 bg-background/80 backdrop-blur">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-        <Link to="/" className="flex items-center gap-2.5">
-          <img src={logo.url} alt="ReDrive" className="h-9 w-9 object-contain" />
-          <span className="font-semibold text-lg tracking-tight">ReDrive</span>
+        <Link to="/" className="flex items-center">
+          <img src={logo.url} alt="Wynback" className="h-8 w-auto object-contain" />
         </Link>
 
         <nav className="hidden md:flex items-center gap-1">
@@ -195,7 +194,7 @@ function VideoSection() {
           See how it works in 60 seconds
         </h2>
         <p className="mt-3 text-base md:text-lg text-muted-foreground max-w-2xl mx-auto">
-          Watch how ReDrive turns your existing customer list into a reliable, low-cost source of extra sales and stock opportunities.
+          Watch how Wynback turns your existing customer list into a reliable, low-cost source of extra sales and stock opportunities.
         </p>
         <div className="mt-10 rounded-2xl border border-border bg-card p-2 md:p-3 shadow-sm">
           <div className="relative aspect-video overflow-hidden rounded-xl bg-black">
@@ -206,7 +205,7 @@ function VideoSection() {
               playsInline
               webkit-playsinline="true"
               className="w-full h-full"
-              aria-label="ReDrive explainer video"
+              aria-label="Wynback explainer video"
             />
           </div>
         </div>
@@ -220,7 +219,7 @@ function PainSection() {
     {
       icon: Zap,
       title: "How many of last year’s buyers are due a new car right now — and don’t know you’re still here?",
-      body: "Most dealers pay auction fees and transport costs to source stock they've already sold once. ReDrive puts you back in touch with the owner before they trade it elsewhere.",
+      body: "Most dealers pay auction fees and transport costs to source stock they've already sold once. Wynback puts you back in touch with the owner before they trade it elsewhere.",
     },
     {
       icon: Database,
@@ -230,12 +229,12 @@ function PainSection() {
     {
       icon: Users,
       title: "What’s it costing you to buy back at auction the same car you already sold once?",
-      body: "When a salesperson leaves, their contact book often leaves too. ReDrive institutionalises the follow-up so your dealership owns the relationship, not the individual.",
+      body: "When a salesperson leaves, their contact book often leaves too. Wynback institutionalises the follow-up so your dealership owns the relationship, not the individual.",
     },
     {
       icon: PenTool,
       title: "Your CRM has the data. When’s the last time it actually sold you a car?",
-      body: "Milestones pass, finance deals expire, and customers slip away. ReDrive automates the timing and the copy so it happens without eating your day.",
+      body: "Milestones pass, finance deals expire, and customers slip away. Wynback automates the timing and the copy so it happens without eating your day.",
     },
   ];
 
@@ -244,7 +243,7 @@ function PainSection() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="max-w-3xl mx-auto text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-semibold tracking-tight">Why most independent dealers are leaving money on the table</h2>
-          <p className="mt-4 text-lg text-muted-foreground">ReDrive fixes the four leaks that quietly drain profit from every dealership.</p>
+          <p className="mt-4 text-lg text-muted-foreground">Wynback fixes the four leaks that quietly drain profit from every dealership.</p>
         </div>
         <div className="grid md:grid-cols-2 gap-6">
           {pains.map((pain) => (
@@ -292,7 +291,7 @@ function SolutionSection() {
           <StepCard
             step={3}
             title="Review the AI emails and approve the whole month in one click"
-            body="Three warm, personalised emails per customer are written for you. Approve once, and ReDrive schedules everything automatically."
+            body="Three warm, personalised emails per customer are written for you. Approve once, and Wynback schedules everything automatically."
             mockup={<SequenceMockup />}
           />
         </div>
@@ -349,15 +348,15 @@ function ScreenshotFrame({ src, alt }: { src: string; alt: string }) {
 }
 
 function UploadMockup() {
-  return <ScreenshotFrame src={stepCustomersCropped} alt="ReDrive customers page showing imported sales history" />;
+  return <ScreenshotFrame src={stepCustomersCropped} alt="Wynback customers page showing imported sales history" />;
 }
 
 function MilestoneMockup() {
-  return <ScreenshotFrame src={stepLeadsCropped} alt="ReDrive monthly leads grouped by ownership milestone" />;
+  return <ScreenshotFrame src={stepLeadsCropped} alt="Wynback monthly leads grouped by ownership milestone" />;
 }
 
 function SequenceMockup() {
-  return <ScreenshotFrame src={stepSequencesCropped} alt="ReDrive AI-generated 3-email sequence preview" />;
+  return <ScreenshotFrame src={stepSequencesCropped} alt="Wynback AI-generated 3-email sequence preview" />;
 }
 
 
@@ -401,7 +400,7 @@ function BenefitsSection() {
         <div className="max-w-3xl mx-auto text-center mb-16">
           <span className="text-sm font-semibold text-primary uppercase tracking-wide">The payoff</span>
           <h2 className="mt-3 text-3xl md:text-4xl font-semibold tracking-tight">The benefits that matter to your bottom line</h2>
-          <p className="mt-4 text-lg text-muted-foreground">ReDrive is built to drive three outcomes: more sales, better retention, and cheaper stock.</p>
+          <p className="mt-4 text-lg text-muted-foreground">Wynback is built to drive three outcomes: more sales, better retention, and cheaper stock.</p>
         </div>
         <div className="grid md:grid-cols-3 gap-8">
           {benefits.map((benefit) => (
@@ -456,7 +455,7 @@ function CalculatorSection() {
           </span>
           <h2 className="mt-4 text-3xl md:text-4xl font-semibold tracking-tight">See what your past sales could be worth</h2>
           <p className="mt-4 text-lg text-muted-foreground">
-            Slide your average monthly sales and pick a plan. ReDrive re-engages those same customers at key milestones, turning history into a measurable return.
+            Slide your average monthly sales and pick a plan. Wynback re-engages those same customers at key milestones, turning history into a measurable return.
           </p>
         </div>
 
@@ -489,7 +488,7 @@ function CalculatorSection() {
 
           <div className="mb-10">
             <label className="block text-sm font-medium text-muted-foreground mb-4">
-              Your monthly ReDrive plan
+              Your monthly Wynback plan
             </label>
             <div className="flex flex-wrap gap-3">
               {plans.map((plan) => (
@@ -558,7 +557,7 @@ function FinalCTASection() {
               Your next customer already owns a car. It’s yours. Are you going to remind them?
             </h2>
             <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
-              Your customers are already changing cars. Let ReDrive make sure they change them with you.
+              Your customers are already changing cars. Let Wynback make sure they change them with you.
             </p>
             <div className="mt-9 flex flex-col sm:flex-row items-center justify-center gap-4">
               <Button asChild size="lg" className="h-12 px-8 text-base shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-shadow">
@@ -718,7 +717,7 @@ function PricingFAQ() {
     },
     {
       q: "What data do I need to upload?",
-      a: "A simple CSV of your previous sales is enough: customer name, email, car details and sale date. ReDrive handles the rest and surfaces the right customers at the right milestone.",
+      a: "A simple CSV of your previous sales is enough: customer name, email, car details and sale date. Wynback handles the rest and surfaces the right customers at the right milestone.",
     },
     {
       q: "How secure is my customer data?",
@@ -726,7 +725,7 @@ function PricingFAQ() {
     },
     {
       q: "Do I need marketing experience?",
-      a: "None. ReDrive writes the emails, selects the timing, and manages replies. You just review and approve.",
+      a: "None. Wynback writes the emails, selects the timing, and manages replies. You just review and approve.",
     },
   ];
 
@@ -757,12 +756,11 @@ function Footer() {
   return (
     <footer className="border-t border-border py-10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4">
-        <Link to="/" className="flex items-center gap-2.5">
-          <img src={logo.url} alt="ReDrive" className="h-8 w-8 object-contain" />
-          <span className="font-semibold tracking-tight">ReDrive</span>
+        <Link to="/" className="flex items-center">
+          <img src={logo.url} alt="Wynback" className="h-7 w-auto object-contain" />
         </Link>
         <p className="text-sm text-muted-foreground">
-          © {new Date().getFullYear()} ReDrive. Built for UK independent car dealerships.
+          © {new Date().getFullYear()} Wynback. Built for UK independent car dealerships.
         </p>
       </div>
     </footer>

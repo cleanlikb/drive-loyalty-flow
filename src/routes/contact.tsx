@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Mail, MessageSquare, Clock, ArrowLeft, CheckCircle2 } from "lucide-react";
-import logo from "@/assets/redrive-icon.png.asset.json";
+import logo from "@/assets/wynback-logo.jpg.asset.json";
 
 export const Route = createFileRoute("/contact")({
   component: ContactPage,
@@ -49,9 +49,8 @@ function ContactPage() {
     <div className="min-h-screen bg-white text-foreground font-sans">
       <header className="sticky top-0 z-50 border-b border-border/60 bg-background/80 backdrop-blur">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2.5">
-            <img src={logo.url} alt="ReDrive" className="h-9 w-9 object-contain" />
-            <span className="font-semibold text-lg tracking-tight">ReDrive</span>
+          <Link to="/" className="flex items-center">
+            <img src={logo.url} alt="Wynback" className="h-8 w-auto object-contain" />
           </Link>
           <Link
             to="/"
