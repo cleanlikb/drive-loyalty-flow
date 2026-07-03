@@ -65,19 +65,34 @@ function Dashboard() {
   });
 
   const interestedTotal = (stats?.hotLeads ?? 0) + (stats?.interested ?? 0);
-  const cards = [
-    { label: "This month's leads", value: stats?.leads ?? 0 },
-    { label: "Sequences started", value: stats?.sequencesStarted ?? 0 },
-    { label: "Emails sent", value: stats?.emailsSent ?? 0 },
-    { label: "Replies", value: stats?.replies ?? 0 },
+  const cards: {
+    key: "leads" | "sequencesStarted" | "emailsSent" | "replies" | "interested" | "noLongerOwns";
+    label: string;
+    value: number;
+    sub?: string;
+    accent?: boolean;
+  }[] = [
+    { key: "leads", label: "This month's leads", value: stats?.leads ?? 0 },
+    { key: "sequencesStarted", label: "Sequences started", value: stats?.sequencesStarted ?? 0 },
+    { key: "emailsSent", label: "Emails sent", value: stats?.emailsSent ?? 0 },
+    { key: "replies", label: "Replies", value: stats?.replies ?? 0 },
     {
+      key: "interested",
       label: "Interested + hot leads",
       value: interestedTotal,
       sub: `${stats?.hotLeads ?? 0} hot · ${stats?.interested ?? 0} interested`,
       accent: interestedTotal > 0,
     },
-    { label: "No longer owns removals", value: stats?.noLongerOwns ?? 0 },
+    { key: "noLongerOwns", label: "No longer owns removals", value: stats?.noLongerOwns ?? 0 },
   ];
+
+  const [activeMetric, setActiveMetric] = useState<typeof cards[number]["key"]>("emailsSent");
+  const fetchDetails = useServerFn(getMetricDetails);
+  const { data: details = [], isFetching: detailsLoading } = useQuery({
+    queryKey: ["dashboard-details", activeMetric],
+    queryFn: () => fetchDetails({ data: { metric: activeMetric } }),
+  });
+  const activeLabel = cards.find((c) => c.key === activeMetric)?.label ?? "";
 
 
   const isEmpty = (stats?.leads ?? 0) === 0 && (stats?.activity?.length ?? 0) === 0;
