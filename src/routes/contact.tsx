@@ -5,23 +5,23 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Mail, MessageSquare, Clock, ArrowLeft, CheckCircle2 } from "lucide-react";
-import logo from "@/assets/redrive-icon.png.asset.json";
+import logo from "@/assets/wynback-logo.jpg.asset.json";
 
 export const Route = createFileRoute("/contact")({
   component: ContactPage,
   head: () => ({
     meta: [
-      { title: "Contact ReDrive — Talk to the team" },
+      { title: "Contact Wynback — Talk to the team" },
       {
         name: "description",
         content:
-          "Get in touch with the ReDrive team. Questions about pricing, onboarding or how ReDrive works for your dealership — we usually reply within one working day.",
+          "Get in touch with the Wynback team. Questions about pricing, onboarding or how Wynback works for your dealership — we usually reply within one working day.",
       },
-      { property: "og:title", content: "Contact ReDrive" },
+      { property: "og:title", content: "Contact Wynback" },
       {
         property: "og:description",
         content:
-          "Talk to the ReDrive team about pricing, onboarding or how it works for UK independent dealerships.",
+          "Talk to the Wynback team about pricing, onboarding or how it works for UK independent dealerships.",
       },
     ],
   }),
@@ -37,11 +37,11 @@ function ContactPage() {
   });
 
   const mailto = () => {
-    const subject = encodeURIComponent(`ReDrive enquiry from ${form.name || "a dealer"}`);
+    const subject = encodeURIComponent(`Wynback enquiry from ${form.name || "a dealer"}`);
     const body = encodeURIComponent(
       `Name: ${form.name}\nDealership: ${form.dealership}\nEmail: ${form.email}\n\n${form.message}`,
     );
-    window.location.href = `mailto:hello@redrive.app?subject=${subject}&body=${body}`;
+    window.location.href = `mailto:hello@wynback.com?subject=${subject}&body=${body}`;
     setSubmitted(true);
   };
 
@@ -49,9 +49,8 @@ function ContactPage() {
     <div className="min-h-screen bg-white text-foreground font-sans">
       <header className="sticky top-0 z-50 border-b border-border/60 bg-background/80 backdrop-blur">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2.5">
-            <img src={logo.url} alt="ReDrive" className="h-9 w-9 object-contain" />
-            <span className="font-semibold text-lg tracking-tight">ReDrive</span>
+          <Link to="/" className="flex items-center">
+            <img src={logo.url} alt="Wynback" className="h-8 w-auto object-contain" />
           </Link>
           <Link
             to="/"
@@ -69,7 +68,7 @@ function ContactPage() {
             Talk to the team
           </h1>
           <p className="mt-4 text-lg text-muted-foreground">
-            Questions about pricing, onboarding, or whether ReDrive is right for your
+            Questions about pricing, onboarding, or whether Wynback is right for your
             dealership? Drop us a line — we usually reply within one working day.
           </p>
         </div>
@@ -79,8 +78,8 @@ function ContactPage() {
             <InfoCard
               icon={<Mail className="h-5 w-5" />}
               title="Email"
-              body="hello@redrive.app"
-              href="mailto:hello@redrive.app"
+              body="hello@wynback.com"
+              href="mailto:hello@wynback.com"
             />
             <InfoCard
               icon={<MessageSquare className="h-5 w-5" />}
@@ -101,8 +100,8 @@ function ContactPage() {
                 <h2 className="mt-4 text-xl font-semibold">Thanks — your email client is open</h2>
                 <p className="mt-2 text-muted-foreground">
                   If nothing happened, email us directly at{" "}
-                  <a href="mailto:hello@redrive.app" className="text-primary underline">
-                    hello@redrive.app
+                  <a href="mailto:hello@wynback.com" className="text-primary underline">
+                    hello@wynback.com
                   </a>
                   .
                 </p>

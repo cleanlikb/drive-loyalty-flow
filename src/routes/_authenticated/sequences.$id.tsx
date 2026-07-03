@@ -141,7 +141,7 @@ function SequenceDetail() {
                   <DialogTrigger asChild><Button variant="outline">Log reply</Button></DialogTrigger>
                   <DialogContent>
                     <DialogHeader><DialogTitle>Log a customer reply</DialogTitle></DialogHeader>
-                    <p className="text-sm text-muted-foreground">Paste or summarise their reply. ReDrive classifies it, cancels remaining emails, and flags the customer if needed.</p>
+                    <p className="text-sm text-muted-foreground">Paste or summarise their reply. Wynback classifies it, cancels remaining emails, and flags the customer if needed.</p>
                     <Textarea rows={6} value={replyText} onChange={(e) => setReplyText(e.target.value)} placeholder="e.g. Thanks, but I sold the car last year — please take me off the list." />
                     <DialogFooter>
                       <Button variant="ghost" onClick={() => setReplyOpen(false)}>Cancel</Button>
