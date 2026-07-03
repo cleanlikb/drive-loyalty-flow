@@ -1,11 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 // Inbound-email webhook. Providers supported (auto-detected):
-//   Postmark:  { From, TextBody, StrippedTextReply, Subject, MessageID, Headers }
-//   SendGrid:  { from, text, subject, headers }
-//   Mailgun:   { sender, "stripped-text", "body-plain", subject, "Message-Id", "In-Reply-To" }
-//   Resend:    { from: { address }, text, subject, headers }
-//   Generic:   { from, text, subject?, messageId?, inReplyTo?, sequenceId? }
+//   Postmark:  { From, TextBody, StrippedTextReply, Subject, MessageID, Headers, To }
+//   SendGrid:  { from, text, subject, headers, to }
+//   Mailgun:   { sender, "stripped-text", "body-plain", subject, "Message-Id", "In-Reply-To", recipient }
+//   Resend:    { from: { address }, text, subject, headers, to }
+//   Generic:   { from, text, subject?, messageId?, inReplyTo?, sequenceId?, to? }
 //
 // Auth: ?token=<INBOUND_WEBHOOK_SECRET> or header x-webhook-secret.
 
@@ -52,27 +52,61 @@ export const Route = createFileRoute("/api/public/webhooks/inbound-reply")({
           headerVal(payload.Headers, "References") ?? headerVal(payload.headers, "References") ?? null;
         const explicitSeqId: string | undefined = payload.sequenceId ?? payload.sequence_id;
 
-        if (!text || (!fromEmail && !explicitSeqId && !inReplyTo)) {
+        // Collect all To / recipient addresses so we can try reply-alias matching first.
+        const toAddresses: string[] = [
+          payload.To, payload.to, payload.recipient,
+          payload.To?.address, payload.to?.address,
+          headerVal(payload.Headers, "To"),
+          headerVal(payload.headers, "To"),
+        ].filter(Boolean).flatMap((v) => (Array.isArray(v) ? v : [v]));
+
+        if (!text || (!fromEmail && !explicitSeqId && !inReplyTo && toAddresses.length === 0)) {
           return json({ error: "Missing from/text" }, 400);
         }
 
         const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+        const db = supabaseAdmin as any;
         const { processReply, findSequenceForInbound } = await import("@/lib/replies.server");
 
         let sequenceId = explicitSeqId;
+        let sequenceEmailId: string | null = null;
+
         if (!sequenceId) {
-          const seq = await findSequenceForInbound(supabaseAdmin, { fromEmail, inReplyTo, references });
-          if (!seq) return json({ ok: true, skipped: "no_active_sequence", fromEmail }, 200);
-          sequenceId = seq.id;
+          // 1. Exact match by reply_alias in the To address.
+          for (const addr of toAddresses) {
+            const alias = extractReplyAlias(addr);
+            if (!alias) continue;
+            const { data: rows } = await db.from("sequence_emails")
+              .select("id, sequence_id")
+              .eq("reply_alias", alias)
+              .limit(1);
+            if (rows?.[0]) {
+              sequenceEmailId = rows[0].id;
+              sequenceId = rows[0].sequence_id;
+              break;
+            }
+          }
+
+          // 2. Fallback: In-Reply-To / References threading, then sender email.
+          if (!sequenceId) {
+            const seq = await findSequenceForInbound(db, { fromEmail, inReplyTo, references });
+            if (!seq) return json({ ok: true, skipped: "no_active_sequence", fromEmail }, 200);
+            sequenceId = seq.id;
+          }
         }
 
         try {
-          const result = await processReply(supabaseAdmin, {
+          const result = await processReply(db, {
             sequenceId: sequenceId!,
             text: text.slice(0, 5000),
             source: "inbound_email",
             meta: { subject, fromEmail, messageId, inReplyTo },
           });
+          if (sequenceEmailId) {
+            await db.from("sequence_emails")
+              .update({ replied_at: new Date().toISOString(), updated_at: new Date().toISOString() })
+              .eq("id", sequenceEmailId);
+          }
           return json({ ok: true, classification: result.classification.classification }, 200);
         } catch (e: any) {
           console.error("inbound reply failed", e);
@@ -88,6 +122,16 @@ function extractEmail(raw: string): string {
   const m = raw.match(/[\w.+-]+@[\w-]+\.[\w.-]+/);
   return m ? m[0].toLowerCase() : "";
 }
+
+function extractReplyAlias(email: string): string | null {
+  if (!email) return null;
+  const local = email.split("@")[0]?.trim().toLowerCase();
+  if (!local) return null;
+  // Alias format: {dealer_slug}-{hex}  e.g. smithmotors-a1b2c3d4
+  if (!/^[a-z0-9-]+-[a-f0-9]{8}$/.test(local)) return null;
+  return local;
+}
+
 function cleanId(v: any): string | null {
   if (!v || typeof v !== "string") return null;
   return v.replace(/^<|>$/g, "").trim() || null;

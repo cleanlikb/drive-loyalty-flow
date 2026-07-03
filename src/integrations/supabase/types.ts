@@ -211,9 +211,11 @@ export type Database = {
           milestone_months: number[]
           notification_email: string | null
           onboarded_at: string | null
+          reply_subdomain: string | null
           salesperson_name: string | null
           send_window_end_hour: number
           send_window_start_hour: number
+          slug: string | null
           updated_at: string
           user_id: string
           website_url: string | null
@@ -227,9 +229,11 @@ export type Database = {
           milestone_months?: number[]
           notification_email?: string | null
           onboarded_at?: string | null
+          reply_subdomain?: string | null
           salesperson_name?: string | null
           send_window_end_hour?: number
           send_window_start_hour?: number
+          slug?: string | null
           updated_at?: string
           user_id: string
           website_url?: string | null
@@ -243,9 +247,11 @@ export type Database = {
           milestone_months?: number[]
           notification_email?: string | null
           onboarded_at?: string | null
+          reply_subdomain?: string | null
           salesperson_name?: string | null
           send_window_end_hour?: number
           send_window_start_hour?: number
+          slug?: string | null
           updated_at?: string
           user_id?: string
           website_url?: string | null
@@ -523,7 +529,13 @@ export type Database = {
     }
     Enums: {
       customer_status: "active" | "no_longer_owns" | "unsubscribed"
-      email_status: "draft" | "scheduled" | "sent" | "cancelled" | "bounced"
+      email_status:
+        | "draft"
+        | "scheduled"
+        | "sent"
+        | "cancelled"
+        | "bounced"
+        | "failed"
       reply_classification:
         | "replied"
         | "no_longer_owns"
@@ -666,7 +678,14 @@ export const Constants = {
   public: {
     Enums: {
       customer_status: ["active", "no_longer_owns", "unsubscribed"],
-      email_status: ["draft", "scheduled", "sent", "cancelled", "bounced"],
+      email_status: [
+        "draft",
+        "scheduled",
+        "sent",
+        "cancelled",
+        "bounced",
+        "failed",
+      ],
       reply_classification: [
         "replied",
         "no_longer_owns",

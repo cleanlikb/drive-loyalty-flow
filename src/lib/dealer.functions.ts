@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { z } from "zod";
+import { makeDealerSlug } from "./resend.server";
 
 async function ensureDealerId(supabase: any, userId: string): Promise<string> {
   const { data } = await supabase.from("dealers").select("id").eq("user_id", userId).maybeSingle();
@@ -9,6 +10,23 @@ async function ensureDealerId(supabase: any, userId: string): Promise<string> {
   if (error) throw error;
   return created.id;
 }
+
+async function uniqueSlug(supabase: any, base: string): Promise<string> {
+  let slug = base;
+  let attempt = 1;
+  while (true) {
+    const { data } = await supabase.from("dealers").select("id").eq("slug", slug).maybeSingle();
+    if (!data) return slug;
+    const suffix = Math.random().toString(36).slice(2, 6);
+    slug = `${base}-${suffix}`;
+    attempt++;
+    if (attempt > 10) {
+      // Fallback to a UUID-based slug if collisions persist.
+      return `${base}-${crypto.randomUUID().slice(0, 8)}`;
+    }
+  }
+}
+
 
 export const getMyDealer = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
@@ -42,12 +60,15 @@ export const completeOnboarding = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) => OnboardSchema.parse(d))
   .handler(async ({ data, context }) => {
     await ensureDealerId(context.supabase, context.userId);
+    const baseSlug = makeDealerSlug(data.dealership_name);
+    const slug = await uniqueSlug(context.supabase, baseSlug);
     const { data: dealer, error } = await context.supabase
       .from("dealers")
       .update({
         dealership_name: data.dealership_name,
         salesperson_name: data.salesperson_name,
         website_url: data.website_url ?? null,
+        slug,
         onboarded_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
       })
@@ -57,6 +78,7 @@ export const completeOnboarding = createServerFn({ method: "POST" })
     if (error) throw error;
     return { ok: true, dealer };
   });
+
 
 export const updateDealerProfile = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
