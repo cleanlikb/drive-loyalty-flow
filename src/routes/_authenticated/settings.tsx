@@ -317,6 +317,7 @@ function SenderEmailCard({ dealer }: { dealer: any }) {
 
   const isVerified = !!dealer?.sender_verified && dealer?.sender_email === email.trim().toLowerCase();
   const verifiedDomains = domainsQ.data?.ok ? domainsQ.data.domains : [];
+  const restricted = !!(domainsQ.data?.ok && (domainsQ.data as any).restricted);
 
   return (
     <Card className="p-6 space-y-4">
@@ -382,6 +383,11 @@ function SenderEmailCard({ dealer }: { dealer: any }) {
       {!isVerified && verifiedDomains.length > 0 && (
         <p className="text-xs text-muted-foreground">
           Verified domains available: {verifiedDomains.join(", ")}
+        </p>
+      )}
+      {restricted && (
+        <p className="text-xs text-muted-foreground">
+          Automatic domain check is unavailable with the current provider key — make sure your domain is verified in Resend before saving.
         </p>
       )}
       {domainsQ.data && !domainsQ.data.ok && (
