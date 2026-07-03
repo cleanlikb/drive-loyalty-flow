@@ -11,6 +11,16 @@ export const Route = createFileRoute("/api/public/cron/dispatch-emails")({
           return new Response("Unauthorized", { status: 401 });
         }
 
+        let forceEmailIds: string[] = [];
+        try {
+          const body = await request.json();
+          if (Array.isArray(body?.sequenceEmailIds)) {
+            forceEmailIds = body.sequenceEmailIds.filter((id: unknown) => typeof id === "string");
+          }
+        } catch {
+          // Cron calls do not need a JSON body.
+        }
+
         const fromAddress = process.env.RESEND_FROM;
         if (!fromAddress) {
           return new Response("RESEND_FROM not configured", { status: 500 });
@@ -20,7 +30,7 @@ export const Route = createFileRoute("/api/public/cron/dispatch-emails")({
         const db = supabaseAdmin as any;
         const now = new Date().toISOString();
 
-        const { data: due } = await db
+        let dueQuery = db
           .from("sequence_emails")
           .select(`
             id,
@@ -34,9 +44,14 @@ export const Route = createFileRoute("/api/public/cron/dispatch-emails")({
             customer:customers(id, name, email)
           `)
           .eq("status", "scheduled")
-          .lte("scheduled_for", now)
           .order("scheduled_for", { ascending: true })
           .limit(500);
+
+        dueQuery = forceEmailIds.length > 0
+          ? dueQuery.in("id", forceEmailIds)
+          : dueQuery.lte("scheduled_for", now);
+
+        const { data: due } = await dueQuery;
 
         const sentByDealer = new Map<string, number>();
         let sent = 0;
@@ -46,7 +61,7 @@ export const Route = createFileRoute("/api/public/cron/dispatch-emails")({
           const customer = e.customer as any;
           const dealer = e.dealer as any;
           if (!customer?.email) {
-            await db.from("sequence_emails").update({ status: "failed", updated_at: now }).eq("id", e.id);
+            await db.from("sequence_emails").update({ status: "failed" }).eq("id", e.id);
             failed++;
             continue;
           }
@@ -54,14 +69,14 @@ export const Route = createFileRoute("/api/public/cron/dispatch-emails")({
           let alias: string = e.reply_alias;
           if (!alias) {
             if (!dealer?.slug) {
-              await db.from("sequence_emails").update({ status: "failed", updated_at: now }).eq("id", e.id);
+              await db.from("sequence_emails").update({ status: "failed" }).eq("id", e.id);
               failed++;
               continue;
             }
             alias = generateReplyAlias(dealer.slug);
             // Reserve the alias immediately so the next email doesn't collide.
             const { error: aliasErr } = await db.from("sequence_emails")
-              .update({ reply_alias: alias, updated_at: now })
+              .update({ reply_alias: alias })
               .eq("id", e.id)
               .is("reply_alias", null);
             if (aliasErr) {
@@ -93,7 +108,6 @@ export const Route = createFileRoute("/api/public/cron/dispatch-emails")({
               sent_at: now,
               message_id: messageId,
               resend_email_id: resendEmailId,
-              updated_at: now,
             }).eq("id", e.id);
 
             sentByDealer.set(e.dealer_id, (sentByDealer.get(e.dealer_id) ?? 0) + 1);
@@ -102,7 +116,6 @@ export const Route = createFileRoute("/api/public/cron/dispatch-emails")({
             console.error("Resend send failed for sequence_email", e.id, err?.message);
             await db.from("sequence_emails").update({
               status: "failed",
-              updated_at: now,
             }).eq("id", e.id);
             failed++;
           }
