@@ -55,6 +55,7 @@ function Landing() {
       <main>
         <HeroSection />
         <VideoSection />
+        <FounderSection />
         <PainSection />
         <SolutionSection />
         <BenefitsSection />
@@ -170,10 +171,10 @@ function HeroSection() {
           For UK independent dealerships
         </span>
         <h1 className="mt-6 text-4xl md:text-5xl lg:text-6xl font-semibold tracking-tight text-white">
-          When did you last hear from a customer you sold a car to two years ago?
+          Every month, your past customers buy their next car from someone else.
         </h1>
         <p className="mt-6 text-lg md:text-xl text-white/80 max-w-2xl mx-auto leading-relaxed">
-          They&apos;re due a new car right now. Someone&apos;s about to sell it to them. Is it you?
+          They&apos;re due an upgrade right now — and nobody&apos;s reminded them you exist. Wynback brings them back automatically, in 10 minutes a month.
         </p>
         <div className="mt-9 flex flex-col sm:flex-row items-center justify-center gap-4">
           <Button asChild size="lg" className="h-12 px-8 text-base bg-white text-primary hover:bg-white/90 shadow-lg shadow-black/10 hover:shadow-black/20 transition-shadow">
@@ -183,7 +184,7 @@ function HeroSection() {
             </Link>
           </Button>
         </div>
-        <p className="mt-3 text-sm text-white/70">No setup fees</p>
+        <p className="mt-3 text-sm text-white/70">No setup fees · We configure it for you</p>
       </div>
     </section>
   );
@@ -257,27 +258,43 @@ function VideoSection() {
   );
 }
 
+function FounderSection() {
+  return (
+    <section className="py-20 bg-white border-t border-border/60">
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <span className="text-sm font-semibold text-primary uppercase tracking-wide">From the founder</span>
+        <h2 className="mt-3 text-3xl md:text-4xl font-semibold tracking-tight">
+          Built by someone who&apos;s stood on the forecourt, not just studied it.
+        </h2>
+        <p className="mt-6 text-lg text-muted-foreground leading-relaxed">
+          I spent 14 years in car sales — from sales executive to running my own dealership. I&apos;ve lived the problem Wynback solves: good customers slip away simply because no one followed up. That&apos;s why Wynback runs itself — because I know you don&apos;t have a spare afternoon a month to chase your own database.
+        </p>
+      </div>
+    </section>
+  );
+}
+
 function PainSection() {
   const pains = [
     {
       icon: Zap,
       title: "How many of last year’s buyers are due a new car right now — and don’t know you’re still here?",
-      body: "Most dealers pay auction fees and transport costs to source stock they've already sold once. Wynback puts you back in touch with the owner before they trade it elsewhere.",
+      body: "You’re paying auction fees and transport costs to source stock you’ve already sold once. Wynback puts you back in touch with the owner before they trade it elsewhere.",
     },
     {
       icon: Database,
       title: "If a customer’s ready to upgrade next month, who finds out first — you, or the dealer who emails them first?",
-      body: "Thousands of past buyers sit idle while you spend thousands on portals to find new ones. Past customers convert faster, trust you already, and cost almost nothing to reach.",
+      body: "Thousands of past buyers sit idle while you spend thousands on portals to find strangers. Past customers convert faster, trust you already, and cost almost nothing to reach.",
     },
     {
       icon: Users,
       title: "What’s it costing you to buy back at auction the same car you already sold once?",
-      body: "When a salesperson leaves, their contact book often leaves too. Wynback institutionalises the follow-up so your dealership owns the relationship, not the individual.",
+      body: "You already know its history, its condition, and its owner. Buying it back at auction means paying transport, auction fees, and a stranger’s premium for a car you could have sourced directly from someone who already trusts you.",
     },
     {
       icon: PenTool,
       title: "Your CRM has the data. When’s the last time it actually sold you a car?",
-      body: "Milestones pass, finance deals expire, and customers slip away. Wynback automates the timing and the copy so it happens without eating your day.",
+      body: "Milestones pass, finance deals expire, and customers quietly slip away. Wynback automates the timing and the copy so it happens without eating your day.",
     },
   ];
 
@@ -285,7 +302,7 @@ function PainSection() {
     <section className="py-24 bg-secondary/30">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="max-w-3xl mx-auto text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-semibold tracking-tight">Why most independent dealers are leaving money on the table</h2>
+          <h2 className="text-3xl md:text-4xl font-semibold tracking-tight">How many of last year’s buyers are due a new car right now — and don’t know you’re still here?</h2>
           <p className="mt-4 text-lg text-muted-foreground">Wynback fixes the four leaks that quietly drain profit from every dealership.</p>
         </div>
         <div className="grid md:grid-cols-2 gap-6">
@@ -413,7 +430,7 @@ function BenefitsSection() {
     {
       icon: ShieldCheck,
       title: "Buy back cars you previously sold",
-      body: "Re-engaging past owners gives you first refusal on stock you understand. No auction buyer's premium, no transport, no surprises — just familiar cars you can retail with confidence.",
+      body: "Re-engaging past owners gives you first refusal on stock you understand — no auction premium, no transport, no surprises.",
     },
     {
       icon: Users,
@@ -423,7 +440,7 @@ function BenefitsSection() {
     {
       icon: Lock,
       title: "Marketing that works while you sleep",
-      body: "The system runs automatically every month. Your team reviews the emails and clicks approve — everything else is handled.",
+      body: "The system runs every month automatically. Your team reviews the emails and clicks approve — everything else is handled.",
     },
     {
       icon: Sparkles,
@@ -433,7 +450,7 @@ function BenefitsSection() {
     {
       icon: Database,
       title: "Your CRM becomes a profit engine",
-      body: "The same customer database you've already paid to acquire keeps producing leads. We turn dead data into live opportunities month after month.",
+      body: "The same customer database you've already paid to acquire keeps producing leads — and it stays with the dealership. When a salesperson leaves, their contact book usually leaves with them; Wynback keeps the relationship with the business, not the individual.",
     },
   ];
 
@@ -498,7 +515,7 @@ function CalculatorSection() {
           </span>
           <h2 className="mt-4 text-3xl md:text-4xl font-semibold tracking-tight">See what your past sales could be worth</h2>
           <p className="mt-4 text-lg text-muted-foreground">
-            Slide your average monthly sales and pick a plan. Wynback re-engages those same customers at key milestones, turning history into a measurable return.
+            You&apos;ve already paid to acquire these customers once. Reaching them again costs a fraction of a fresh ad — and even a modest reply rate turns into sales you&apos;d otherwise lose to a competitor. Slide your average monthly sales below to see what your own list could generate.
           </p>
         </div>
 
@@ -754,19 +771,19 @@ function PricingFAQ() {
   const faqs = [
     {
       q: "What kind of results can I expect?",
-      a: "Most dealers see an immediate uplift in warm enquiries from past customers. The system is designed to create more sales, strengthen relationships, and surface buy-back opportunities — all without portal or auction fees.",
+      a: "It depends on the size and age of your customer database, but the principle is simple: you're reaching people who already bought from you once, at the exact moment they're statistically most likely to be shopping again. Use the ROI calculator above to see what your own numbers could look like based on your monthly sales volume and list size.",
     },
     {
       q: "What data do I need to upload?",
-      a: "A simple CSV of your previous sales is enough: customer name, email, car details and sale date. Wynback handles the rest and surfaces the right customers at the right milestone.",
+      a: "Just a CSV of your past sales — customer name, email, purchase date, and the vehicle they bought. That's enough for Wynback to start flagging ownership milestones and generating email sequences. No DMS integration required to get started, and we'll help you get the file into the right format if needed.",
     },
     {
       q: "How secure is my customer data?",
-      a: "Fully GDPR compliant, encrypted at rest and in transit, and never shared or sold. We only ever email your customers on your behalf.",
+      a: "Your data stays yours. All sending is GDPR-compliant, unsubscribes are handled automatically, and you can export your data or cancel at any time — there's no lock-in and we never share your customer list.",
     },
     {
       q: "Do I need marketing experience?",
-      a: "None. Wynback writes the emails, selects the timing, and manages replies. You just review and approve.",
+      a: "No. The AI writes every email for you in a warm, human tone referencing the exact car each customer bought, and we set up your entire milestone sequence when you sign up. Most dealers spend under 10 minutes a month reviewing and approving emails — no campaigns to build, no copywriting required.",
     },
   ];
 
