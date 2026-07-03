@@ -1,7 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { z } from "zod";
-import { MILESTONES } from "./format";
+import { DEFAULT_MILESTONES } from "./format";
 
 function firstOfMonth(d: Date = new Date()): string {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-01`;
@@ -14,7 +14,7 @@ function monthsAgoAt(months: number, ref: Date = new Date()): { start: string; e
   return { start, end };
 }
 
-async function rebuildCohortInternal(supabase: any, dealerId: string) {
+async function rebuildCohortInternal(supabase: any, dealerId: string, milestoneMonths?: number[] | null) {
   const monthDate = firstOfMonth();
   const { data: existing } = await supabase.from("cohorts").select("id").eq("dealer_id", dealerId).eq("month", monthDate).maybeSingle();
   let cohortId = existing?.id;
@@ -36,7 +36,9 @@ async function rebuildCohortInternal(supabase: any, dealerId: string) {
   const activeCustomers = new Set<string>((activeSeq ?? []).map((s: any) => s.customer_id));
 
   const inserts: any[] = [];
-  for (const months of MILESTONES) {
+  const milestones = milestoneMonths && milestoneMonths.length > 0 ? milestoneMonths : DEFAULT_MILESTONES;
+  for (const months of milestones) {
+
     const { start, end } = monthsAgoAt(months);
     const { data: custs } = await supabase
       .from("customers")
@@ -66,9 +68,10 @@ async function rebuildCohortInternal(supabase: any, dealerId: string) {
 export const rebuildCurrentCohort = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    const { data: dealer } = await context.supabase.from("dealers").select("id").eq("user_id", context.userId).single();
+    const { data: dealer } = await context.supabase.from("dealers").select("id, milestone_months").eq("user_id", context.userId).single();
     if (!dealer) throw new Error("Dealer not found");
-    const result = await rebuildCohortInternal(context.supabase, dealer.id);
+    const result = await rebuildCohortInternal(context.supabase, dealer.id, (dealer as any).milestone_months);
+
     await context.supabase.from("activity_log").insert({
       dealer_id: dealer.id, kind: "leads_generated", payload: { added: result.added },
     });
