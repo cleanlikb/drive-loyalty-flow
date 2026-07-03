@@ -334,7 +334,7 @@ function SenderEmailCard({ dealer }: { dealer: any }) {
       <div>
         <h2 className="font-semibold">Sender email</h2>
         <p className="text-sm text-muted-foreground mt-1">
-          The address customers see in the From line. Must be on a domain verified with the email provider — sends are blocked until this is verified.
+          The address customers see in the From line. Must be on your own domain{accountDomain ? ` (${accountDomain} or a subdomain of it, e.g. sales@${accountDomain})` : ""} and verified with the email provider — sends are blocked until this is verified.
         </p>
       </div>
 
