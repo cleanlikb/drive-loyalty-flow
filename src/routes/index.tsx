@@ -83,6 +83,11 @@ function Header({
         <nav className="hidden md:flex items-center gap-1">
           <NavLink href="#how-it-works">How it works</NavLink>
           <NavLink href="#benefits">Benefits</NavLink>
+          <NavLink href="#pricing">Pricing</NavLink>
+          <NavLink href="#calculator">ROI calculator</NavLink>
+          <Link to="/contact" className="px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground rounded-md transition-colors">
+            Contact
+          </Link>
           <Link to="/auth" className="ml-2">
             <Button variant="ghost" size="sm">Sign in</Button>
           </Link>
