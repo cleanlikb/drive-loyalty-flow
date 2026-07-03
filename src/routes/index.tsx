@@ -278,7 +278,7 @@ function PainSection() {
   const pains = [
     {
       icon: Zap,
-      title: "How many of last year's buyers are due a new car right now — and don't know you're still here?",
+      title: "How many of your previous customers are due a new car right now — and don't know you're still here?",
       body: "They've had the car three years, made their final payment, and started browsing online — without a single email from you reminding them you're still there. Wynback reaches out automatically, before they start looking elsewhere.",
     },
     {
