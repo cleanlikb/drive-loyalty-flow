@@ -118,11 +118,15 @@ export async function processReply(
 
   // Best-effort forward to the dealer's inbox.
   if (source === "inbound_email" && seq.dealer?.forward_replies && seq.dealer?.notification_email) {
+    const dealerSender = seq.dealer?.sender_verified ? seq.dealer?.sender_email : null;
+    const fromAddress = dealerSender ?? process.env.RESEND_FROM ?? "";
     try {
       await forwardReply({
         to: seq.dealer.notification_email,
         fromLabel: `${seq.customer?.name ?? "Customer"} via Wynback`,
+        fromAddress,
         subject: `[${labelFor(classification.classification)}] ${meta.subject ?? "New reply"} — ${seq.customer?.name ?? ""}`,
+        replyTo: meta.fromEmail ?? seq.customer?.email ?? null,
         text: [
           `New inbound reply from ${seq.customer?.name ?? "customer"} <${meta.fromEmail ?? seq.customer?.email ?? ""}>`,
           `Classified as: ${labelFor(classification.classification)} (${Math.round((classification.confidence ?? 0) * 100)}%)`,
