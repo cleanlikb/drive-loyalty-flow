@@ -369,7 +369,7 @@ export const startSequencesBulk = createServerFn({ method: "POST" })
 
 
 const dispatchEmailViaResend = async (supabase: any, email: any) => {
-  const { generateReplyAlias, plainTextToHtml, replyToAddress, sendResendEmail } = await import("./resend.server");
+  const { plainTextToHtml, replyToAddress, sendResendEmail } = await import("./resend.server");
 
   const { data: full } = await (supabase as any)
     .from("sequence_emails")
@@ -384,15 +384,10 @@ const dispatchEmailViaResend = async (supabase: any, email: any) => {
   const fromAddress = dealerSender ?? process.env.RESEND_FROM ?? null;
   if (!fromAddress) throw new Error("No verified sender email configured. Set one in Settings before sending.");
 
-  let alias = full.reply_alias;
-  if (!alias) {
-    if (!full.dealer?.slug) throw new Error("Dealer has no slug");
-    alias = generateReplyAlias(full.dealer.slug);
-    await supabase.from("sequence_emails").update({ reply_alias: alias }).eq("id", email.id);
-  }
-
-  const dealerInbox = dealerSender ?? full.dealer?.notification_email ?? null;
-  const replyTo = dealerInbox ?? replyToAddress(alias);
+  // Reply-to is a single shared inbound address; we identify the customer
+  // from the From email (and sequence from thread headers) when the reply
+  // hits our inbound webhook.
+  const replyTo = replyToAddress("sales");
 
   const { resendEmailId, messageId } = await sendResendEmail({
     to: full.customer.email,
