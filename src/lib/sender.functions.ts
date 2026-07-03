@@ -98,7 +98,7 @@ export const verifySenderEmail = createServerFn({ method: "POST" })
       .eq("user_id", context.userId);
     if (error) throw error;
 
-    return { ok: true as const, email, domain };
+    return { ok: true as const, email, domain, autoVerified: !skippedCheck };
   });
 
 export const clearSenderEmail = createServerFn({ method: "POST" })
