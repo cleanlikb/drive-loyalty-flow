@@ -198,7 +198,10 @@ function Settings() {
         {form.milestone_months.length === 0 && (
           <p className="text-xs text-destructive">Add at least one interval.</p>
         )}
+      </Card>
+
       <Card className="p-6 space-y-4">
+
         <div>
           <h2 className="font-semibold">Send throttling</h2>
           <p className="text-sm text-muted-foreground mt-1">
