@@ -114,6 +114,9 @@ function Header({
           <Link to="/contact" onClick={() => setMobileOpen(false)} className="px-3 py-2.5 text-base font-medium text-foreground hover:bg-accent rounded-md transition-colors">
             Contact
           </Link>
+          <Link to="/auth" onClick={() => setMobileOpen(false)} className="mt-2">
+            <Button className="w-full" size="lg">Get started</Button>
+          </Link>
           <Link to="/auth" onClick={() => setMobileOpen(false)} className="text-center text-sm text-muted-foreground py-2">
             Already have an account? Sign in
           </Link>
