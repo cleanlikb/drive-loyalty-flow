@@ -24,7 +24,7 @@ import {
 } from "@/components/ui/accordion";
 import { toast } from "sonner";
 import { useState } from "react";
-import { Sparkles, Send, StopCircle } from "lucide-react";
+import { Sparkles, Send, StopCircle, PlayCircle } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/sequences/")({
   component: Sequences,
