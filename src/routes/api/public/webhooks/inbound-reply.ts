@@ -51,11 +51,34 @@ export const Route = createFileRoute("/api/public/webhooks/inbound-reply")({
           typeof data.from === "string" ? data.from : data.from?.address ?? "",
         );
         const subject: string | null = data.subject ?? null;
-        const text: string = (data.text && String(data.text).trim())
-          ? String(data.text)
-          : String(data.html ?? "");
-        const messageId = data.id ?? data.message_id ?? null;
-        const inReplyTo = headerVal(data.headers, "In-Reply-To");
+        const receivedId: string | null = data.id ?? data.email_id ?? null;
+
+        // Resend inbound webhooks contain metadata only — fetch the body via API.
+        let text = "";
+        let fetchedHeaders: any = data.headers ?? null;
+        let fetchedMessageId: string | null = data.message_id ?? null;
+        if (receivedId) {
+          try {
+            const body = await fetchReceivedEmail(receivedId);
+            if (body) {
+              text = (body.text && String(body.text).trim())
+                ? String(body.text)
+                : stripHtml(String(body.html ?? ""));
+              fetchedHeaders = body.headers ?? fetchedHeaders;
+              fetchedMessageId = body.message_id ?? fetchedMessageId;
+            }
+          } catch (e) {
+            console.error("[inbound-reply] fetch body failed", e);
+          }
+        }
+        if (!text) {
+          text = (data.text && String(data.text).trim())
+            ? String(data.text)
+            : stripHtml(String(data.html ?? ""));
+        }
+        const messageId = fetchedMessageId ?? receivedId;
+        const inReplyTo = headerVal(fetchedHeaders, "In-Reply-To");
+
 
         const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
         const db = supabaseAdmin as any;
