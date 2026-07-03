@@ -90,18 +90,6 @@ export const Route = createFileRoute("/api/public/webhooks/inbound-reply")({
   },
 });
 
-function parseSubAddress(email: string): { dealerSlug: string; customerId: string } | null {
-  if (!email) return null;
-  const clean = extractEmail(email);
-  const [local] = clean.split("@");
-  if (!local) return null;
-  const plus = local.indexOf("+");
-  if (plus <= 0) return null;
-  const dealerSlug = local.slice(0, plus).trim().toLowerCase();
-  const customerId = local.slice(plus + 1).trim();
-  if (!dealerSlug || !customerId) return null;
-  return { dealerSlug, customerId };
-}
 
 function extractEmail(raw: string): string {
   if (!raw) return "";
