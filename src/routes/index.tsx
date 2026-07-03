@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
@@ -22,6 +22,8 @@ import {
   Calculator,
   Check,
   Sparkles,
+  Play,
+  Pause,
 } from "lucide-react";
 import {
   Accordion,
@@ -31,6 +33,7 @@ import {
 } from "@/components/ui/accordion";
 import logo from "@/assets/wynback-logo.png.asset.json";
 import explainerAsset from "@/assets/wynback-explainer.mp4.asset.json";
+import explainerPoster from "@/assets/wynback-explainer-poster.png.asset.json";
 
 export const Route = createFileRoute("/")({
   component: Landing,
@@ -187,6 +190,19 @@ function HeroSection() {
 }
 
 function VideoSection() {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+
+  const togglePlay = () => {
+    const video = videoRef.current;
+    if (!video) return;
+    if (video.paused || video.ended) {
+      void video.play();
+    } else {
+      video.pause();
+    }
+  };
+
   return (
     <section className="py-16 md:py-24 bg-white">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -197,16 +213,43 @@ function VideoSection() {
           Watch how Wynback turns your existing customer list into a reliable, low-cost source of extra sales and stock opportunities.
         </p>
         <div className="mt-10 rounded-2xl border border-border bg-card p-2 md:p-3 shadow-sm">
-          <div className="relative aspect-video overflow-hidden rounded-xl bg-black">
+          <div
+            className="relative aspect-video overflow-hidden rounded-xl bg-muted group cursor-pointer"
+            onClick={togglePlay}
+          >
             <video
+              ref={videoRef}
               src={explainerAsset.url}
-              controls
+              poster={explainerPoster.url}
               preload="metadata"
               playsInline
               webkit-playsinline="true"
-              className="w-full h-full"
+              className="w-full h-full object-cover"
               aria-label="Wynback explainer video"
+              onPlay={() => setIsPlaying(true)}
+              onPause={() => setIsPlaying(false)}
+              onEnded={() => setIsPlaying(false)}
             />
+            {!isPlaying && (
+              <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+                <div className="h-16 w-16 md:h-20 md:w-20 rounded-full bg-primary text-white shadow-lg shadow-primary/30 grid place-items-center transition-transform group-hover:scale-110">
+                  <Play className="h-7 w-7 md:h-8 md:w-8 fill-current ml-1" />
+                </div>
+              </div>
+            )}
+            {isPlaying && (
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  togglePlay();
+                }}
+                className="absolute top-3 right-3 h-10 w-10 rounded-full bg-black/60 text-white backdrop-blur-sm grid place-items-center opacity-0 group-hover:opacity-100 transition-opacity focus:opacity-100"
+                aria-label="Pause video"
+              >
+                <Pause className="h-5 w-5 fill-current" />
+              </button>
+            )}
           </div>
         </div>
       </div>
