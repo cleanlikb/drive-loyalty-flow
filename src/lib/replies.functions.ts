@@ -73,3 +73,50 @@ export const clearHotLead = createServerFn({ method: "POST" })
       .eq("id", data.customerId);
     return { ok: true };
   });
+
+export const deleteReply = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) => z.object({ id: z.string().uuid() }).parse(d))
+  .handler(async ({ data, context }) => {
+    const { error } = await context.supabase.from("replies").delete().eq("id", data.id);
+    if (error) throw error;
+    return { ok: true };
+  });
+
+export const sendReplyMessage = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) => z.object({
+    replyId: z.string().uuid(),
+    body: z.string().min(1).max(10000),
+    subject: z.string().max(300).optional(),
+  }).parse(d))
+  .handler(async ({ data, context }) => {
+    const { data: reply, error } = await context.supabase
+      .from("replies")
+      .select("*, customer:customers(id,name,email), dealer:dealers(id,dealership_name,sender_email,sender_verified,notification_email)")
+      .eq("id", data.replyId)
+      .single();
+    if (error || !reply) throw new Error("Reply not found");
+
+    const to = (reply as any).from_email || (reply as any).customer?.email;
+    if (!to) throw new Error("No recipient email on this reply");
+
+    const dealer: any = (reply as any).dealer;
+    const dealerSender = dealer?.sender_verified ? dealer?.sender_email : null;
+    const fromAddress = dealerSender ?? process.env.RESEND_FROM;
+    if (!fromAddress) throw new Error("No verified sender configured");
+
+    const subject = data.subject?.trim() || `Re: ${(reply as any).subject ?? "your message"}`;
+    const { sendResendEmail, plainTextToHtml } = await import("./resend.server");
+
+    await sendResendEmail({
+      to,
+      from: `${dealer?.dealership_name ?? "Wynback"} <${fromAddress}>`,
+      subject,
+      text: data.body,
+      html: plainTextToHtml(data.body),
+      replyTo: dealer?.notification_email ?? fromAddress,
+    });
+
+    return { ok: true };
+  });
