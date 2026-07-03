@@ -36,7 +36,7 @@ export async function processReply(
 
   const { data: seq } = await supabase
     .from("sequences")
-    .select("*, customer:customers(id,name,email,make,model), dealer:dealers(id,notification_email,forward_replies,dealership_name)")
+    .select("*, customer:customers(id,name,email,make,model), dealer:dealers(id,notification_email,forward_replies,dealership_name,sender_email,sender_verified)")
     .eq("id", sequenceId).single();
   if (!seq) throw new Error("Sequence not found");
 
