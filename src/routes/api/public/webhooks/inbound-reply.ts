@@ -27,10 +27,6 @@ export const Route = createFileRoute("/api/public/webhooks/inbound-reply")({
 
         const fromRaw = typeof data.from === "string" ? data.from : data.from?.address ?? "";
         let fromEmail = extractEmail(fromRaw);
-        if (!fromEmail) {
-          return json({ received: true, skipped: "no_from" }, 200);
-        }
-
         let subject: string | null = data.subject ?? null;
         const receivedId: string | null = data.id ?? data.email_id ?? null;
 
@@ -58,6 +54,9 @@ export const Route = createFileRoute("/api/public/webhooks/inbound-reply")({
           text = (data.text && String(data.text).trim())
             ? String(data.text)
             : stripHtml(String(data.html ?? ""));
+        }
+        if (!fromEmail) {
+          return json({ received: true, skipped: "no_from" }, 200);
         }
         const messageId = fetchedMessageId ?? receivedId;
         const inReplyTo = headerVal(fetchedHeaders, "In-Reply-To");
