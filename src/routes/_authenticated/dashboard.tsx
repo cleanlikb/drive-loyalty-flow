@@ -123,16 +123,33 @@ function Dashboard() {
       )}
 
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-        {cards.map((c: any) => (
-          <Card key={c.label} className={`p-5 ${c.accent ? "border-orange-200 bg-orange-50/50" : ""}`}>
-            <div className="text-xs text-muted-foreground uppercase tracking-wide flex items-center gap-1">
-              {c.accent && <Flame className="h-3 w-3 text-orange-600" />}
-              {c.label}
-            </div>
-            <div className="text-3xl font-semibold tracking-tight mt-2">{c.value}</div>
-            {c.sub && <div className="text-xs text-muted-foreground mt-1">{c.sub}</div>}
-          </Card>
-        ))}
+        {cards.map((c) => {
+          const isActive = c.key === activeMetric;
+          return (
+            <button
+              key={c.key}
+              onClick={() => setActiveMetric(c.key)}
+              className={cn(
+                "text-left transition rounded-xl",
+                isActive && "ring-2 ring-primary ring-offset-2",
+              )}
+            >
+              <Card
+                className={cn(
+                  "p-5 h-full hover:shadow-md transition cursor-pointer",
+                  c.accent && "border-orange-200 bg-orange-50/50",
+                )}
+              >
+                <div className="text-xs text-muted-foreground uppercase tracking-wide flex items-center gap-1">
+                  {c.accent && <Flame className="h-3 w-3 text-orange-600" />}
+                  {c.label}
+                </div>
+                <div className="text-3xl font-semibold tracking-tight mt-2">{c.value}</div>
+                {c.sub && <div className="text-xs text-muted-foreground mt-1">{c.sub}</div>}
+              </Card>
+            </button>
+          );
+        })}
       </div>
 
       {hotLeads.length > 0 && (
