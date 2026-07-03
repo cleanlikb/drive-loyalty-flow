@@ -1,17 +1,18 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getCurrentCohort, rebuildCurrentCohort, toggleCohortSelection } from "@/lib/cohorts.functions";
+import { getCurrentCohort, getPastCohorts, rebuildCurrentCohort, toggleCohortSelection } from "@/lib/cohorts.functions";
 import { startSequencesForSelected } from "@/lib/sequences.functions";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { MilestoneBadge } from "@/components/MilestoneBadge";
 import { MILESTONES, formatDate, formatGbp } from "@/lib/format";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
-import { RefreshCw, Send } from "lucide-react";
+import { ChevronDown, RefreshCw, Send } from "lucide-react";
 
 type SequenceType = "trade_in" | "buy_back";
 const SEQUENCE_TYPE_OPTIONS: { value: SequenceType; label: string; description: string }[] = [
