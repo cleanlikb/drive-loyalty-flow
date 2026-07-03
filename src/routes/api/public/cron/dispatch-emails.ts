@@ -49,13 +49,12 @@ export const Route = createFileRoute("/api/public/cron/dispatch-emails")({
             dealer:dealers(id, slug, dealership_name, notification_email),
             sequence:sequences(id, customer:customers(id, name, email))
           `)
-          .eq("status", "scheduled")
           .order("scheduled_for", { ascending: true })
           .limit(500);
 
         dueQuery = forceEmailIds.length > 0
-          ? dueQuery.in("id", forceEmailIds)
-          : dueQuery.lte("scheduled_for", now);
+          ? dueQuery.in("id", forceEmailIds).in("status", ["scheduled", "failed"])
+          : dueQuery.eq("status", "scheduled").lte("scheduled_for", now);
 
         const { data: due, error: dueError } = await dueQuery;
         if (dueError) {
@@ -98,9 +97,12 @@ export const Route = createFileRoute("/api/public/cron/dispatch-emails")({
 
           try {
             const replyTo = replyToAddress(alias);
+            const sender = fromAddress.includes("<")
+              ? fromAddress
+              : `${dealer?.dealership_name ?? "Wynback"} <${fromAddress}>`;
             const { resendEmailId, messageId } = await sendResendEmail({
               to: customer.email,
-              from: `${dealer?.dealership_name ?? "Wynback"} <${fromAddress}>`,
+              from: sender,
               subject: e.subject,
               text: e.body,
               html: plainTextToHtml(e.body),
