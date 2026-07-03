@@ -320,6 +320,7 @@ export type Database = {
           message_id: string | null
           next_car_notes: string | null
           raw_text: string
+          read_at: string | null
           rescanned_at: string | null
           sequence_id: string | null
           subject: string | null
@@ -339,6 +340,7 @@ export type Database = {
           message_id?: string | null
           next_car_notes?: string | null
           raw_text: string
+          read_at?: string | null
           rescanned_at?: string | null
           sequence_id?: string | null
           subject?: string | null
@@ -358,6 +360,7 @@ export type Database = {
           message_id?: string | null
           next_car_notes?: string | null
           raw_text?: string
+          read_at?: string | null
           rescanned_at?: string | null
           sequence_id?: string | null
           subject?: string | null
