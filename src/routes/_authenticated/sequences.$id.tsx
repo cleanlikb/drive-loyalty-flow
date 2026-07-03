@@ -15,17 +15,21 @@ import { ArrowLeft, Sparkles } from "lucide-react";
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogTrigger,
 } from "@/components/ui/dialog";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 export const Route = createFileRoute("/_authenticated/sequences/$id")({
   component: SequenceDetail,
 });
 
-function EmailCard({ e, onSave, onRegen }: { e: any; onSave: (payload: { id: string; subject: string; body: string }) => Promise<void>; onRegen: (payload: { id: string; instruction?: string }) => Promise<void> }) {
+function EmailCard({ e, seqType, onSave, onRegen }: { e: any; seqType: "trade_in" | "buy_back"; onSave: (payload: { id: string; subject: string; body: string }) => Promise<void>; onRegen: (payload: { id: string; sequenceType: "trade_in" | "buy_back"; instruction?: string }) => Promise<void> }) {
   const [editing, setEditing] = useState(false);
   const [subject, setSubject] = useState(e.subject);
   const [body, setBody] = useState(e.body);
   const [saving, setSaving] = useState(false);
   const [regenerating, setRegenerating] = useState(false);
+  const [regenOpen, setRegenOpen] = useState(false);
+  const [regenType, setRegenType] = useState<"trade_in" | "buy_back">(seqType);
+  const [regenInstr, setRegenInstr] = useState("");
   const canEdit = e.status === "draft" || e.status === "scheduled";
   return (
     <Card className="p-5">
@@ -72,16 +76,50 @@ function EmailCard({ e, onSave, onRegen }: { e: any; onSave: (payload: { id: str
                 variant="outline"
                 size="sm"
                 disabled={regenerating}
-                onClick={async () => {
-                  setRegenerating(true);
-                  try { await onRegen({ id: e.id }); toast.success("Regenerated"); }
-                  catch (er: any) { toast.error(er?.message ?? "Regenerate failed"); }
-                  finally { setRegenerating(false); }
-                }}
+                onClick={() => { setRegenType(seqType); setRegenInstr(""); setRegenOpen(true); }}
               >
                 <Sparkles className="h-3.5 w-3.5 mr-1.5" />
                 {regenerating ? "Regenerating…" : "Regenerate"}
               </Button>
+              <Dialog open={regenOpen} onOpenChange={setRegenOpen}>
+                <DialogContent>
+                  <DialogHeader><DialogTitle>Regenerate email</DialogTitle></DialogHeader>
+                  <div className="space-y-3">
+                    <div className="space-y-1.5">
+                      <Label>Sequence type</Label>
+                      <Select value={regenType} onValueChange={(v) => setRegenType(v as "trade_in" | "buy_back")}>
+                        <SelectTrigger><SelectValue /></SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="trade_in">Trade-in / Upgrade</SelectItem>
+                          <SelectItem value="buy_back">Buy-back offer</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-1.5">
+                      <Label>Extra instruction (optional)</Label>
+                      <Textarea rows={3} value={regenInstr} onChange={(ev) => setRegenInstr(ev.target.value)} placeholder="e.g. mention we take cars in any condition" />
+                    </div>
+                  </div>
+                  <DialogFooter>
+                    <Button variant="ghost" onClick={() => setRegenOpen(false)}>Cancel</Button>
+                    <Button
+                      disabled={regenerating}
+                      onClick={async () => {
+                        setRegenerating(true);
+                        try {
+                          await onRegen({ id: e.id, sequenceType: regenType, instruction: regenInstr.trim() || undefined });
+                          toast.success("Regenerated");
+                          setRegenOpen(false);
+                        } catch (er: any) { toast.error(er?.message ?? "Regenerate failed"); }
+                        finally { setRegenerating(false); }
+                      }}
+                    >
+                      <Sparkles className="h-3.5 w-3.5 mr-1.5" />
+                      {regenerating ? "Regenerating…" : "Regenerate"}
+                    </Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
             </div>
           )}
         </div>
@@ -89,6 +127,7 @@ function EmailCard({ e, onSave, onRegen }: { e: any; onSave: (payload: { id: str
     </Card>
   );
 }
+
 
 function SequenceDetail() {
   const { id } = Route.useParams();
@@ -161,7 +200,7 @@ function SequenceDetail() {
 
       <div className="space-y-4">
         {(data.sequence_emails ?? []).map((e: any) => (
-          <EmailCard key={e.id} e={e}
+          <EmailCard key={e.id} e={e} seqType={(data.sequence_type ?? "trade_in") as "trade_in" | "buy_back"}
             onSave={async (payload) => {
               await update({ data: payload });
               qc.invalidateQueries({ queryKey: ["sequence", id] });

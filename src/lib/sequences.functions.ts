@@ -69,6 +69,7 @@ export const regenerateSequenceEmail = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) => z.object({
     id: z.string().uuid(),
     instruction: z.string().max(300).optional(),
+    sequenceType: z.enum(["trade_in", "buy_back"]).optional(),
   }).parse(d))
   .handler(async ({ data, context }) => {
     const { data: email, error } = await context.supabase
@@ -83,6 +84,8 @@ export const regenerateSequenceEmail = createServerFn({ method: "POST" })
     if (!dealer) throw new Error("Dealer not found");
     const c = email.sequence.customer;
 
+    const effectiveType = (data.sequenceType ?? email.sequence?.sequence_type ?? "trade_in") as "trade_in" | "buy_back";
+
     const { regenerateEmail } = await import("./ai.server");
     const fresh = await regenerateEmail({
       dealership: dealer.dealership_name,
@@ -91,12 +94,20 @@ export const regenerateSequenceEmail = createServerFn({ method: "POST" })
       customerCarYearMakeModelTrim: [c.make, c.model, c.trim].filter(Boolean).join(" "),
       purchaseDate: c.sale_date ?? new Date().toISOString(),
       monthsSincePurchase: c.sale_date ? monthsAgo(c.sale_date) : 12,
-      sequenceType: (email.sequence?.sequence_type ?? "trade_in") as "trade_in" | "buy_back",
+      sequenceType: effectiveType,
       step: email.step as 1 | 2 | 3,
       currentSubject: email.subject,
       currentBody: email.body,
       instruction: data.instruction,
     });
+
+    if (data.sequenceType && data.sequenceType !== email.sequence?.sequence_type) {
+      await context.supabase.from("sequences")
+        .update({ sequence_type: data.sequenceType, updated_at: new Date().toISOString() })
+        .eq("id", email.sequence_id);
+    }
+
+
 
     const { error: updErr } = await context.supabase
       .from("sequence_emails")
@@ -221,6 +232,43 @@ export const startSequence = createServerFn({ method: "POST" })
     }
     return { ok: true };
   });
+
+export const startSequencesBulk = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) => z.object({ ids: z.array(z.string().uuid()).min(1).max(200) }).parse(d))
+  .handler(async ({ data, context }) => {
+    const { data: seqs, error } = await context.supabase
+      .from("sequences")
+      .select("id, status, sequence_emails(id, send_offset_days, status)")
+      .in("id", data.ids)
+      .eq("status", "drafting");
+    if (error) throw error;
+    const now = new Date();
+    let started = 0;
+    for (const seq of seqs ?? []) {
+      for (const e of seq.sequence_emails ?? []) {
+        if (e.status !== "draft") continue;
+        await context.supabase.from("sequence_emails").update({
+          status: "scheduled",
+          scheduled_for: addDays(now, e.send_offset_days).toISOString(),
+        }).eq("id", e.id);
+      }
+      await context.supabase.from("sequences").update({
+        status: "active",
+        started_at: now.toISOString(),
+        updated_at: now.toISOString(),
+      }).eq("id", seq.id);
+      started++;
+    }
+    const { data: dealer } = await context.supabase.from("dealers").select("id").eq("user_id", context.userId).single();
+    if (dealer && started > 0) {
+      await context.supabase.from("activity_log").insert({
+        dealer_id: dealer.id, kind: "sequences_started_bulk", payload: { count: started },
+      });
+    }
+    return { started };
+  });
+
 
 
 
