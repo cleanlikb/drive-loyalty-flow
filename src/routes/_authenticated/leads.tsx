@@ -27,11 +27,12 @@ function Leads() {
   const { data, isLoading } = useQuery({ queryKey: ["cohort"], queryFn: () => fetchCohort() });
   const [busy, setBusy] = useState(false);
 
-  const rebuildMut = useMutation({
+  const generateLeads = useMutation({
     mutationFn: () => rebuild(),
-    onSuccess: (r) => { toast.success(`Cohort rebuilt — ${r.added} leads`); qc.invalidateQueries({ queryKey: ["cohort"] }); qc.invalidateQueries({ queryKey: ["dashboard"] }); },
+    onSuccess: (r) => { toast.success(`Leads generated — ${r.added} leads`); qc.invalidateQueries({ queryKey: ["cohort"] }); qc.invalidateQueries({ queryKey: ["dashboard"] }); },
     onError: (e: any) => toast.error(e?.message ?? "Failed"),
   });
+
 
   const grouped = useMemo(() => {
     const rows = data?.rows ?? [];
