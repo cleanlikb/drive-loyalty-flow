@@ -106,11 +106,15 @@ function Dashboard() {
         </Card>
       )}
 
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-        {cards.map((c) => (
-          <Card key={c.label} className="p-5">
-            <div className="text-xs text-muted-foreground uppercase tracking-wide">{c.label}</div>
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+        {cards.map((c: any) => (
+          <Card key={c.label} className={`p-5 ${c.accent ? "border-orange-200 bg-orange-50/50" : ""}`}>
+            <div className="text-xs text-muted-foreground uppercase tracking-wide flex items-center gap-1">
+              {c.accent && <Flame className="h-3 w-3 text-orange-600" />}
+              {c.label}
+            </div>
             <div className="text-3xl font-semibold tracking-tight mt-2">{c.value}</div>
+            {c.sub && <div className="text-xs text-muted-foreground mt-1">{c.sub}</div>}
           </Card>
         ))}
       </div>
