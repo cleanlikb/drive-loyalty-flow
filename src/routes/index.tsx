@@ -567,7 +567,7 @@ function CalculatorSection() {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
             <StatBox label="People re-engaged / month" value={stats.monthlyLeads.toLocaleString()} />
             <StatBox label="Estimated extra sales / year" value={formatSales(stats.yearlySales)} />
             <StatBox label="Estimated profit / year" value={`£${Math.round(stats.yearlyProfit).toLocaleString()}`} highlight />
@@ -597,11 +597,11 @@ function CalculatorSection() {
 
 function StatBox({ label, value, highlight }: { label: string; value: string; highlight?: boolean }) {
   return (
-    <div className={`rounded-2xl p-6 text-center border ${highlight ? "bg-primary/10 border-primary/20" : "bg-background/50 border-border"}`}>
-      <div className={`text-3xl md:text-4xl font-semibold tracking-tight ${highlight ? "text-primary" : "text-foreground"}`}>
+    <div className={`rounded-2xl p-4 sm:p-6 text-center border ${highlight ? "bg-primary/10 border-primary/20" : "bg-background/50 border-border"}`}>
+      <div className={`text-2xl sm:text-3xl md:text-4xl font-semibold tracking-tight break-words ${highlight ? "text-primary" : "text-foreground"}`}>
         {value}
       </div>
-      <div className="mt-2 text-sm text-muted-foreground leading-tight">{label}</div>
+      <div className="mt-2 text-xs sm:text-sm text-muted-foreground leading-tight">{label}</div>
     </div>
   );
 }
