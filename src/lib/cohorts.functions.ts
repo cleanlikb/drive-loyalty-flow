@@ -70,8 +70,9 @@ export const rebuildCurrentCohort = createServerFn({ method: "POST" })
     if (!dealer) throw new Error("Dealer not found");
     const result = await rebuildCohortInternal(context.supabase, dealer.id);
     await context.supabase.from("activity_log").insert({
-      dealer_id: dealer.id, kind: "cohort_rebuilt", payload: { added: result.added },
+      dealer_id: dealer.id, kind: "leads_generated", payload: { added: result.added },
     });
+
     return result;
   });
 

@@ -48,8 +48,12 @@ export const Route = createFileRoute("/api/public/cron/monthly-cohort")({
               title: `Your ${now.toLocaleString("en-GB", { month: "long" })} leads are ready`,
               body: `${inserts.length} customers hit an anniversary this month.`,
             });
+            await supabaseAdmin.from("activity_log").insert({
+              dealer_id: d.id, kind: "leads_generated", payload: { added: inserts.length },
+            });
             total += inserts.length;
           }
+
         }
         return Response.json({ ok: true, dealers: dealers?.length ?? 0, leads: total });
       },
