@@ -105,12 +105,16 @@ export async function processReply(
     classification.classification === "no_longer_owns" ? `${seq.customer?.name} no longer owns the car` :
     classification.classification === "unsubscribe" ? `${seq.customer?.name} unsubscribed` :
     `New reply from ${seq.customer?.name}`;
-  await supabase.from("notifications").insert({
-    dealer_id: seq.dealer_id,
-    title,
-    body: classification.summary?.slice(0, 200) ?? null,
-    kind: "reply",
-  }).catch(() => {});
+  try {
+    await supabase.from("notifications").insert({
+      dealer_id: seq.dealer_id,
+      title,
+      body: classification.summary?.slice(0, 200) ?? null,
+      kind: "reply",
+    });
+  } catch (e) {
+    console.error("notification insert failed", e);
+  }
 
   // Best-effort forward to the dealer's inbox.
   if (source === "inbound_email" && seq.dealer?.forward_replies && seq.dealer?.notification_email) {

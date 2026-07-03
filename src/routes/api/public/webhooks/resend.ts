@@ -53,13 +53,38 @@ export const Route = createFileRoute("/api/public/webhooks/resend")({
 
         // Inbound reply: route via the reply alias in the To address, then fall back to In-Reply-To.
         if (eventType === "email.received") {
-          const toAddresses: string[] = Array.isArray(data?.to) ? data.to : [data?.to].filter(Boolean);
-          const fromEmail = extractEmail(data?.from ?? "");
+          const toAddresses: string[] = (Array.isArray(data?.to) ? data.to : [data?.to])
+            .filter(Boolean)
+            .map((v: any) => (typeof v === "string" ? v : v?.address ?? ""))
+            .filter(Boolean);
+          const fromEmail = extractEmail(typeof data?.from === "string" ? data.from : data?.from?.address ?? "");
           const subject = data?.subject ?? null;
-          const text = data?.text ?? data?.html ?? "";
-          const headers = data?.headers ?? [];
+          const receivedId: string | null = data?.id ?? data?.email_id ?? null;
+
+          // Resend's received-email webhook is metadata-only; fetch the message body separately.
+          let text = "";
+          let headers = data?.headers ?? [];
+          let messageId: string | null = data?.message_id ?? receivedId;
+          if (receivedId) {
+            try {
+              const body = await fetchReceivedEmail(receivedId);
+              if (body) {
+                text = extractBodyText(body);
+                headers = body.headers ?? headers;
+                messageId = body.message_id ?? messageId;
+              }
+            } catch (e) {
+              console.error("Resend inbound body fetch failed", e);
+            }
+          }
+          if (!text) text = extractBodyText(data);
+          console.log("Resend inbound reply body fetched", {
+            receivedId,
+            bodyLength: text.length,
+            hasHeaders: Array.isArray(headers) ? headers.length > 0 : Boolean(headers),
+          });
+
           const inReplyTo = headerVal(headers, "In-Reply-To") ?? cleanId(data?.in_reply_to);
-          const messageId = data?.id ?? null;
 
           let sequenceEmailId: string | null = null;
           let sequenceId: string | null = null;
@@ -129,6 +154,52 @@ function extractReplyAlias(email: string): string | null {
   // Alias format: {dealer_slug}-{hex}  e.g. smithmotors-a1b2c3d4
   if (!/^[a-z0-9-]+-[a-f0-9]{8}$/.test(local)) return null;
   return local;
+}
+
+async function fetchReceivedEmail(id: string): Promise<any | null> {
+  const lovableKey = process.env.LOVABLE_API_KEY;
+  const resendKey = process.env.RESEND_API_KEY;
+  if (!lovableKey || !resendKey) {
+    console.warn("Resend inbound body fetch skipped: missing credentials");
+    return null;
+  }
+
+  const res = await fetch(`https://connector-gateway.lovable.dev/resend/emails/received/${id}?html_format=data_uri`, {
+    headers: {
+      Authorization: `Bearer ${lovableKey}`,
+      "X-Connection-Api-Key": resendKey,
+    },
+  });
+  if (!res.ok) {
+    console.error(`Resend inbound body fetch ${res.status}:`, await res.text());
+    return null;
+  }
+  return await res.json();
+}
+
+function extractBodyText(value: any): string {
+  const text = value?.text;
+  if (typeof text === "string" && text.trim()) return text.trim();
+
+  const html = value?.html;
+  if (typeof html === "string" && html.trim()) return stripHtml(html);
+  return "";
+}
+
+function stripHtml(html: string): string {
+  return html
+    .replace(/<style[\s\S]*?<\/style>/gi, "")
+    .replace(/<script[\s\S]*?<\/script>/gi, "")
+    .replace(/<br\s*\/?>/gi, "\n")
+    .replace(/<\/p>/gi, "\n\n")
+    .replace(/<[^>]+>/g, "")
+    .replace(/&nbsp;/g, " ")
+    .replace(/&amp;/g, "&")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&quot;/g, '"')
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
 }
 
 function extractEmail(raw: string): string {
