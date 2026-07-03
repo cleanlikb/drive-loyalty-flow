@@ -164,7 +164,7 @@ async function fetchReceivedEmail(id: string): Promise<any | null> {
     return null;
   }
 
-  const res = await fetch(`https://connector-gateway.lovable.dev/resend/emails/received/${id}?html_format=data_uri`, {
+  const res = await fetch(`https://connector-gateway.lovable.dev/resend/emails/receiving/${id}?html_format=data_uri`, {
     headers: {
       Authorization: `Bearer ${lovableKey}`,
       "X-Connection-Api-Key": resendKey,
