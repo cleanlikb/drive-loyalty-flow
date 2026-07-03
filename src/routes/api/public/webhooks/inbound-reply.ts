@@ -1,11 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 // Resend inbound email webhook.
-// Reply-to addresses use `{dealer-slug}+{customer-id}@ezeotolion.resend.app`
-// (Resend's auto-provisioned test inbound domain) so we can route replies back
-// to the right dealer + customer without any MX setup.
-//
-// TODO: swap ezeotolion.resend.app -> reply.wynback.co.uk once MX is verified.
+// Reply-to is a single shared address like `sales@reply.wynback.co.uk`.
+// We identify the customer from the From email (name is used only for logging)
+// and find the sequence via In-Reply-To/References headers, falling back to
+// the most recent active sequence for that customer.
 
 export const Route = createFileRoute("/api/public/webhooks/inbound-reply")({
   server: {
@@ -19,37 +18,19 @@ export const Route = createFileRoute("/api/public/webhooks/inbound-reply")({
         }
 
         console.log("[inbound-reply] payload keys:", Object.keys(payload ?? {}), "data keys:", Object.keys(payload?.data ?? {}));
-        console.log("[inbound-reply] raw payload:", JSON.stringify(payload).slice(0, 4000));
 
         if (payload?.type !== "email.received") {
           return json({ received: true, skipped: "unhandled_type" }, 200);
         }
 
-
         const data = payload.data ?? {};
-        const toAddresses: string[] = (Array.isArray(data.to) ? data.to : [data.to])
-          .filter(Boolean)
-          .map((v: any) => (typeof v === "string" ? v : v?.address ?? ""))
-          .filter(Boolean);
 
-        let dealerSlug: string | null = null;
-        let customerId: string | null = null;
-        for (const addr of toAddresses) {
-          const parsed = parseSubAddress(addr);
-          if (parsed) {
-            dealerSlug = parsed.dealerSlug;
-            customerId = parsed.customerId;
-            break;
-          }
+        const fromRaw = typeof data.from === "string" ? data.from : data.from?.address ?? "";
+        const fromEmail = extractEmail(fromRaw);
+        if (!fromEmail) {
+          return json({ received: true, skipped: "no_from" }, 200);
         }
 
-        if (!dealerSlug || !customerId) {
-          return json({ received: true, skipped: "no_sub_address" }, 200);
-        }
-
-        const fromEmail = extractEmail(
-          typeof data.from === "string" ? data.from : data.from?.address ?? "",
-        );
         const subject: string | null = data.subject ?? null;
         const receivedId: string | null = data.id ?? data.email_id ?? null;
 
@@ -78,42 +59,18 @@ export const Route = createFileRoute("/api/public/webhooks/inbound-reply")({
         }
         const messageId = fetchedMessageId ?? receivedId;
         const inReplyTo = headerVal(fetchedHeaders, "In-Reply-To");
-
+        const references = headerVal(fetchedHeaders, "References");
 
         const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
         const db = supabaseAdmin as any;
 
-        const { data: dealer } = await db.from("dealers")
-          .select("id").eq("slug", dealerSlug).maybeSingle();
-        if (!dealer) return json({ received: true, skipped: "dealer_not_found" }, 200);
+        const { findSequenceForInbound } = await import("@/lib/replies.server");
+        const seq = await findSequenceForInbound(db, { fromEmail, inReplyTo, references });
+        if (!seq?.id) {
+          return json({ received: true, skipped: "no_sequence_match", fromEmail }, 200);
+        }
+        const sequenceId = seq.id;
 
-        const { data: customer } = await db.from("customers")
-          .select("id, dealer_id").eq("id", customerId).maybeSingle();
-        if (!customer || customer.dealer_id !== dealer.id) {
-          return json({ received: true, skipped: "customer_not_found" }, 200);
-        }
-
-        // Find the most recent active sequence for this customer; fall back to the latest.
-        const { data: activeSeq } = await db.from("sequences")
-          .select("id")
-          .eq("customer_id", customer.id)
-          .eq("dealer_id", dealer.id)
-          .eq("status", "active")
-          .order("started_at", { ascending: false })
-          .limit(1);
-        let sequenceId = activeSeq?.[0]?.id as string | undefined;
-        if (!sequenceId) {
-          const { data: anySeq } = await db.from("sequences")
-            .select("id")
-            .eq("customer_id", customer.id)
-            .eq("dealer_id", dealer.id)
-            .order("started_at", { ascending: false })
-            .limit(1);
-          sequenceId = anySeq?.[0]?.id;
-        }
-        if (!sequenceId) {
-          return json({ received: true, skipped: "no_sequence" }, 200);
-        }
 
         try {
           const { processReply } = await import("@/lib/replies.server");
