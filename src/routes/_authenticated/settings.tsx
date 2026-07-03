@@ -13,6 +13,7 @@ import { DEFAULT_MILESTONES } from "@/lib/format";
 import { X, CheckCircle2, AlertCircle } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 
 
 export const Route = createFileRoute("/_authenticated/settings")({
