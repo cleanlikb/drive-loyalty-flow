@@ -171,10 +171,10 @@ function HeroSection() {
           For UK independent dealerships
         </span>
         <h1 className="mt-6 text-4xl md:text-5xl lg:text-6xl font-semibold tracking-tight text-white">
-          When did you last hear from a customer you sold a car to two years ago?
+          Every month, your past customers buy their next car from someone else.
         </h1>
         <p className="mt-6 text-lg md:text-xl text-white/80 max-w-2xl mx-auto leading-relaxed">
-          They&apos;re due a new car right now. Someone&apos;s about to sell it to them. Is it you?
+          They&apos;re due an upgrade right now — and nobody&apos;s reminded them you exist. Wynback brings them back automatically, in 10 minutes a month.
         </p>
         <div className="mt-9 flex flex-col sm:flex-row items-center justify-center gap-4">
           <Button asChild size="lg" className="h-12 px-8 text-base bg-white text-primary hover:bg-white/90 shadow-lg shadow-black/10 hover:shadow-black/20 transition-shadow">
@@ -184,7 +184,7 @@ function HeroSection() {
             </Link>
           </Button>
         </div>
-        <p className="mt-3 text-sm text-white/70">No setup fees</p>
+        <p className="mt-3 text-sm text-white/70">No setup fees · We configure it for you</p>
       </div>
     </section>
   );
