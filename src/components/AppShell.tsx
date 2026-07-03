@@ -20,7 +20,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
-import logo from "@/assets/wynback-logo.jpg.asset.json";
+import logo from "@/assets/wynback-logo.png.asset.json";
 
 
 const nav = [
