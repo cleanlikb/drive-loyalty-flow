@@ -11,15 +11,21 @@ export const Route = createFileRoute("/api/public/cron/dispatch-emails")({
           return new Response("Unauthorized", { status: 401 });
         }
 
-        let forceEmailIds: string[] = [];
+        const url = new URL(request.url);
+        let forceEmailIds = url.searchParams.getAll("sequenceEmailId");
         try {
           const body = await request.json();
           if (Array.isArray(body?.sequenceEmailIds)) {
-            forceEmailIds = body.sequenceEmailIds.filter((id: unknown) => typeof id === "string");
+            forceEmailIds = [
+              ...forceEmailIds,
+              ...body.sequenceEmailIds.filter((id: unknown) => typeof id === "string"),
+            ];
           }
         } catch {
           // Cron calls do not need a JSON body.
         }
+
+        forceEmailIds = Array.from(new Set(forceEmailIds));
 
         const fromAddress = process.env.RESEND_FROM;
         if (!fromAddress) {
