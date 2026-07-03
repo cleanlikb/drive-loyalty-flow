@@ -500,9 +500,9 @@ function CalculatorSection() {
   const formatSales = (n: number) => (n < 1 ? n.toFixed(1) : Math.round(n).toLocaleString());
 
   const plans = [
-    { name: "Starter", price: 99 },
-    { name: "Growth", price: 149 },
-    { name: "Pro", price: 299 },
+    { name: "Forecourt", price: 99 },
+    { name: "Showroom", price: 149 },
+    { name: "Supersite", price: 299 },
   ];
 
   return (
