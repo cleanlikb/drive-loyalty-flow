@@ -172,3 +172,41 @@ function json(body: unknown, status = 200) {
     headers: { "content-type": "application/json" },
   });
 }
+
+async function fetchReceivedEmail(id: string): Promise<any | null> {
+  const lovableKey = process.env.LOVABLE_API_KEY;
+  const resendKey = process.env.RESEND_API_KEY;
+  if (!lovableKey || !resendKey) {
+    console.warn("[inbound-reply] missing LOVABLE_API_KEY or RESEND_API_KEY");
+    return null;
+  }
+  const res = await fetch(`https://connector-gateway.lovable.dev/resend/emails/received/${id}?html_format=data_uri`, {
+    headers: {
+      Authorization: `Bearer ${lovableKey}`,
+      "X-Connection-Api-Key": resendKey,
+    },
+  });
+  if (!res.ok) {
+    console.error(`[inbound-reply] resend fetch ${res.status}:`, await res.text());
+    return null;
+  }
+  return await res.json();
+}
+
+function stripHtml(html: string): string {
+  if (!html) return "";
+  return html
+    .replace(/<style[\s\S]*?<\/style>/gi, "")
+    .replace(/<script[\s\S]*?<\/script>/gi, "")
+    .replace(/<br\s*\/?>/gi, "\n")
+    .replace(/<\/p>/gi, "\n\n")
+    .replace(/<[^>]+>/g, "")
+    .replace(/&nbsp;/g, " ")
+    .replace(/&amp;/g, "&")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&quot;/g, '"')
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
+}
+
