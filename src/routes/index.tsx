@@ -30,7 +30,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import logo from "@/assets/wynback-logo.png.asset.json";
-import explainerAsset from "@/assets/redrive-explainer.mp4.asset.json";
+import explainerAsset from "@/assets/wynback-explainer.mp4.asset.json";
 
 export const Route = createFileRoute("/")({
   component: Landing,
