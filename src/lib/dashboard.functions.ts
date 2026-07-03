@@ -125,7 +125,7 @@ export const getMetricDetails = createServerFn({ method: "GET" })
       case "replies":
       case "interested":
       case "noLongerOwns": {
-        const classFilter =
+        const classFilter: ("interested" | "hot_lead" | "no_longer_owns")[] | null =
           data.metric === "interested" ? ["interested", "hot_lead"] :
           data.metric === "noLongerOwns" ? ["no_longer_owns"] :
           null;
