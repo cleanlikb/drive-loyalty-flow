@@ -123,30 +123,77 @@ function Settings() {
         <div>
           <h2 className="font-semibold">Lead intervals</h2>
           <p className="text-sm text-muted-foreground mt-1">
-            Choose which ownership anniversaries (in months since purchase) trigger new leads each month.
+            Set exactly which months-since-purchase trigger new leads. Add any value from 1 to 240 — e.g. 33 to reach out 3 months before the 3-year mark.
           </p>
         </div>
-        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2">
-          {AVAILABLE_MILESTONES.map((m) => {
-            const active = form.milestone_months.includes(m);
-            return (
-              <label
-                key={m}
-                className={`flex items-center gap-2 rounded-md border px-3 py-2 text-sm cursor-pointer transition ${active ? "bg-primary/10 border-primary/40 text-primary" : "hover:bg-accent/40"}`}
+
+        <div className="flex flex-wrap gap-2 min-h-[2.25rem]">
+          {form.milestone_months.length === 0 && (
+            <span className="text-xs text-muted-foreground self-center">No intervals selected.</span>
+          )}
+          {form.milestone_months.map((m) => (
+            <span
+              key={m}
+              className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 text-primary border border-primary/30 pl-3 pr-1.5 py-1 text-sm"
+            >
+              {m} mo
+              <button
+                type="button"
+                onClick={() => removeMilestone(m)}
+                className="rounded-full hover:bg-primary/20 p-0.5"
+                aria-label={`Remove ${m} months`}
               >
-                <Checkbox
-                  checked={active}
-                  onCheckedChange={(v) => toggleMilestone(m, Boolean(v))}
-                />
-                <span>{m} mo</span>
-              </label>
-            );
-          })}
+                <X className="h-3.5 w-3.5" />
+              </button>
+            </span>
+          ))}
         </div>
+
+        <div className="flex flex-wrap items-end gap-2">
+          <div className="flex-1 min-w-[180px] space-y-1.5">
+            <Label htmlFor="custom-interval">Add interval (months)</Label>
+            <div className="flex gap-2">
+              <Input
+                id="custom-interval"
+                type="number"
+                min={1}
+                max={240}
+                value={customValue}
+                onChange={(e) => setCustomValue(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") { e.preventDefault(); addFromInput(); }
+                }}
+                placeholder="e.g. 33"
+              />
+              <Button type="button" variant="outline" onClick={addFromInput} disabled={!customValue.trim()}>
+                Add
+              </Button>
+            </div>
+          </div>
+        </div>
+
+        <div className="space-y-1.5">
+          <Label className="text-xs text-muted-foreground">Quick add</Label>
+          <div className="flex flex-wrap gap-1.5">
+            {QUICK_ADDS.filter((m) => !form.milestone_months.includes(m)).map((m) => (
+              <button
+                key={m}
+                type="button"
+                onClick={() => addMilestone(m)}
+                className="rounded-full border px-2.5 py-1 text-xs hover:bg-accent"
+              >
+                + {m} mo
+              </button>
+            ))}
+          </div>
+        </div>
+
         {form.milestone_months.length === 0 && (
-          <p className="text-xs text-destructive">Select at least one interval.</p>
+          <p className="text-xs text-destructive">Add at least one interval.</p>
         )}
       </Card>
+
+
 
 
       <div className="flex justify-end">
