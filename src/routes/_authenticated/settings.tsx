@@ -266,3 +266,128 @@ function Settings() {
     </div>
   );
 }
+
+function SenderEmailCard({ dealer }: { dealer: any }) {
+  const qc = useQueryClient();
+  const verify = useServerFn(verifySenderEmail);
+  const clear = useServerFn(clearSenderEmail);
+  const listDomains = useServerFn(listVerifiedSenderDomains);
+
+  const [email, setEmail] = useState("");
+  const [result, setResult] = useState<null | { ok: boolean; message?: string; verifiedDomains?: string[] }>(null);
+
+  useEffect(() => {
+    setEmail(dealer?.sender_email ?? "");
+    setResult(null);
+  }, [dealer?.sender_email, dealer?.sender_verified]);
+
+  const domainsQ = useQuery({
+    queryKey: ["verified-sender-domains"],
+    queryFn: () => listDomains(),
+    staleTime: 60_000,
+  });
+
+  const verifyMut = useMutation({
+    mutationFn: (value: string) => verify({ data: { email: value } }),
+    onSuccess: (res: any) => {
+      if (res?.ok) {
+        toast.success("Sender verified — you can send emails now.");
+        setResult({ ok: true });
+        qc.invalidateQueries({ queryKey: ["dealer"] });
+      } else {
+        toast.error(res?.message ?? "Could not verify sender.");
+        setResult({ ok: false, message: res?.message, verifiedDomains: res?.verifiedDomains });
+      }
+    },
+    onError: (e: any) => {
+      toast.error(e?.message ?? "Verification failed");
+      setResult({ ok: false, message: e?.message ?? "Verification failed" });
+    },
+  });
+
+  const clearMut = useMutation({
+    mutationFn: () => clear(),
+    onSuccess: () => {
+      toast.success("Sender cleared");
+      setEmail("");
+      setResult(null);
+      qc.invalidateQueries({ queryKey: ["dealer"] });
+    },
+  });
+
+  const isVerified = !!dealer?.sender_verified && dealer?.sender_email === email.trim().toLowerCase();
+  const verifiedDomains = domainsQ.data?.ok ? domainsQ.data.domains : [];
+
+  return (
+    <Card className="p-6 space-y-4">
+      <div>
+        <h2 className="font-semibold">Sender email</h2>
+        <p className="text-sm text-muted-foreground mt-1">
+          The address customers see in the From line. Must be on a domain verified with the email provider — sends are blocked until this is verified.
+        </p>
+      </div>
+
+      <div className="space-y-1.5">
+        <Label htmlFor="sender">From address</Label>
+        <div className="flex gap-2">
+          <Input
+            id="sender"
+            type="email"
+            value={email}
+            onChange={(e) => { setEmail(e.target.value); setResult(null); }}
+            placeholder="hello@yourdomain.com"
+            autoComplete="off"
+          />
+          <Button
+            type="button"
+            onClick={() => verifyMut.mutate(email.trim().toLowerCase())}
+            disabled={verifyMut.isPending || !email.trim()}
+          >
+            {verifyMut.isPending ? "Verifying…" : "Verify & save"}
+          </Button>
+        </div>
+      </div>
+
+      {isVerified && (
+        <div className="flex items-start gap-2 rounded-md border border-emerald-500/30 bg-emerald-500/10 p-3 text-sm text-emerald-700 dark:text-emerald-300">
+          <CheckCircle2 className="h-4 w-4 mt-0.5 shrink-0" />
+          <div className="flex-1">
+            <div className="font-medium">Verified</div>
+            <div className="text-xs opacity-80">
+              Emails will send from {dealer.sender_email}
+              {dealer.sender_verified_at ? ` · verified ${new Date(dealer.sender_verified_at).toLocaleString()}` : ""}.
+            </div>
+          </div>
+          <Button size="sm" variant="ghost" onClick={() => clearMut.mutate()} disabled={clearMut.isPending}>
+            Clear
+          </Button>
+        </div>
+      )}
+
+      {result && !result.ok && (
+        <div className="flex items-start gap-2 rounded-md border border-destructive/30 bg-destructive/10 p-3 text-sm text-destructive">
+          <AlertCircle className="h-4 w-4 mt-0.5 shrink-0" />
+          <div className="flex-1">
+            <div className="font-medium">Not verified</div>
+            <div className="text-xs opacity-90">{result.message}</div>
+            {result.verifiedDomains && result.verifiedDomains.length > 0 && (
+              <div className="text-xs opacity-80 mt-1">
+                Currently verified domains: {result.verifiedDomains.join(", ")}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {!isVerified && verifiedDomains.length > 0 && (
+        <p className="text-xs text-muted-foreground">
+          Verified domains available: {verifiedDomains.join(", ")}
+        </p>
+      )}
+      {domainsQ.data && !domainsQ.data.ok && (
+        <p className="text-xs text-muted-foreground">{domainsQ.data.error}</p>
+      )}
+    </Card>
+  );
+}
+
