@@ -27,10 +27,7 @@ export const Route = createFileRoute("/api/public/cron/dispatch-emails")({
 
         forceEmailIds = Array.from(new Set(forceEmailIds));
 
-        const fromAddress = process.env.RESEND_FROM;
-        if (!fromAddress) {
-          return new Response("RESEND_FROM not configured", { status: 500 });
-        }
+        const fallbackFrom = process.env.RESEND_FROM ?? null;
 
         const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
         const db = supabaseAdmin as any;
@@ -46,7 +43,7 @@ export const Route = createFileRoute("/api/public/cron/dispatch-emails")({
             subject,
             body,
             reply_alias,
-            dealer:dealers(id, slug, dealership_name, notification_email),
+            dealer:dealers(id, slug, dealership_name, notification_email, sender_email, sender_verified),
             sequence:sequences(id, customer:customers(id, name, email))
           `)
           .order("scheduled_for", { ascending: true })
@@ -96,6 +93,14 @@ export const Route = createFileRoute("/api/public/cron/dispatch-emails")({
           }
 
           try {
+            const dealerSender = dealer?.sender_verified ? (dealer?.sender_email as string | null) : null;
+            const fromAddress = dealerSender ?? fallbackFrom;
+            if (!fromAddress) {
+              await db.from("sequence_emails").update({ status: "failed" }).eq("id", e.id);
+              failed++;
+              console.warn("Skipping send: dealer has no verified sender email", { dealerId: dealer?.id });
+              continue;
+            }
             const replyTo = replyToAddress(alias);
             const sender = fromAddress.includes("<")
               ? fromAddress

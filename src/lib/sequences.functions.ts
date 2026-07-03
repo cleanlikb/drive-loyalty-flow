@@ -370,17 +370,19 @@ export const startSequencesBulk = createServerFn({ method: "POST" })
 
 const dispatchEmailViaResend = async (supabase: any, email: any) => {
   const { generateReplyAlias, plainTextToHtml, replyToAddress, sendResendEmail } = await import("./resend.server");
-  const fromAddress = process.env.RESEND_FROM;
-  if (!fromAddress) throw new Error("RESEND_FROM not configured");
 
   const { data: full } = await (supabase as any)
     .from("sequence_emails")
-    .select("*, dealer:dealers(id, slug, dealership_name), customer:customers(id, name, email)")
+    .select("*, dealer:dealers(id, slug, dealership_name, sender_email, sender_verified), customer:customers(id, name, email)")
     .eq("id", email.id)
     .single();
 
   if (!full) throw new Error("Email not found");
   if (!full.customer?.email) throw new Error("Customer has no email");
+
+  const dealerSender = full.dealer?.sender_verified ? (full.dealer?.sender_email as string | null) : null;
+  const fromAddress = dealerSender ?? process.env.RESEND_FROM ?? null;
+  if (!fromAddress) throw new Error("No verified sender email configured. Set one in Settings before sending.");
 
   let alias = full.reply_alias;
   if (!alias) {
