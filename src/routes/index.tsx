@@ -430,7 +430,7 @@ function BenefitsSection() {
     {
       icon: ShieldCheck,
       title: "Buy back cars you previously sold",
-      body: "Re-engaging past owners gives you first refusal on stock you understand. No auction buyer's premium, no transport, no surprises — just familiar cars you can retail with confidence.",
+      body: "Re-engaging past owners gives you first refusal on stock you understand — no auction premium, no transport, no surprises.",
     },
     {
       icon: Users,
@@ -440,7 +440,7 @@ function BenefitsSection() {
     {
       icon: Lock,
       title: "Marketing that works while you sleep",
-      body: "The system runs automatically every month. Your team reviews the emails and clicks approve — everything else is handled.",
+      body: "The system runs every month automatically. Your team reviews the emails and clicks approve — everything else is handled.",
     },
     {
       icon: Sparkles,
@@ -450,7 +450,7 @@ function BenefitsSection() {
     {
       icon: Database,
       title: "Your CRM becomes a profit engine",
-      body: "The same customer database you've already paid to acquire keeps producing leads. We turn dead data into live opportunities month after month.",
+      body: "The same customer database you've already paid to acquire keeps producing leads — and it stays with the dealership. When a salesperson leaves, their contact book usually leaves with them; Wynback keeps the relationship with the business, not the individual.",
     },
   ];
 
