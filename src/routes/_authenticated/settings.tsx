@@ -100,6 +100,9 @@ function Settings() {
         </div>
       </Card>
 
+      <SenderEmailCard dealer={data} />
+
+
       <Card className="p-6 space-y-4">
         <div>
           <h2 className="font-semibold">Reply forwarding</h2>
