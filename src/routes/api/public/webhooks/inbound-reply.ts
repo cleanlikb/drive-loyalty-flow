@@ -18,9 +18,13 @@ export const Route = createFileRoute("/api/public/webhooks/inbound-reply")({
           return json({ error: "Invalid body" }, 400);
         }
 
+        console.log("[inbound-reply] payload keys:", Object.keys(payload ?? {}), "data keys:", Object.keys(payload?.data ?? {}));
+        console.log("[inbound-reply] raw payload:", JSON.stringify(payload).slice(0, 4000));
+
         if (payload?.type !== "email.received") {
           return json({ received: true, skipped: "unhandled_type" }, 200);
         }
+
 
         const data = payload.data ?? {};
         const toAddresses: string[] = (Array.isArray(data.to) ? data.to : [data.to])
@@ -47,11 +51,34 @@ export const Route = createFileRoute("/api/public/webhooks/inbound-reply")({
           typeof data.from === "string" ? data.from : data.from?.address ?? "",
         );
         const subject: string | null = data.subject ?? null;
-        const text: string = (data.text && String(data.text).trim())
-          ? String(data.text)
-          : String(data.html ?? "");
-        const messageId = data.id ?? data.message_id ?? null;
-        const inReplyTo = headerVal(data.headers, "In-Reply-To");
+        const receivedId: string | null = data.id ?? data.email_id ?? null;
+
+        // Resend inbound webhooks contain metadata only — fetch the body via API.
+        let text = "";
+        let fetchedHeaders: any = data.headers ?? null;
+        let fetchedMessageId: string | null = data.message_id ?? null;
+        if (receivedId) {
+          try {
+            const body = await fetchReceivedEmail(receivedId);
+            if (body) {
+              text = (body.text && String(body.text).trim())
+                ? String(body.text)
+                : stripHtml(String(body.html ?? ""));
+              fetchedHeaders = body.headers ?? fetchedHeaders;
+              fetchedMessageId = body.message_id ?? fetchedMessageId;
+            }
+          } catch (e) {
+            console.error("[inbound-reply] fetch body failed", e);
+          }
+        }
+        if (!text) {
+          text = (data.text && String(data.text).trim())
+            ? String(data.text)
+            : stripHtml(String(data.html ?? ""));
+        }
+        const messageId = fetchedMessageId ?? receivedId;
+        const inReplyTo = headerVal(fetchedHeaders, "In-Reply-To");
+
 
         const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
         const db = supabaseAdmin as any;
@@ -145,3 +172,41 @@ function json(body: unknown, status = 200) {
     headers: { "content-type": "application/json" },
   });
 }
+
+async function fetchReceivedEmail(id: string): Promise<any | null> {
+  const lovableKey = process.env.LOVABLE_API_KEY;
+  const resendKey = process.env.RESEND_API_KEY;
+  if (!lovableKey || !resendKey) {
+    console.warn("[inbound-reply] missing LOVABLE_API_KEY or RESEND_API_KEY");
+    return null;
+  }
+  const res = await fetch(`https://connector-gateway.lovable.dev/resend/emails/received/${id}?html_format=data_uri`, {
+    headers: {
+      Authorization: `Bearer ${lovableKey}`,
+      "X-Connection-Api-Key": resendKey,
+    },
+  });
+  if (!res.ok) {
+    console.error(`[inbound-reply] resend fetch ${res.status}:`, await res.text());
+    return null;
+  }
+  return await res.json();
+}
+
+function stripHtml(html: string): string {
+  if (!html) return "";
+  return html
+    .replace(/<style[\s\S]*?<\/style>/gi, "")
+    .replace(/<script[\s\S]*?<\/script>/gi, "")
+    .replace(/<br\s*\/?>/gi, "\n")
+    .replace(/<\/p>/gi, "\n\n")
+    .replace(/<[^>]+>/g, "")
+    .replace(/&nbsp;/g, " ")
+    .replace(/&amp;/g, "&")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&quot;/g, '"')
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
+}
+
