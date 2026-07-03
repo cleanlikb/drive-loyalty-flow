@@ -101,11 +101,18 @@ function Leads() {
 
       {!isLoading && totalActive === 0 && (
         <Card className="p-8 text-center">
-          <p className="text-sm text-muted-foreground">
-            No cohort yet for this month. Import customers, then hit Rebuild.
-          </p>
+          {(data?.rows?.length ?? 0) === 0 ? (
+            <p className="text-sm text-muted-foreground">
+              No leads found for this month yet. Click <strong>Generate leads</strong> to find customers whose purchase anniversary falls this month.
+            </p>
+          ) : (
+            <p className="text-sm text-muted-foreground">
+              All available leads for this month have already had sequences started.
+            </p>
+          )}
         </Card>
       )}
+
 
       {totalActive > 0 && (
         <Card className="p-4 flex items-center gap-3 bg-accent/30">
