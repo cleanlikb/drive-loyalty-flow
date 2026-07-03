@@ -31,6 +31,9 @@ function Settings() {
     notification_email: "",
     forward_replies: true,
     milestone_months: DEFAULT_MILESTONES as number[],
+    daily_send_cap: 50,
+    send_window_start_hour: 9,
+    send_window_end_hour: 16,
   });
   useEffect(() => {
     if (data) setForm({
@@ -40,8 +43,12 @@ function Settings() {
       notification_email: (data as any).notification_email ?? "",
       forward_replies: (data as any).forward_replies ?? true,
       milestone_months: ((data as any).milestone_months?.length ? (data as any).milestone_months : DEFAULT_MILESTONES) as number[],
+      daily_send_cap: (data as any).daily_send_cap ?? 50,
+      send_window_start_hour: (data as any).send_window_start_hour ?? 9,
+      send_window_end_hour: (data as any).send_window_end_hour ?? 16,
     });
   }, [data]);
+
 
   const [customValue, setCustomValue] = useState("");
 
