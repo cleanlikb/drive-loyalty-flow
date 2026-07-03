@@ -553,12 +553,12 @@ function FinalCTASection() {
             <div className="mt-9 flex flex-col sm:flex-row items-center justify-center gap-4">
               <Button asChild size="lg" className="h-12 px-8 text-base shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-shadow">
                 <Link to="/auth">
-                  Start your free account
+                  Get started
                   <ArrowRight className="h-4 w-4" />
                 </Link>
               </Button>
             </div>
-            <p className="mt-3 text-sm text-muted-foreground">No credit card required</p>
+            <p className="mt-3 text-sm text-muted-foreground">No setup fees</p>
           </div>
         </div>
       </div>
