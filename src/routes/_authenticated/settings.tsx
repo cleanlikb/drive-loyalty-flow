@@ -29,6 +29,7 @@ function Settings() {
     website_url: "",
     notification_email: "",
     forward_replies: true,
+    milestone_months: DEFAULT_MILESTONES as number[],
   });
   useEffect(() => {
     if (data) setForm({
@@ -37,8 +38,18 @@ function Settings() {
       website_url: data.website_url ?? "",
       notification_email: (data as any).notification_email ?? "",
       forward_replies: (data as any).forward_replies ?? true,
+      milestone_months: ((data as any).milestone_months?.length ? (data as any).milestone_months : DEFAULT_MILESTONES) as number[],
     });
   }, [data]);
+
+  function toggleMilestone(m: number, on: boolean) {
+    setForm((f) => {
+      const set = new Set(f.milestone_months);
+      if (on) set.add(m); else set.delete(m);
+      return { ...f, milestone_months: Array.from(set).sort((a, b) => a - b) };
+    });
+  }
+
 
   const mut = useMutation({
     mutationFn: () => update({ data: form }),
