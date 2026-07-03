@@ -18,9 +18,13 @@ export const Route = createFileRoute("/api/public/webhooks/inbound-reply")({
           return json({ error: "Invalid body" }, 400);
         }
 
+        console.log("[inbound-reply] payload keys:", Object.keys(payload ?? {}), "data keys:", Object.keys(payload?.data ?? {}));
+        console.log("[inbound-reply] raw payload:", JSON.stringify(payload).slice(0, 4000));
+
         if (payload?.type !== "email.received") {
           return json({ received: true, skipped: "unhandled_type" }, 200);
         }
+
 
         const data = payload.data ?? {};
         const toAddresses: string[] = (Array.isArray(data.to) ? data.to : [data.to])
