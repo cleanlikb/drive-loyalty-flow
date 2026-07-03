@@ -375,9 +375,18 @@ export type Database = {
       sequence_emails: {
         Row: {
           body: string
+          bounced_at: string | null
+          click_count: number
           dealer_id: string
+          delivered_at: string | null
+          first_clicked_at: string | null
           id: string
           message_id: string | null
+          open_count: number
+          opened_at: string | null
+          replied_at: string | null
+          reply_alias: string | null
+          resend_email_id: string | null
           scheduled_for: string | null
           send_offset_days: number
           sent_at: string | null
@@ -388,9 +397,18 @@ export type Database = {
         }
         Insert: {
           body: string
+          bounced_at?: string | null
+          click_count?: number
           dealer_id: string
+          delivered_at?: string | null
+          first_clicked_at?: string | null
           id?: string
           message_id?: string | null
+          open_count?: number
+          opened_at?: string | null
+          replied_at?: string | null
+          reply_alias?: string | null
+          resend_email_id?: string | null
           scheduled_for?: string | null
           send_offset_days: number
           sent_at?: string | null
@@ -401,9 +419,18 @@ export type Database = {
         }
         Update: {
           body?: string
+          bounced_at?: string | null
+          click_count?: number
           dealer_id?: string
+          delivered_at?: string | null
+          first_clicked_at?: string | null
           id?: string
           message_id?: string | null
+          open_count?: number
+          opened_at?: string | null
+          replied_at?: string | null
+          reply_alias?: string | null
+          resend_email_id?: string | null
           scheduled_for?: string | null
           send_offset_days?: number
           sent_at?: string | null
@@ -496,7 +523,7 @@ export type Database = {
     }
     Enums: {
       customer_status: "active" | "no_longer_owns" | "unsubscribed"
-      email_status: "draft" | "scheduled" | "sent" | "cancelled"
+      email_status: "draft" | "scheduled" | "sent" | "cancelled" | "bounced"
       reply_classification:
         | "replied"
         | "no_longer_owns"
@@ -639,7 +666,7 @@ export const Constants = {
   public: {
     Enums: {
       customer_status: ["active", "no_longer_owns", "unsubscribed"],
-      email_status: ["draft", "scheduled", "sent", "cancelled"],
+      email_status: ["draft", "scheduled", "sent", "cancelled", "bounced"],
       reply_classification: [
         "replied",
         "no_longer_owns",
