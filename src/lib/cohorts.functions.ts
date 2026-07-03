@@ -36,7 +36,9 @@ async function rebuildCohortInternal(supabase: any, dealerId: string, milestoneM
   const activeCustomers = new Set<string>((activeSeq ?? []).map((s: any) => s.customer_id));
 
   const inserts: any[] = [];
-  for (const months of MILESTONES) {
+  const milestones = milestoneMonths && milestoneMonths.length > 0 ? milestoneMonths : DEFAULT_MILESTONES;
+  for (const months of milestones) {
+
     const { start, end } = monthsAgoAt(months);
     const { data: custs } = await supabase
       .from("customers")
