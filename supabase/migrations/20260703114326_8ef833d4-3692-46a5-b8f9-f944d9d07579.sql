@@ -1,0 +1,1 @@
+ALTER TABLE public.dealers ADD COLUMN IF NOT EXISTS milestone_months integer[] NOT NULL DEFAULT ARRAY[12,18,24,36,48,60];

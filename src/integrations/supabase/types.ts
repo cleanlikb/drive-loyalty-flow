@@ -207,6 +207,7 @@ export type Database = {
           dealership_name: string | null
           forward_replies: boolean
           id: string
+          milestone_months: number[]
           notification_email: string | null
           onboarded_at: string | null
           salesperson_name: string | null
@@ -219,6 +220,7 @@ export type Database = {
           dealership_name?: string | null
           forward_replies?: boolean
           id?: string
+          milestone_months?: number[]
           notification_email?: string | null
           onboarded_at?: string | null
           salesperson_name?: string | null
@@ -231,6 +233,7 @@ export type Database = {
           dealership_name?: string | null
           forward_replies?: boolean
           id?: string
+          milestone_months?: number[]
           notification_email?: string | null
           onboarded_at?: string | null
           salesperson_name?: string | null
