@@ -73,11 +73,35 @@ export async function sendResendEmail(args: {
   let json: any;
   try { json = JSON.parse(text); } catch { json = {}; }
   const resendEmailId = json?.id;
-  const messageId = json?.id; // Resend returns the email ID as both id and message identifier
   if (!resendEmailId) {
     throw new Error(`Resend returned no email id: ${text.slice(0, 200)}`);
   }
+
+  // Resend's send response gives the Resend id, while mailbox replies thread
+  // against the RFC Message-ID. Fetch it immediately so inbound replies can be
+  // matched exactly by In-Reply-To/References instead of guessing by sender.
+  const sentDetails = await fetchSentEmailDetails(resendEmailId, lovableKey, resendKey);
+  const messageId = sentDetails?.message_id ?? json?.message_id ?? resendEmailId;
   return { resendEmailId, messageId };
+}
+
+async function fetchSentEmailDetails(id: string, lovableKey: string, resendKey: string): Promise<any | null> {
+  try {
+    const res = await fetch(`https://connector-gateway.lovable.dev/resend/emails/${id}`, {
+      headers: {
+        Authorization: `Bearer ${lovableKey}`,
+        "X-Connection-Api-Key": resendKey,
+      },
+    });
+    if (!res.ok) {
+      console.warn(`Resend sent-email lookup ${res.status}:`, await res.text());
+      return null;
+    }
+    return await res.json();
+  } catch (e) {
+    console.warn("Resend sent-email lookup failed", e);
+    return null;
+  }
 }
 
 export function plainTextToHtml(text: string): string {

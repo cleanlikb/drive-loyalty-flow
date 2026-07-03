@@ -65,7 +65,7 @@ export const Route = createFileRoute("/api/public/webhooks/inbound-reply")({
         const db = supabaseAdmin as any;
 
         const { findSequenceForInbound } = await import("@/lib/replies.server");
-        const seq = await findSequenceForInbound(db, { fromEmail, inReplyTo, references });
+        const seq = await findSequenceForInbound(db, { fromEmail, inReplyTo, references, subject });
         if (!seq?.id) {
           return json({ received: true, skipped: "no_sequence_match", fromEmail }, 200);
         }

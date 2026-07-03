@@ -10,6 +10,11 @@ interface InboundMeta {
   inReplyTo?: string | null;
 }
 
+interface InboundMatch {
+  id: string;
+  sequenceEmailId?: string | null;
+}
+
 const SOLD_RX = /\b(sold|got rid of|traded (it |in)|scrapped|written off|write[- ]off|no longer (have|own)|don'?t (have|own) (it|the car)|gave (it )?(to|away)|part[- ]exchanged?|part ex)\b/i;
 const UNSUB_RX = /\b(unsubscribe|stop emailing|remove me|opt[- ]?out|don'?t (email|contact) me)\b/i;
 const HOT_RX = /\b(valuation|part[- ]exchange (figure|price|quote)|book a viewing|come (and )?see|test drive|how much|price|mileage is|currently on \d|when can i|available to view)\b/i;
@@ -172,17 +177,17 @@ function labelFor(c: ReplyClass): string {
  */
 export async function findSequenceForInbound(
   supabase: any,
-  args: { fromEmail: string; inReplyTo?: string | null; references?: string | null },
-): Promise<{ id: string } | null> {
+  args: { fromEmail: string; inReplyTo?: string | null; references?: string | null; subject?: string | null },
+): Promise<InboundMatch | null> {
   const candidates = [args.inReplyTo, ...(args.references?.split(/\s+/) ?? [])].filter(Boolean) as string[];
   for (const mid of candidates) {
     const clean = mid.replace(/^<|>$/g, "");
     const { data: em } = await supabase
       .from("sequence_emails")
-      .select("sequence_id")
-      .eq("message_id", clean)
-      .maybeSingle();
-    if (em?.sequence_id) return { id: em.sequence_id };
+      .select("id, sequence_id")
+      .or(`message_id.eq.${clean},message_id.eq.<${clean}>,resend_email_id.eq.${clean}`)
+      .limit(1);
+    if (em?.[0]?.sequence_id) return { id: em[0].sequence_id, sequenceEmailId: em[0].id };
   }
 
   const email = args.fromEmail?.trim().toLowerCase();
@@ -193,6 +198,21 @@ export async function findSequenceForInbound(
     .ilike("email", email)
     .limit(50);
   if (!customers?.length) return null;
+
+  const subject = normalizeSubject(args.subject);
+  if (subject) {
+    const { data: subjectMatches } = await supabase
+      .from("sequence_emails")
+      .select("id, sequence_id, subject, sequence:sequences!inner(id, customer_id, status, started_at)")
+      .in("sequence.customer_id", customers.map((c: any) => c.id))
+      .in("sequence.status", ["active", "stopped"])
+      .not("sent_at", "is", null)
+      .order("sent_at", { ascending: false })
+      .limit(25);
+    const match = (subjectMatches ?? []).find((row: any) => normalizeSubject(row.subject) === subject);
+    if (match?.sequence_id) return { id: match.sequence_id, sequenceEmailId: match.id };
+  }
+
   const { data: seqs } = await supabase
     .from("sequences")
     .select("id")
@@ -206,6 +226,14 @@ export async function findSequenceForInbound(
 // Backwards compat.
 export const findActiveSequenceByEmail = async (supabase: any, email: string) =>
   findSequenceForInbound(supabase, { fromEmail: email });
+
+function normalizeSubject(value?: string | null): string {
+  return String(value ?? "")
+    .trim()
+    .replace(/^(re|fw|fwd):\s*/i, "")
+    .replace(/\s+/g, " ")
+    .toLowerCase();
+}
 
 // -----------------------------------------------------------------------------
 // Forwarding — best-effort. Uses Resend if RESEND_API_KEY + a sender are set.

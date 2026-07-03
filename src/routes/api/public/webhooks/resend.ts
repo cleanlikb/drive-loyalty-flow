@@ -123,11 +123,16 @@ export const Route = createFileRoute("/api/public/webhooks/resend")({
               fromEmail,
               inReplyTo,
               references: headerVal(headers, "References"),
+              subject,
             });
-            if (seq?.id) sequenceId = seq.id;
+            if (seq?.id) {
+              sequenceId = seq.id;
+              sequenceEmailId = seq.sequenceEmailId ?? sequenceEmailId;
+            }
           }
 
           if (!sequenceId) {
+            console.warn("Resend inbound reply skipped: no sequence match", { fromEmail, subject, inReplyTo });
             return Response.json({ ok: true, skipped: "no_sequence", fromEmail }, { status: 200 });
           }
 
@@ -228,8 +233,8 @@ function headerVal(headers: any, name: string): string | null {
   if (!headers) return null;
   if (Array.isArray(headers)) {
     const h = headers.find((h: any) => (h?.Name ?? h?.name)?.toLowerCase() === name.toLowerCase());
-    return h?.Value ?? h?.value ?? null;
+    return cleanId(h?.Value ?? h?.value ?? null);
   }
-  if (typeof headers === "object") return headers[name] ?? headers[name.toLowerCase()] ?? null;
+  if (typeof headers === "object") return cleanId(headers[name] ?? headers[name.toLowerCase()] ?? null);
   return null;
 }
