@@ -55,6 +55,7 @@ function Landing() {
       <main>
         <HeroSection />
         <VideoSection />
+        <FounderSection />
         <PainSection />
         <SolutionSection />
         <BenefitsSection />
