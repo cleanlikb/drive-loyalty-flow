@@ -204,6 +204,7 @@ export type Database = {
       dealers: {
         Row: {
           created_at: string
+          daily_send_cap: number
           dealership_name: string | null
           forward_replies: boolean
           id: string
@@ -211,12 +212,15 @@ export type Database = {
           notification_email: string | null
           onboarded_at: string | null
           salesperson_name: string | null
+          send_window_end_hour: number
+          send_window_start_hour: number
           updated_at: string
           user_id: string
           website_url: string | null
         }
         Insert: {
           created_at?: string
+          daily_send_cap?: number
           dealership_name?: string | null
           forward_replies?: boolean
           id?: string
@@ -224,12 +228,15 @@ export type Database = {
           notification_email?: string | null
           onboarded_at?: string | null
           salesperson_name?: string | null
+          send_window_end_hour?: number
+          send_window_start_hour?: number
           updated_at?: string
           user_id: string
           website_url?: string | null
         }
         Update: {
           created_at?: string
+          daily_send_cap?: number
           dealership_name?: string | null
           forward_replies?: boolean
           id?: string
@@ -237,6 +244,8 @@ export type Database = {
           notification_email?: string | null
           onboarded_at?: string | null
           salesperson_name?: string | null
+          send_window_end_hour?: number
+          send_window_start_hour?: number
           updated_at?: string
           user_id?: string
           website_url?: string | null

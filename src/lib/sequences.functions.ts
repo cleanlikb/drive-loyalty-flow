@@ -199,6 +199,123 @@ export const startSequencesForSelected = createServerFn({ method: "POST" })
   });
 
 
+// Pick a UTC send timestamp for a given local day, randomised within the dealer's window.
+function pickSendTimeUTC(dayUTC: Date, startHour: number, endHour: number): string {
+  const spanHours = Math.max(1, endHour - startHour);
+  const minute = Math.floor(Math.random() * spanHours * 60);
+  const d = new Date(dayUTC);
+  d.setUTCHours(startHour, 0, 0, 0);
+  d.setUTCMinutes(d.getUTCMinutes() + minute);
+  return d.toISOString();
+}
+
+function utcDayKey(d: Date): string {
+  return d.toISOString().slice(0, 10);
+}
+
+// Given an ordered list of step-1 offsets already assigned today/future, find the next
+// day (starting from `from`) that has fewer than `cap` step-1 sends. Uses in-memory tally
+// merged with existing DB tallies.
+async function pickStep1Day(
+  supabase: any,
+  dealerId: string,
+  cap: number,
+  earliest: Date,
+  memoryTally: Map<string, number>,
+): Promise<Date> {
+  // Load existing step-1 email counts per day for the next 60 days.
+  const horizon = new Date(earliest);
+  horizon.setUTCDate(horizon.getUTCDate() + 60);
+  const { data: existing } = await supabase
+    .from("sequence_emails")
+    .select("scheduled_for")
+    .eq("dealer_id", dealerId)
+    .eq("step", 1)
+    .in("status", ["scheduled", "sent"])
+    .gte("scheduled_for", earliest.toISOString())
+    .lte("scheduled_for", horizon.toISOString());
+  const dbTally = new Map<string, number>();
+  for (const row of existing ?? []) {
+    if (!row.scheduled_for) continue;
+    const k = utcDayKey(new Date(row.scheduled_for));
+    dbTally.set(k, (dbTally.get(k) ?? 0) + 1);
+  }
+  const day = new Date(earliest);
+  for (let i = 0; i < 60; i++) {
+    const k = utcDayKey(day);
+    const total = (dbTally.get(k) ?? 0) + (memoryTally.get(k) ?? 0);
+    if (total < cap) {
+      memoryTally.set(k, (memoryTally.get(k) ?? 0) + 1);
+      return new Date(day);
+    }
+    day.setUTCDate(day.getUTCDate() + 1);
+  }
+  // Fallback: 60 days out.
+  return day;
+}
+
+async function scheduleSequenceEmails(
+  supabase: any,
+  seq: { id: string; sequence_emails: any[] },
+  dealer: { id: string; daily_send_cap: number; send_window_start_hour: number; send_window_end_hour: number },
+  memoryTally: Map<string, number>,
+) {
+  const now = new Date();
+  // Earliest step 1 candidate = tomorrow (start of UTC day).
+  const earliest = new Date(now);
+  earliest.setUTCDate(earliest.getUTCDate() + 1);
+  earliest.setUTCHours(0, 0, 0, 0);
+
+  const step1Day = await pickStep1Day(supabase, dealer.id, dealer.daily_send_cap, earliest, memoryTally);
+  const step1At = pickSendTimeUTC(step1Day, dealer.send_window_start_hour, dealer.send_window_end_hour);
+
+  // Steps 2 and 3 are anchored to step-1's actual day, offsets from original values.
+  const byStep = new Map<number, any>();
+  for (const e of seq.sequence_emails ?? []) byStep.set(e.step, e);
+  const step1 = byStep.get(1);
+  const step2 = byStep.get(2);
+  const step3 = byStep.get(3);
+  const step1Offset = step1?.send_offset_days ?? 1;
+
+  const updates: Array<{ id: string; scheduled_for: string }> = [];
+  if (step1 && step1.status === "draft") updates.push({ id: step1.id, scheduled_for: step1At });
+  if (step2 && step2.status === "draft") {
+    const gap = (step2.send_offset_days ?? 5) - step1Offset;
+    const d = new Date(step1Day); d.setUTCDate(d.getUTCDate() + Math.max(1, gap));
+    updates.push({ id: step2.id, scheduled_for: pickSendTimeUTC(d, dealer.send_window_start_hour, dealer.send_window_end_hour) });
+  }
+  if (step3 && step3.status === "draft") {
+    const gap = (step3.send_offset_days ?? 11) - step1Offset;
+    const d = new Date(step1Day); d.setUTCDate(d.getUTCDate() + Math.max(2, gap));
+    updates.push({ id: step3.id, scheduled_for: pickSendTimeUTC(d, dealer.send_window_start_hour, dealer.send_window_end_hour) });
+  }
+
+  for (const u of updates) {
+    await supabase.from("sequence_emails")
+      .update({ status: "scheduled", scheduled_for: u.scheduled_for })
+      .eq("id", u.id);
+  }
+  await supabase.from("sequences").update({
+    status: "active",
+    started_at: now.toISOString(),
+    updated_at: now.toISOString(),
+  }).eq("id", seq.id);
+}
+
+async function loadDealerSchedulingConfig(supabase: any, userId: string) {
+  const { data, error } = await supabase.from("dealers")
+    .select("id, daily_send_cap, send_window_start_hour, send_window_end_hour")
+    .eq("user_id", userId)
+    .single();
+  if (error || !data) throw new Error("Dealer not found");
+  return {
+    id: data.id,
+    daily_send_cap: data.daily_send_cap ?? 50,
+    send_window_start_hour: data.send_window_start_hour ?? 9,
+    send_window_end_hour: data.send_window_end_hour ?? 16,
+  };
+}
+
 export const startSequence = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) => z.object({ id: z.string().uuid() }).parse(d))
@@ -211,26 +328,12 @@ export const startSequence = createServerFn({ method: "POST" })
     if (error) throw error;
     if (seq.status !== "drafting") throw new Error("Sequence already started");
 
-    const now = new Date();
-    for (const e of seq.sequence_emails ?? []) {
-      if (e.status !== "draft") continue;
-      await context.supabase.from("sequence_emails").update({
-        status: "scheduled",
-        scheduled_for: addDays(now, e.send_offset_days).toISOString(),
-      }).eq("id", e.id);
-    }
-    await context.supabase.from("sequences").update({
-      status: "active",
-      started_at: now.toISOString(),
-      updated_at: now.toISOString(),
-    }).eq("id", data.id);
+    const dealer = await loadDealerSchedulingConfig(context.supabase, context.userId);
+    await scheduleSequenceEmails(context.supabase, seq, dealer, new Map());
 
-    const { data: dealer } = await context.supabase.from("dealers").select("id").eq("user_id", context.userId).single();
-    if (dealer) {
-      await context.supabase.from("activity_log").insert({
-        dealer_id: dealer.id, kind: "sequence_started", payload: { sequence_id: data.id },
-      });
-    }
+    await context.supabase.from("activity_log").insert({
+      dealer_id: dealer.id, kind: "sequence_started", payload: { sequence_id: data.id },
+    });
     return { ok: true };
   });
 
@@ -238,37 +341,29 @@ export const startSequencesBulk = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) => z.object({ ids: z.array(z.string().uuid()).min(1).max(200) }).parse(d))
   .handler(async ({ data, context }) => {
+    const dealer = await loadDealerSchedulingConfig(context.supabase, context.userId);
     const { data: seqs, error } = await context.supabase
       .from("sequences")
-      .select("id, status, sequence_emails(id, send_offset_days, status)")
+      .select("id, status, sequence_emails(id, step, send_offset_days, status)")
       .in("id", data.ids)
       .eq("status", "drafting");
     if (error) throw error;
-    const now = new Date();
+
+    const tally = new Map<string, number>();
     let started = 0;
     for (const seq of seqs ?? []) {
-      for (const e of seq.sequence_emails ?? []) {
-        if (e.status !== "draft") continue;
-        await context.supabase.from("sequence_emails").update({
-          status: "scheduled",
-          scheduled_for: addDays(now, e.send_offset_days).toISOString(),
-        }).eq("id", e.id);
-      }
-      await context.supabase.from("sequences").update({
-        status: "active",
-        started_at: now.toISOString(),
-        updated_at: now.toISOString(),
-      }).eq("id", seq.id);
+      await scheduleSequenceEmails(context.supabase, seq, dealer, tally);
       started++;
     }
-    const { data: dealer } = await context.supabase.from("dealers").select("id").eq("user_id", context.userId).single();
-    if (dealer && started > 0) {
+    if (started > 0) {
       await context.supabase.from("activity_log").insert({
-        dealer_id: dealer.id, kind: "sequences_started_bulk", payload: { count: started },
+        dealer_id: dealer.id, kind: "sequences_started_bulk", payload: { count: started, cap: dealer.daily_send_cap },
       });
     }
-    return { started };
+    return { started, dailyCap: dealer.daily_send_cap };
   });
+
+
 
 
 

@@ -30,7 +30,11 @@ const OnboardSchema = z.object({
   notification_email: z.string().trim().email().max(200).optional().nullable().or(z.literal("")),
   forward_replies: z.boolean().optional(),
   milestone_months: z.array(z.number().int().min(1).max(240)).max(24).optional(),
+  daily_send_cap: z.number().int().min(1).max(500).optional(),
+  send_window_start_hour: z.number().int().min(0).max(23).optional(),
+  send_window_end_hour: z.number().int().min(1).max(24).optional(),
 });
+
 
 
 export const completeOnboarding = createServerFn({ method: "POST" })
