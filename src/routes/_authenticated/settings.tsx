@@ -276,6 +276,15 @@ function SenderEmailCard({ dealer }: { dealer: any }) {
 
   const [email, setEmail] = useState("");
   const [result, setResult] = useState<null | { ok: boolean; message?: string; verifiedDomains?: string[] }>(null);
+  const [accountDomain, setAccountDomain] = useState<string | null>(null);
+
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data }) => {
+      const em = data.user?.email ?? "";
+      const dom = em.split("@")[1]?.toLowerCase() ?? null;
+      setAccountDomain(dom);
+    });
+  }, []);
 
   useEffect(() => {
     setEmail(dealer?.sender_email ?? "");
