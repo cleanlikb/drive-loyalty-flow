@@ -4,7 +4,12 @@ import { z } from "zod";
 
 const EMAIL_RE = /^[^\s<>@"]+@[a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(\.[a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+$/;
 
-async function fetchVerifiedDomains(): Promise<{ ok: boolean; domains: string[]; error?: string; status?: number }> {
+type DomainsResult =
+  | { ok: true; domains: string[]; restricted?: false }
+  | { ok: true; domains: []; restricted: true; message: string }
+  | { ok: false; domains: []; error: string; status?: number };
+
+async function fetchVerifiedDomains(): Promise<DomainsResult> {
   const lovableKey = process.env.LOVABLE_API_KEY;
   const resendKey = process.env.RESEND_API_KEY;
   if (!lovableKey || !resendKey) {
@@ -18,11 +23,24 @@ async function fetchVerifiedDomains(): Promise<{ ok: boolean; domains: string[];
     },
   });
   const text = await res.text();
+  let json: any = {};
+  try { json = JSON.parse(text); } catch {}
+
+  // Resend "sending-only" API keys cannot list domains. Treat this as a
+  // known-benign case: we can't auto-verify, but the user can still save an
+  // address they've manually verified in Resend.
+  if (res.status === 401 && String(json?.name ?? "").toLowerCase() === "restricted_api_key") {
+    return {
+      ok: true,
+      domains: [],
+      restricted: true,
+      message: "We can't auto-check verified domains with the current provider key — saving without an automated check.",
+    };
+  }
+
   if (!res.ok) {
     return { ok: false, domains: [], error: `Could not reach email provider (${res.status})`, status: res.status };
   }
-  let json: any = {};
-  try { json = JSON.parse(text); } catch {}
   const arr: any[] = Array.isArray(json?.data) ? json.data : Array.isArray(json) ? json : [];
   const verified = arr
     .filter((d) => String(d?.status ?? "").toLowerCase() === "verified")
