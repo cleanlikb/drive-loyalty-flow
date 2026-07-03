@@ -1,6 +1,14 @@
 import { createHmac, randomBytes } from "crypto";
 
 const REPLY_DOMAIN = "reply.wynback.co.uk";
+const EMAIL_RE = /^[^\s<>@"]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+$/;
+
+export function extractEmailAddress(value?: string | null): string | null {
+  if (!value) return null;
+  const match = value.match(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i);
+  const email = match?.[0]?.trim().toLowerCase() ?? null;
+  return email && EMAIL_RE.test(email) ? email : null;
+}
 
 export function generateReplyAlias(dealerSlug: string): string {
   const rand = randomBytes(4).toString("hex"); // 8 chars
@@ -33,14 +41,17 @@ export async function sendResendEmail(args: {
   const resendKey = process.env.RESEND_API_KEY;
   if (!lovableKey) throw new Error("Missing LOVABLE_API_KEY");
   if (!resendKey) throw new Error("Missing RESEND_API_KEY");
+  const from = extractEmailAddress(args.from);
+  if (!from) throw new Error("Invalid sender email configured");
+  const replyTo = extractEmailAddress(args.replyTo);
 
   const body: any = {
-    from: args.from,
+    from,
     to: [args.to],
     subject: args.subject,
     text: args.text,
     ...(args.html ? { html: args.html } : {}),
-    ...(args.replyTo ? { reply_to: args.replyTo } : {}),
+    ...(replyTo ? { reply_to: replyTo } : {}),
     ...(args.tags ? { tags: args.tags } : {}),
   };
 

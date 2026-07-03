@@ -123,7 +123,6 @@ export async function processReply(
     try {
       await forwardReply({
         to: seq.dealer.notification_email,
-        fromLabel: `${seq.customer?.name ?? "Customer"} via Wynback`,
         fromAddress,
         subject: `[${labelFor(classification.classification)}] ${meta.subject ?? "New reply"} — ${seq.customer?.name ?? ""}`,
         replyTo: meta.fromEmail ?? seq.customer?.email ?? null,
@@ -203,13 +202,17 @@ export const findActiveSequenceByEmail = async (supabase: any, email: string) =>
 // -----------------------------------------------------------------------------
 // Forwarding — best-effort. Uses Resend if RESEND_API_KEY + a sender are set.
 // -----------------------------------------------------------------------------
-function sanitizeLabel(s: string): string {
-  return s.replace(/[<>"\r\n]/g, "").replace(/\s+/g, " ").trim().slice(0, 60) || "Wynback";
+const EMAIL_RE = /^[^\s<>@"]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+$/;
+
+function extractEmailAddress(value?: string | null): string | null {
+  if (!value) return null;
+  const match = value.match(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i);
+  const email = match?.[0]?.trim().toLowerCase() ?? null;
+  return email && EMAIL_RE.test(email) ? email : null;
 }
 
 async function forwardReply(args: {
   to: string;
-  fromLabel: string;
   fromAddress: string;
   subject: string;
   text: string;
@@ -221,19 +224,19 @@ async function forwardReply(args: {
     console.log("[forwardReply] skipped — missing API keys");
     return;
   }
-  if (!args.fromAddress) {
+  const from = extractEmailAddress(args.fromAddress);
+  if (!from) {
     console.log("[forwardReply] skipped — no verified sender configured");
     return;
   }
-  const label = sanitizeLabel(args.fromLabel);
-  const from = `${label} <${args.fromAddress}>`;
+  const replyTo = extractEmailAddress(args.replyTo);
   const body: any = {
     from,
     to: [args.to],
     subject: args.subject.replace(/[\r\n]/g, " ").slice(0, 300),
     text: args.text,
   };
-  if (args.replyTo) body.reply_to = args.replyTo;
+  if (replyTo) body.reply_to = replyTo;
 
   const res = await fetch("https://connector-gateway.lovable.dev/resend/emails", {
     method: "POST",
