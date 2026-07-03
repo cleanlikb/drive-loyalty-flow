@@ -435,7 +435,7 @@ function CalculatorSection() {
     const yearlyProfit = yearlySales * PROFIT_PER_SALE;
     const yearlyCost = monthlyPayment * 12;
     const netAnnualProfit = yearlyProfit - yearlyCost;
-    return { totalCustomers, monthlyLeads, monthlyEmails, monthlySales, yearlySales, yearlyProfit, yearlyCost, netAnnualProfit };
+    return { totalCustomers, monthlyLeads, monthlyEmails, yearlySales, yearlyProfit, yearlyCost, netAnnualProfit };
   }, [carsPerMonth, monthlyPayment]);
 
   const formatSales = (n: number) => (n < 1 ? n.toFixed(1) : Math.round(n).toLocaleString());
