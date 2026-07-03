@@ -69,6 +69,7 @@ export const regenerateSequenceEmail = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) => z.object({
     id: z.string().uuid(),
     instruction: z.string().max(300).optional(),
+    sequenceType: z.enum(["trade_in", "buy_back"]).optional(),
   }).parse(d))
   .handler(async ({ data, context }) => {
     const { data: email, error } = await context.supabase
@@ -83,6 +84,8 @@ export const regenerateSequenceEmail = createServerFn({ method: "POST" })
     if (!dealer) throw new Error("Dealer not found");
     const c = email.sequence.customer;
 
+    const effectiveType = (data.sequenceType ?? email.sequence?.sequence_type ?? "trade_in") as "trade_in" | "buy_back";
+
     const { regenerateEmail } = await import("./ai.server");
     const fresh = await regenerateEmail({
       dealership: dealer.dealership_name,
@@ -91,12 +94,20 @@ export const regenerateSequenceEmail = createServerFn({ method: "POST" })
       customerCarYearMakeModelTrim: [c.make, c.model, c.trim].filter(Boolean).join(" "),
       purchaseDate: c.sale_date ?? new Date().toISOString(),
       monthsSincePurchase: c.sale_date ? monthsAgo(c.sale_date) : 12,
-      sequenceType: (email.sequence?.sequence_type ?? "trade_in") as "trade_in" | "buy_back",
+      sequenceType: effectiveType,
       step: email.step as 1 | 2 | 3,
       currentSubject: email.subject,
       currentBody: email.body,
       instruction: data.instruction,
     });
+
+    if (data.sequenceType && data.sequenceType !== email.sequence?.sequence_type) {
+      await context.supabase.from("sequences")
+        .update({ sequence_type: data.sequenceType, updated_at: new Date().toISOString() })
+        .eq("id", email.sequence_id);
+    }
+
+
 
     const { error: updErr } = await context.supabase
       .from("sequence_emails")
