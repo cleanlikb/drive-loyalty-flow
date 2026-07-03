@@ -317,6 +317,7 @@ function SenderEmailCard({ dealer }: { dealer: any }) {
 
   const isVerified = !!dealer?.sender_verified && dealer?.sender_email === email.trim().toLowerCase();
   const verifiedDomains = domainsQ.data?.ok ? domainsQ.data.domains : [];
+  const restricted = !!(domainsQ.data?.ok && (domainsQ.data as any).restricted);
 
   return (
     <Card className="p-6 space-y-4">
