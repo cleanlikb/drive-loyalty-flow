@@ -302,8 +302,8 @@ function PainSection() {
     <section className="py-24 bg-secondary/30">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="max-w-3xl mx-auto text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-semibold tracking-tight">How many of last year’s buyers are due a new car right now — and don’t know you’re still here?</h2>
-          <p className="mt-4 text-lg text-muted-foreground">Wynback fixes the four leaks that quietly drain profit from every dealership.</p>
+          <h2 className="text-3xl md:text-4xl font-semibold tracking-tight">The four leaks quietly draining profit from your dealership.</h2>
+          <p className="mt-4 text-lg text-muted-foreground">Every one of these is fixable — and Wynback fixes them automatically.</p>
         </div>
         <div className="grid md:grid-cols-2 gap-6">
           {pains.map((pain) => (
