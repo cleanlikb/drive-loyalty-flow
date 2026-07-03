@@ -250,6 +250,19 @@ function Sequences() {
                             : ""}
                         </div>
                         <div className="flex gap-2">
+                          {isDraft && (
+                            <Button
+                              size="sm"
+                              disabled={startMut.isPending}
+                              onClick={(ev) => {
+                                ev.stopPropagation();
+                                startMut.mutate(s.id);
+                              }}
+                            >
+                              <PlayCircle className="h-3.5 w-3.5 mr-1.5" />
+                              Start sequence
+                            </Button>
+                          )}
                           {canStop && (
                             <Button
                               variant="outline"
@@ -267,12 +280,18 @@ function Sequences() {
                         </div>
                       </div>
 
-                      {canStop && (
+                      {isDraft ? (
+                        <div className="rounded-md bg-muted/60 border px-3 py-2 text-xs text-muted-foreground flex items-center gap-2">
+                          <PlayCircle className="h-3.5 w-3.5" />
+                          Draft — review and edit the emails below, then click Start sequence to schedule sending.
+                        </div>
+                      ) : canStop ? (
                         <div className="rounded-md bg-primary/5 border border-primary/20 px-3 py-2 text-xs text-primary flex items-center gap-2">
                           <Send className="h-3.5 w-3.5" />
                           Sequence is live — emails will send on their scheduled dates.
                         </div>
-                      )}
+                      ) : null}
+
 
                       <div className="space-y-3">
                         {emails.map((e: any) => (
