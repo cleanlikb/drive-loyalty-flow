@@ -158,7 +158,7 @@ function MobileNavLink({
 
 function HeroSection() {
   return (
-    <section className="relative overflow-hidden bg-gradient-to-br from-primary via-primary to-violet-600 text-primary-foreground pt-24 pb-28 md:pt-32 md:pb-36">
+    <section className="relative overflow-hidden bg-gradient-to-br from-primary via-primary to-fuchsia-600 text-primary-foreground pt-24 pb-28 md:pt-32 md:pb-36">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.18),transparent_40%)] pointer-events-none" />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_left,rgba(0,0,0,0.12),transparent_40%)] pointer-events-none" />
 
