@@ -208,6 +208,61 @@ function Leads() {
           </Card>
         );
       })}
+
+      {(pastData?.months?.length ?? 0) > 0 && (
+        <div className="pt-4 space-y-3">
+          <h2 className="text-lg font-semibold tracking-tight">Previous months</h2>
+          {pastData!.months.map((pm) => {
+            const label = new Date(pm.month).toLocaleDateString(undefined, { month: "long", year: "numeric" });
+            return (
+              <Collapsible key={pm.month}>
+                <Card>
+                  <CollapsibleTrigger className="w-full px-5 py-3 flex items-center justify-between hover:bg-accent/20 [&[data-state=open]>svg]:rotate-180">
+                    <div className="flex items-center gap-3">
+                      <span className="font-medium">{label}</span>
+                      <span className="text-xs text-muted-foreground">{pm.rows.length} lead{pm.rows.length === 1 ? "" : "s"}</span>
+                    </div>
+                    <ChevronDown className="h-4 w-4 text-muted-foreground transition-transform" />
+                  </CollapsibleTrigger>
+                  <CollapsibleContent>
+                    <div className="border-t overflow-x-auto">
+                      <table className="w-full text-sm">
+                        <thead className="bg-muted/40 text-muted-foreground">
+                          <tr>
+                            <th className="text-left px-4 py-2 font-medium">Customer</th>
+                            <th className="text-left px-4 py-2 font-medium">Their car</th>
+                            <th className="text-left px-4 py-2 font-medium">Milestone</th>
+                            <th className="text-left px-4 py-2 font-medium">Status</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y">
+                          {pm.rows.map((r: any) => (
+                            <tr key={r.id}>
+                              <td className="px-4 py-3">
+                                <div className="font-medium">{r.customer?.name}</div>
+                                <div className="text-xs text-muted-foreground">{r.customer?.email ?? "—"}</div>
+                              </td>
+                              <td className="px-4 py-3">
+                                <div>{r.customer?.make} {r.customer?.model}</div>
+                                <div className="text-xs text-muted-foreground">{formatGbp(r.customer?.sale_price)}</div>
+                              </td>
+                              <td className="px-4 py-3"><MilestoneBadge months={r.milestone_months} /></td>
+                              <td className="px-4 py-3 text-xs text-muted-foreground">{r.sequence_id ? "Sequence started" : "Not contacted"}</td>
+                            </tr>
+                          ))}
+                          {pm.rows.length === 0 && (
+                            <tr><td colSpan={4} className="px-4 py-6 text-center text-sm text-muted-foreground">No leads for this month.</td></tr>
+                          )}
+                        </tbody>
+                      </table>
+                    </div>
+                  </CollapsibleContent>
+                </Card>
+              </Collapsible>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }
