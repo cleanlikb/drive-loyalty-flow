@@ -29,7 +29,9 @@ const OnboardSchema = z.object({
   website_url: z.string().trim().max(500).optional().nullable(),
   notification_email: z.string().trim().email().max(200).optional().nullable().or(z.literal("")),
   forward_replies: z.boolean().optional(),
+  milestone_months: z.array(z.number().int().min(1).max(240)).max(24).optional(),
 });
+
 
 export const completeOnboarding = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
