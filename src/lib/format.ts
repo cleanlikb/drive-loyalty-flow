@@ -21,4 +21,7 @@ export function monthsAgo(saleDate: string | Date, ref: Date = new Date()): numb
 }
 
 export const MILESTONES = [12, 18, 24, 36, 48, 60] as const;
+export const DEFAULT_MILESTONES: number[] = [12, 18, 24, 36, 48, 60];
+export const AVAILABLE_MILESTONES: number[] = [6, 12, 18, 24, 30, 36, 42, 48, 54, 60, 72, 84];
 export type Milestone = typeof MILESTONES[number];
+
