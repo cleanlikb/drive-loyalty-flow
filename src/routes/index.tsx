@@ -580,43 +580,35 @@ function PricingSection() {
 
   const tiers = [
     {
-      name: "Starter",
+      name: "Forecourt",
       monthly: 99,
-      limit: "1,000 past customers",
+      limit: "Up to 40 vehicles in stock",
       popular: false,
-      features: [
-        "Automated monthly anniversary leads",
-        "AI-generated 3-email sequences",
-        "1-click approve & send",
-        "Reply detection & unsubscribe handling",
-      ],
     },
     {
-      name: "Growth",
+      name: "Showroom",
       monthly: 149,
-      limit: "2,500 past customers",
+      limit: "Up to 100 vehicles in stock",
       popular: true,
-      features: [
-        "Everything in Starter",
-        "Custom dealer email domain",
-        "Faster AI generation",
-        "Open & click analytics",
-        "Hot lead flagging",
-      ],
     },
     {
-      name: "Pro",
+      name: "Supersite",
       monthly: 299,
-      limit: "5,000 past customers",
+      limit: "100+ vehicles in stock",
       popular: false,
-      features: [
-        "Everything in Growth",
-        "Multi-site dealership support",
-        "Priority processing",
-        "Advanced re-engagement logic",
-        "Dedicated onboarding support",
-      ],
     },
+  ];
+
+  const sharedFeatures = [
+    "Free setup — we configure your milestone sequences, you don't touch anything",
+    "Replies land straight in your own inbox — never a shared portal you have to check",
+    "Fully automated ownership-milestone triggers (12/24/36/48/60 months)",
+    "Under 10 minutes a month admin — no campaigns to build, no lists to manage",
+    "Your data stays yours — export anytime, no lock-in",
+    "Cancel anytime — no long contracts",
+    "Simple dashboard — opens, replies, and bookings generated, at a glance",
+    "GDPR-compliant sending and unsubscribes handled automatically",
+    "CSV import to get started — no DMS integration required on day one",
   ];
 
   return (
@@ -625,7 +617,7 @@ function PricingSection() {
         <div className="max-w-3xl mx-auto text-center mb-12">
           <span className="text-sm font-semibold text-primary uppercase tracking-wide">Pricing</span>
           <h2 className="mt-3 text-3xl md:text-4xl font-semibold tracking-tight">Worth more than one extra sale a month?</h2>
-          <p className="mt-4 text-lg text-muted-foreground">One extra sale usually pays for the entire year. Pick a plan based on how many past customers you have.</p>
+          <p className="mt-4 text-lg text-muted-foreground">One extra sale usually pays for the entire year. Pick a plan based on how many vehicles you keep in stock.</p>
         </div>
 
         <div className="flex justify-center mb-12">
@@ -676,17 +668,6 @@ function PricingSection() {
                   {annual ? `Billed £${price * 12} yearly` : "\u00A0"}
                 </p>
 
-                <ul className="mt-6 space-y-3 flex-1">
-                  {tier.features.map((f) => (
-                    <li key={f} className="flex items-start gap-3 text-sm">
-                      <span className={`mt-0.5 h-5 w-5 rounded-full grid place-items-center flex-shrink-0 ${tier.popular ? "bg-primary text-primary-foreground" : "bg-primary/10 text-primary"}`}>
-                        <Check className="h-3 w-3" />
-                      </span>
-                      <span className="text-foreground/90">{f}</span>
-                    </li>
-                  ))}
-                </ul>
-
                 <div className="mt-8">
                   <Button
                     asChild
@@ -704,10 +685,27 @@ function PricingSection() {
             );
           })}
         </div>
+
+        <div className="mt-16 max-w-4xl mx-auto">
+          <div className="rounded-2xl border border-border bg-card p-8 md:p-10">
+            <h3 className="text-center text-lg font-semibold mb-8">Every plan includes</h3>
+            <div className="grid sm:grid-cols-2 gap-x-8 gap-y-4">
+              {sharedFeatures.map((feature) => (
+                <div key={feature} className="flex items-start gap-3">
+                  <span className="mt-0.5 h-5 w-5 rounded-full bg-primary/10 text-primary grid place-items-center flex-shrink-0">
+                    <Check className="h-3 w-3" />
+                  </span>
+                  <span className="text-sm text-foreground/90">{feature}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
       </div>
     </section>
   );
 }
+
 
 function PricingFAQ() {
   const faqs = [
