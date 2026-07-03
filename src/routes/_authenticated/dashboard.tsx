@@ -182,18 +182,45 @@ function Dashboard() {
       )}
 
       <Card>
-        <div className="px-5 py-4 border-b">
-          <h2 className="font-semibold">Recent activity</h2>
+        <div className="px-5 py-4 border-b flex items-center justify-between">
+          <h2 className="font-semibold">{activeLabel}</h2>
+          <span className="text-xs text-muted-foreground">
+            {details.length} {details.length === 1 ? "item" : "items"}
+          </span>
         </div>
         <div className="divide-y">
-          {(stats?.activity ?? []).length === 0 && (
-            <div className="px-5 py-8 text-sm text-muted-foreground text-center">Nothing yet.</div>
+          {detailsLoading && (
+            <div className="px-5 py-8 text-sm text-muted-foreground text-center">Loading…</div>
           )}
-          {(stats?.activity ?? []).map((a: any) => (
-            <div key={a.id} className="px-5 py-3 flex items-center justify-between text-sm">
-              <span>{activityText(a)}</span>
-              <span className="text-muted-foreground">{formatDateTime(a.created_at)}</span>
+          {!detailsLoading && details.length === 0 && (
+            <div className="px-5 py-8 text-sm text-muted-foreground text-center">
+              Nothing here yet.
             </div>
+          )}
+          {!detailsLoading && details.map((d: any) => (
+            <Link
+              key={d.id}
+              to={d.href}
+              className="px-5 py-3 flex items-center gap-3 text-sm hover:bg-muted/40 transition"
+            >
+              <div className="min-w-0 flex-1">
+                <div className="font-medium truncate">{d.primary}</div>
+                {d.secondary && (
+                  <div className="text-xs text-muted-foreground truncate">{d.secondary}</div>
+                )}
+              </div>
+              {d.meta && (
+                <span className="text-xs text-muted-foreground hidden sm:inline truncate max-w-[180px]">
+                  {d.meta}
+                </span>
+              )}
+              {d.timestamp && (
+                <span className="text-xs text-muted-foreground flex-shrink-0">
+                  {formatDateTime(d.timestamp)}
+                </span>
+              )}
+              <ChevronRight className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+            </Link>
           ))}
         </div>
       </Card>
