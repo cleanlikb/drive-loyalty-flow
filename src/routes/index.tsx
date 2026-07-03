@@ -435,7 +435,7 @@ function CalculatorSection() {
     const yearlyProfit = yearlySales * PROFIT_PER_SALE;
     const yearlyCost = monthlyPayment * 12;
     const netAnnualProfit = yearlyProfit - yearlyCost;
-    return { totalCustomers, monthlyLeads, monthlyEmails, monthlySales, yearlySales, yearlyProfit, yearlyCost, netAnnualProfit };
+    return { totalCustomers, monthlyLeads, monthlyEmails, yearlySales, yearlyProfit, yearlyCost, netAnnualProfit };
   }, [carsPerMonth, monthlyPayment]);
 
   const formatSales = (n: number) => (n < 1 ? n.toFixed(1) : Math.round(n).toLocaleString());
@@ -510,7 +510,7 @@ function CalculatorSection() {
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
             <StatBox label="People re-engaged / month" value={stats.monthlyLeads.toLocaleString()} />
-            <StatBox label="Estimated extra sales / month" value={formatSales(stats.monthlySales)} />
+            <StatBox label="Estimated extra sales / year" value={formatSales(stats.yearlySales)} />
             <StatBox label="Estimated profit / year" value={`£${Math.round(stats.yearlyProfit).toLocaleString()}`} highlight />
             <StatBox label="Profit after subscription" value={`£${Math.round(stats.netAnnualProfit).toLocaleString()}`} />
           </div>
