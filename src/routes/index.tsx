@@ -435,7 +435,7 @@ function BenefitsSection() {
     {
       icon: Users,
       title: "Stronger customer relationships",
-      body: "A well-timed, personal email at a 12, 18 or 24-month milestone keeps you front of mind. Customers feel looked after, not sold to.",
+      body: "A well-timed, personal email at important milestones keeps you front of mind. Customers feel looked after, not sold to.",
     },
     {
       icon: Lock,
