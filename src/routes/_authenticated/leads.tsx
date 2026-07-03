@@ -67,7 +67,7 @@ function Leads() {
     setBusy(true);
     try {
       const r = await startSeq({ data: { cohortCustomerIds: selectedIds } });
-      toast.success(`${r.created} sequences generated`);
+      toast.success(`${r.created} draft sequences generated — review and start them on the Sequences page`);
       qc.invalidateQueries();
       navigate({ to: "/sequences" });
     } catch (e: any) {

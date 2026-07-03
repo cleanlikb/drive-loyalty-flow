@@ -6,7 +6,9 @@ import {
   updateEmailDraft,
   stopSequence,
   regenerateSequenceEmail,
+  startSequence,
 } from "@/lib/sequences.functions";
+
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -22,7 +24,7 @@ import {
 } from "@/components/ui/accordion";
 import { toast } from "sonner";
 import { useState } from "react";
-import { Sparkles, Send, StopCircle } from "lucide-react";
+import { Sparkles, Send, StopCircle, PlayCircle } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/sequences/")({
   component: Sequences,
@@ -147,6 +149,7 @@ function Sequences() {
   const update = useServerFn(updateEmailDraft);
   const stop = useServerFn(stopSequence);
   const regen = useServerFn(regenerateSequenceEmail);
+  const startFn = useServerFn(startSequence);
   const qc = useQueryClient();
   const { data = [] } = useQuery({
     queryKey: ["sequences"],
@@ -161,6 +164,17 @@ function Sequences() {
     },
     onError: (e: any) => toast.error(e?.message ?? "Failed"),
   });
+
+  const startMut = useMutation({
+    mutationFn: (id: string) => startFn({ data: { id } }),
+    onSuccess: () => {
+      toast.success("Sequence started — emails will send on schedule");
+      qc.invalidateQueries({ queryKey: ["sequences"] });
+      qc.invalidateQueries({ queryKey: ["dashboard"] });
+    },
+    onError: (e: any) => toast.error(e?.message ?? "Failed"),
+  });
+
 
   return (
     <div className="max-w-5xl mx-auto p-6 md:p-8 space-y-6">
@@ -182,8 +196,10 @@ function Sequences() {
               const emails = (s.sequence_emails ?? []).sort(
                 (a: any, b: any) => a.step - b.step,
               );
+              const isDraft = s.status === "drafting";
               const canStop = ["active", "scheduled", "drafting"].includes(s.status);
               const sentCount = emails.filter((e: any) => e.status === "sent").length;
+
               return (
                 <AccordionItem key={s.id} value={s.id} className="border-b last:border-0">
                   <AccordionTrigger className="hover:no-underline px-3 py-3">
@@ -234,6 +250,19 @@ function Sequences() {
                             : ""}
                         </div>
                         <div className="flex gap-2">
+                          {isDraft && (
+                            <Button
+                              size="sm"
+                              disabled={startMut.isPending}
+                              onClick={(ev) => {
+                                ev.stopPropagation();
+                                startMut.mutate(s.id);
+                              }}
+                            >
+                              <PlayCircle className="h-3.5 w-3.5 mr-1.5" />
+                              Start sequence
+                            </Button>
+                          )}
                           {canStop && (
                             <Button
                               variant="outline"
@@ -251,12 +280,18 @@ function Sequences() {
                         </div>
                       </div>
 
-                      {canStop && (
+                      {isDraft ? (
+                        <div className="rounded-md bg-muted/60 border px-3 py-2 text-xs text-muted-foreground flex items-center gap-2">
+                          <PlayCircle className="h-3.5 w-3.5" />
+                          Draft — review and edit the emails below, then click Start sequence to schedule sending.
+                        </div>
+                      ) : canStop ? (
                         <div className="rounded-md bg-primary/5 border border-primary/20 px-3 py-2 text-xs text-primary flex items-center gap-2">
                           <Send className="h-3.5 w-3.5" />
                           Sequence is live — emails will send on their scheduled dates.
                         </div>
-                      )}
+                      ) : null}
+
 
                       <div className="space-y-3">
                         {emails.map((e: any) => (
