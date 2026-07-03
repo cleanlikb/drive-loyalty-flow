@@ -29,10 +29,12 @@ const FORMAT_RULES = `- British English, first person, warm, conversational — 
 - No marketing fluff, no exclamation stacks, no emojis, no hype.
 - Never invent prices, mileage, finance figures, model years, specs or discounts.
 - Every email MUST be under 100 words total (including greeting and sign-off). Aim for 55-90.
+- The greeting MUST be on its own line, followed by a BLANK line, then the body. Example: "Hi James,\\n\\nHope the Qashqai's been treating you well..." — NEVER "Hi James, hope the Qashqai...".
 - Structure the body as 2 to 4 SHORT paragraphs separated by a blank line (\\n\\n). Never one wall of text.
 - Keep each paragraph to 1-2 sentences.
 - End with a SOFT call-to-action on its own line — an easy no-pressure question or invite (e.g. "Worth a quick chat?", "Want me to keep an eye out?", "Reply with your mileage and I'll ping a ballpark over."). Never a hard sell, never a deadline.
-- Sign off with only the salesperson's first name, then the dealership on the next line.`;
+- Sign off with only the salesperson's first name on its own line, then the dealership on the next line.`;
+
 
 const SYSTEM = `You write short, warm, plain-text sales emails for a UK independent car dealership re-engaging previous customers.
 ${FORMAT_RULES}
@@ -77,10 +79,29 @@ Write three emails in this angle:
 - Email 2 — ${b.two}
 - Email 3 — ${b.three}
 
-Remember: under 100 words each, 2-4 short paragraphs separated by blank lines, soft CTA on its own line.`;
+Remember: under 100 words each, greeting on its own line then a blank line, 2-4 short paragraphs separated by blank lines, soft CTA on its own line.`;
 
-  return await chatJson<GeneratedSequence>({ system: SYSTEM, user });
+  const out = await chatJson<GeneratedSequence>({ system: SYSTEM, user });
+  out.email1.body = normaliseBody(out.email1.body);
+  out.email2.body = normaliseBody(out.email2.body);
+  out.email3.body = normaliseBody(out.email3.body);
+  return out;
 }
+
+// Guarantee a blank line after the greeting ("Hi Name," / "Hello Name," / "Hey Name,")
+// and collapse accidental single-newline paragraph breaks into blank-line breaks.
+function normaliseBody(body: string): string {
+  let b = body.replace(/\r\n/g, "\n").trim();
+  // Split greeting line from the rest if the model glued it inline.
+  b = b.replace(
+    /^(Hi|Hello|Hey|Dear)\s+([^,\n]{1,40}),\s+(?=\S)/,
+    (_m, hi, name) => `${hi} ${name},\n\n`,
+  );
+  // Ensure paragraphs are separated by blank lines, not just single newlines.
+  b = b.replace(/([^\n])\n(?!\n)(?=\S)/g, "$1\n\n");
+  return b.trim();
+}
+
 
 export interface RegenerateEmailInput extends SequenceInputs {
   step: 1 | 2 | 3;
@@ -106,10 +127,13 @@ Rewrite email step ${input.step}. Brief: ${stepBrief}
 ${input.currentSubject ? `Current subject (avoid repeating verbatim): ${input.currentSubject}` : ""}
 ${input.instruction ? `Extra instruction from the dealer: ${input.instruction}` : "Produce a fresh variation with different wording and angle."}
 
-Remember: under 100 words, 2-4 short paragraphs separated by blank lines, soft CTA on its own line.`;
+Remember: under 100 words, greeting on its own line then a blank line, 2-4 short paragraphs separated by blank lines, soft CTA on its own line.`;
 
-  return await chatJson<GeneratedEmail>({ system: SINGLE_SYSTEM, user });
+  const out = await chatJson<GeneratedEmail>({ system: SINGLE_SYSTEM, user });
+  out.body = normaliseBody(out.body);
+  return out;
 }
+
 
 export type ReplyClass = "replied" | "no_longer_owns" | "unsubscribe" | "interested" | "hot_lead";
 

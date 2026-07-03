@@ -168,10 +168,11 @@ export const startSequencesForSelected = createServerFn({ method: "POST" })
         if (seqErr) throw seqErr;
 
         const emails = [
-          { step: 1, offset: 0, subject: seq.email1.subject, body: seq.email1.body },
-          { step: 2, offset: 4, subject: seq.email2.subject, body: seq.email2.body },
-          { step: 3, offset: 10, subject: seq.email3.subject, body: seq.email3.body },
+          { step: 1, offset: 1, subject: seq.email1.subject, body: seq.email1.body },
+          { step: 2, offset: 5, subject: seq.email2.subject, body: seq.email2.body },
+          { step: 3, offset: 11, subject: seq.email3.subject, body: seq.email3.body },
         ];
+
         const emailRows = emails.map((e) => ({
           sequence_id: seqRow.id,
           dealer_id: dealer.id,
