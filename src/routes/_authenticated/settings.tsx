@@ -198,7 +198,56 @@ function Settings() {
         {form.milestone_months.length === 0 && (
           <p className="text-xs text-destructive">Add at least one interval.</p>
         )}
+      <Card className="p-6 space-y-4">
+        <div>
+          <h2 className="font-semibold">Send throttling</h2>
+          <p className="text-sm text-muted-foreground mt-1">
+            Protects deliverability by capping how many first-touch emails go out per day and randomising each send within your chosen window. Steps 2 &amp; 3 land the right number of days after step 1 actually sends.
+          </p>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="space-y-1.5">
+            <Label htmlFor="cap">Max first emails / day</Label>
+            <Input
+              id="cap"
+              type="number"
+              min={1}
+              max={500}
+              value={form.daily_send_cap}
+              onChange={(e) => setForm({ ...form, daily_send_cap: Math.max(1, parseInt(e.target.value || "0", 10) || 1) })}
+            />
+          </div>
+          <div className="space-y-1.5">
+            <Label htmlFor="wstart">Send window start</Label>
+            <Input
+              id="wstart"
+              type="number"
+              min={0}
+              max={23}
+              value={form.send_window_start_hour}
+              onChange={(e) => setForm({ ...form, send_window_start_hour: Math.min(23, Math.max(0, parseInt(e.target.value || "0", 10) || 0)) })}
+            />
+            <p className="text-xs text-muted-foreground">Hour of day (0–23)</p>
+          </div>
+          <div className="space-y-1.5">
+            <Label htmlFor="wend">Send window end</Label>
+            <Input
+              id="wend"
+              type="number"
+              min={1}
+              max={24}
+              value={form.send_window_end_hour}
+              onChange={(e) => setForm({ ...form, send_window_end_hour: Math.min(24, Math.max(1, parseInt(e.target.value || "0", 10) || 1)) })}
+            />
+            <p className="text-xs text-muted-foreground">Hour of day (1–24)</p>
+          </div>
+        </div>
+        {form.send_window_end_hour <= form.send_window_start_hour && (
+          <p className="text-xs text-destructive">End hour must be after start hour.</p>
+        )}
       </Card>
+
+
 
 
 
