@@ -68,16 +68,23 @@ export const verifySenderEmail = createServerFn({ method: "POST" })
     const domain = email.split("@")[1];
     const result = await fetchVerifiedDomains();
     if (!result.ok) {
-      return { ok: false as const, reason: "provider_error", message: result.error ?? "Could not verify with the email provider." };
+      return { ok: false as const, reason: "provider_error", message: result.error };
     }
-    const matched = result.domains.some((d) => d === domain);
-    if (!matched) {
-      return {
-        ok: false as const,
-        reason: "domain_not_verified",
-        message: `The domain "${domain}" is not verified with the email provider. Add and verify it before you can send from this address.`,
-        verifiedDomains: result.domains,
-      };
+
+    // When the provider key can't list domains (restricted key), trust the
+    // user's input — sends will surface any Resend-side error clearly.
+    const skippedCheck = "restricted" in result && result.restricted === true;
+
+    if (!skippedCheck) {
+      const matched = result.domains.some((d) => d === domain);
+      if (!matched) {
+        return {
+          ok: false as const,
+          reason: "domain_not_verified",
+          message: `The domain "${domain}" is not verified with the email provider. Add and verify it before you can send from this address.`,
+          verifiedDomains: result.domains,
+        };
+      }
     }
 
     const { error } = await context.supabase
