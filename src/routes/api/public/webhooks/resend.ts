@@ -57,8 +57,8 @@ export const Route = createFileRoute("/api/public/webhooks/resend")({
             .filter(Boolean)
             .map((v: any) => (typeof v === "string" ? v : v?.address ?? ""))
             .filter(Boolean);
-          const fromEmail = extractEmail(typeof data?.from === "string" ? data.from : data?.from?.address ?? "");
-          const subject = data?.subject ?? null;
+          let fromEmail = extractEmail(typeof data?.from === "string" ? data.from : data?.from?.address ?? "");
+          let subject = data?.subject ?? null;
           const receivedId: string | null = data?.id ?? data?.email_id ?? null;
 
           // Resend's received-email webhook is metadata-only; fetch the message body separately.
@@ -72,6 +72,8 @@ export const Route = createFileRoute("/api/public/webhooks/resend")({
                 text = extractBodyText(body);
                 headers = body.headers ?? headers;
                 messageId = body.message_id ?? messageId;
+                if (!fromEmail) fromEmail = extractEmail(typeof body?.from === "string" ? body.from : body?.from?.address ?? "");
+                subject = subject ?? body?.subject ?? null;
               }
             } catch (e) {
               console.error("Resend inbound body fetch failed", e);

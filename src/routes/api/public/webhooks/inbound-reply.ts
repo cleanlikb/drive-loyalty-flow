@@ -26,12 +26,12 @@ export const Route = createFileRoute("/api/public/webhooks/inbound-reply")({
         const data = payload.data ?? {};
 
         const fromRaw = typeof data.from === "string" ? data.from : data.from?.address ?? "";
-        const fromEmail = extractEmail(fromRaw);
+        let fromEmail = extractEmail(fromRaw);
         if (!fromEmail) {
           return json({ received: true, skipped: "no_from" }, 200);
         }
 
-        const subject: string | null = data.subject ?? null;
+        let subject: string | null = data.subject ?? null;
         const receivedId: string | null = data.id ?? data.email_id ?? null;
 
         // Resend inbound webhooks contain metadata only — fetch the body via API.
@@ -47,6 +47,8 @@ export const Route = createFileRoute("/api/public/webhooks/inbound-reply")({
                 : stripHtml(String(body.html ?? ""));
               fetchedHeaders = body.headers ?? fetchedHeaders;
               fetchedMessageId = body.message_id ?? fetchedMessageId;
+              if (!fromEmail) fromEmail = extractEmail(typeof body.from === "string" ? body.from : body.from?.address ?? "");
+              subject = subject ?? body.subject ?? null;
             }
           } catch (e) {
             console.error("[inbound-reply] fetch body failed", e);
