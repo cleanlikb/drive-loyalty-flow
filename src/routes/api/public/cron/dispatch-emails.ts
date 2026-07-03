@@ -106,12 +106,12 @@ export const Route = createFileRoute("/api/public/cron/dispatch-emails")({
               console.warn("Skipping send: dealer has no verified sender email", { dealerId: dealer?.id });
               continue;
             }
-            // Route replies straight to the dealer's own inbox so they land somewhere real.
-            // Fall back to the alias domain only if no dealer inbox is configured.
-            const dealerInbox = (dealer?.sender_verified ? dealer?.sender_email : null)
-              ?? dealer?.notification_email
-              ?? null;
-            const replyTo = dealerInbox ?? replyToAddress(alias);
+            // Route replies through Resend's test inbound domain using +sub-addressing
+            // so the inbound webhook can match the reply back to dealer + customer.
+            // TODO: once reply.wynback.co.uk MX is verified, swap ezeotolion.resend.app for it.
+            const replyTo = dealer?.slug && customer?.id
+              ? `${dealer.slug}+${customer.id}@ezeotolion.resend.app`
+              : replyToAddress(alias);
             const sender = fromAddress.includes("<")
               ? fromAddress
               : `${dealer?.dealership_name ?? "Wynback"} <${fromAddress}>`;
