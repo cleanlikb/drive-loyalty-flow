@@ -63,11 +63,18 @@ function Dashboard() {
     onSuccess: () => { qc.invalidateQueries({ queryKey: ["hot-leads"] }); },
   });
 
+  const interestedTotal = (stats?.hotLeads ?? 0) + (stats?.interested ?? 0);
   const cards = [
     { label: "This month's leads", value: stats?.leads ?? 0 },
     { label: "Sequences started", value: stats?.sequencesStarted ?? 0 },
     { label: "Emails sent", value: stats?.emailsSent ?? 0 },
     { label: "Replies", value: stats?.replies ?? 0 },
+    {
+      label: "Interested + hot leads",
+      value: interestedTotal,
+      sub: `${stats?.hotLeads ?? 0} hot · ${stats?.interested ?? 0} interested`,
+      accent: interestedTotal > 0,
+    },
     { label: "No longer owns removals", value: stats?.noLongerOwns ?? 0 },
   ];
 
