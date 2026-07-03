@@ -215,6 +215,9 @@ export type Database = {
           salesperson_name: string | null
           send_window_end_hour: number
           send_window_start_hour: number
+          sender_email: string | null
+          sender_verified: boolean
+          sender_verified_at: string | null
           slug: string | null
           updated_at: string
           user_id: string
@@ -233,6 +236,9 @@ export type Database = {
           salesperson_name?: string | null
           send_window_end_hour?: number
           send_window_start_hour?: number
+          sender_email?: string | null
+          sender_verified?: boolean
+          sender_verified_at?: string | null
           slug?: string | null
           updated_at?: string
           user_id: string
@@ -251,6 +257,9 @@ export type Database = {
           salesperson_name?: string | null
           send_window_end_hour?: number
           send_window_start_hour?: number
+          sender_email?: string | null
+          sender_verified?: boolean
+          sender_verified_at?: string | null
           slug?: string | null
           updated_at?: string
           user_id?: string
