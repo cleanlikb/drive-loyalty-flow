@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getDashboardStats } from "@/lib/dashboard.functions";
+import { getDashboardStats, getMetricDetails } from "@/lib/dashboard.functions";
 import { getMyDealer } from "@/lib/dealer.functions";
 import { loadDemoData } from "@/lib/demo.functions";
 import { listHotLeads, clearHotLead } from "@/lib/replies.functions";
@@ -9,8 +9,9 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { formatDateTime } from "@/lib/format";
 import { toast } from "sonner";
-import { ArrowRight, Sparkles, Flame, X } from "lucide-react";
-import { useEffect } from "react";
+import { ArrowRight, Sparkles, Flame, X, ChevronRight } from "lucide-react";
+import { useEffect, useState } from "react";
+import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   component: Dashboard,
@@ -64,19 +65,34 @@ function Dashboard() {
   });
 
   const interestedTotal = (stats?.hotLeads ?? 0) + (stats?.interested ?? 0);
-  const cards = [
-    { label: "This month's leads", value: stats?.leads ?? 0 },
-    { label: "Sequences started", value: stats?.sequencesStarted ?? 0 },
-    { label: "Emails sent", value: stats?.emailsSent ?? 0 },
-    { label: "Replies", value: stats?.replies ?? 0 },
+  const cards: {
+    key: "leads" | "sequencesStarted" | "emailsSent" | "replies" | "interested" | "noLongerOwns";
+    label: string;
+    value: number;
+    sub?: string;
+    accent?: boolean;
+  }[] = [
+    { key: "leads", label: "This month's leads", value: stats?.leads ?? 0 },
+    { key: "sequencesStarted", label: "Sequences started", value: stats?.sequencesStarted ?? 0 },
+    { key: "emailsSent", label: "Emails sent", value: stats?.emailsSent ?? 0 },
+    { key: "replies", label: "Replies", value: stats?.replies ?? 0 },
     {
+      key: "interested",
       label: "Interested + hot leads",
       value: interestedTotal,
       sub: `${stats?.hotLeads ?? 0} hot · ${stats?.interested ?? 0} interested`,
       accent: interestedTotal > 0,
     },
-    { label: "No longer owns removals", value: stats?.noLongerOwns ?? 0 },
+    { key: "noLongerOwns", label: "No longer owns removals", value: stats?.noLongerOwns ?? 0 },
   ];
+
+  const [activeMetric, setActiveMetric] = useState<typeof cards[number]["key"]>("emailsSent");
+  const fetchDetails = useServerFn(getMetricDetails);
+  const { data: details = [], isFetching: detailsLoading } = useQuery({
+    queryKey: ["dashboard-details", activeMetric],
+    queryFn: () => fetchDetails({ data: { metric: activeMetric } }),
+  });
+  const activeLabel = cards.find((c) => c.key === activeMetric)?.label ?? "";
 
 
   const isEmpty = (stats?.leads ?? 0) === 0 && (stats?.activity?.length ?? 0) === 0;
@@ -107,16 +123,33 @@ function Dashboard() {
       )}
 
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-        {cards.map((c: any) => (
-          <Card key={c.label} className={`p-5 ${c.accent ? "border-orange-200 bg-orange-50/50" : ""}`}>
-            <div className="text-xs text-muted-foreground uppercase tracking-wide flex items-center gap-1">
-              {c.accent && <Flame className="h-3 w-3 text-orange-600" />}
-              {c.label}
-            </div>
-            <div className="text-3xl font-semibold tracking-tight mt-2">{c.value}</div>
-            {c.sub && <div className="text-xs text-muted-foreground mt-1">{c.sub}</div>}
-          </Card>
-        ))}
+        {cards.map((c) => {
+          const isActive = c.key === activeMetric;
+          return (
+            <button
+              key={c.key}
+              onClick={() => setActiveMetric(c.key)}
+              className={cn(
+                "text-left transition rounded-xl",
+                isActive && "ring-2 ring-primary ring-offset-2",
+              )}
+            >
+              <Card
+                className={cn(
+                  "p-5 h-full hover:shadow-md transition cursor-pointer",
+                  c.accent && "border-orange-200 bg-orange-50/50",
+                )}
+              >
+                <div className="text-xs text-muted-foreground uppercase tracking-wide flex items-center gap-1">
+                  {c.accent && <Flame className="h-3 w-3 text-orange-600" />}
+                  {c.label}
+                </div>
+                <div className="text-3xl font-semibold tracking-tight mt-2">{c.value}</div>
+                {c.sub && <div className="text-xs text-muted-foreground mt-1">{c.sub}</div>}
+              </Card>
+            </button>
+          );
+        })}
       </div>
 
       {hotLeads.length > 0 && (
@@ -149,18 +182,45 @@ function Dashboard() {
       )}
 
       <Card>
-        <div className="px-5 py-4 border-b">
-          <h2 className="font-semibold">Recent activity</h2>
+        <div className="px-5 py-4 border-b flex items-center justify-between">
+          <h2 className="font-semibold">{activeLabel}</h2>
+          <span className="text-xs text-muted-foreground">
+            {details.length} {details.length === 1 ? "item" : "items"}
+          </span>
         </div>
         <div className="divide-y">
-          {(stats?.activity ?? []).length === 0 && (
-            <div className="px-5 py-8 text-sm text-muted-foreground text-center">Nothing yet.</div>
+          {detailsLoading && (
+            <div className="px-5 py-8 text-sm text-muted-foreground text-center">Loading…</div>
           )}
-          {(stats?.activity ?? []).map((a: any) => (
-            <div key={a.id} className="px-5 py-3 flex items-center justify-between text-sm">
-              <span>{activityText(a)}</span>
-              <span className="text-muted-foreground">{formatDateTime(a.created_at)}</span>
+          {!detailsLoading && details.length === 0 && (
+            <div className="px-5 py-8 text-sm text-muted-foreground text-center">
+              Nothing here yet.
             </div>
+          )}
+          {!detailsLoading && details.map((d: any) => (
+            <Link
+              key={d.id}
+              to={d.href}
+              className="px-5 py-3 flex items-center gap-3 text-sm hover:bg-muted/40 transition"
+            >
+              <div className="min-w-0 flex-1">
+                <div className="font-medium truncate">{d.primary}</div>
+                {d.secondary && (
+                  <div className="text-xs text-muted-foreground truncate">{d.secondary}</div>
+                )}
+              </div>
+              {d.meta && (
+                <span className="text-xs text-muted-foreground hidden sm:inline truncate max-w-[180px]">
+                  {d.meta}
+                </span>
+              )}
+              {d.timestamp && (
+                <span className="text-xs text-muted-foreground flex-shrink-0">
+                  {formatDateTime(d.timestamp)}
+                </span>
+              )}
+              <ChevronRight className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+            </Link>
           ))}
         </div>
       </Card>
