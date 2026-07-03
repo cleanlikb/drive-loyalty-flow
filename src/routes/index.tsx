@@ -109,8 +109,10 @@ function Header({
         <div className="md:hidden border-t border-border bg-card px-4 py-4 flex flex-col gap-2">
           <MobileNavLink href="#how-it-works" onClick={() => setMobileOpen(false)}>How it works</MobileNavLink>
           <MobileNavLink href="#benefits" onClick={() => setMobileOpen(false)}>Benefits</MobileNavLink>
-          <Link to="/auth" onClick={() => setMobileOpen(false)} className="mt-2">
-            <Button className="w-full" size="lg">Get started</Button>
+          <MobileNavLink href="#pricing" onClick={() => setMobileOpen(false)}>Pricing</MobileNavLink>
+          <MobileNavLink href="#calculator" onClick={() => setMobileOpen(false)}>ROI calculator</MobileNavLink>
+          <Link to="/contact" onClick={() => setMobileOpen(false)} className="px-3 py-2.5 text-base font-medium text-foreground hover:bg-accent rounded-md transition-colors">
+            Contact
           </Link>
           <Link to="/auth" onClick={() => setMobileOpen(false)} className="text-center text-sm text-muted-foreground py-2">
             Already have an account? Sign in
