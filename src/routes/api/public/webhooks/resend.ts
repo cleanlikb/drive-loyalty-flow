@@ -78,6 +78,11 @@ export const Route = createFileRoute("/api/public/webhooks/resend")({
             }
           }
           if (!text) text = extractBodyText(data);
+          console.log("Resend inbound reply body fetched", {
+            receivedId,
+            bodyLength: text.length,
+            hasHeaders: Array.isArray(headers) ? headers.length > 0 : Boolean(headers),
+          });
 
           const inReplyTo = headerVal(headers, "In-Reply-To") ?? cleanId(data?.in_reply_to);
 
