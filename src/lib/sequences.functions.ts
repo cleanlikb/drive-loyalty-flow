@@ -373,7 +373,7 @@ const dispatchEmailViaResend = async (supabase: any, email: any) => {
 
   const { data: full } = await (supabase as any)
     .from("sequence_emails")
-    .select("*, dealer:dealers(id, slug, dealership_name, sender_email, sender_verified), customer:customers(id, name, email)")
+    .select("*, dealer:dealers(id, slug, dealership_name, sender_email, sender_verified, notification_email), customer:customers(id, name, email)")
     .eq("id", email.id)
     .single();
 
@@ -391,13 +391,16 @@ const dispatchEmailViaResend = async (supabase: any, email: any) => {
     await supabase.from("sequence_emails").update({ reply_alias: alias }).eq("id", email.id);
   }
 
+  const dealerInbox = dealerSender ?? full.dealer?.notification_email ?? null;
+  const replyTo = dealerInbox ?? replyToAddress(alias);
+
   const { resendEmailId, messageId } = await sendResendEmail({
     to: full.customer.email,
     from: `${full.dealer?.dealership_name ?? "Wynback"} <${fromAddress}>`,
     subject: full.subject,
     text: full.body,
     html: plainTextToHtml(full.body),
-    replyTo: replyToAddress(alias),
+    replyTo,
   });
 
   await supabase.from("sequence_emails").update({
