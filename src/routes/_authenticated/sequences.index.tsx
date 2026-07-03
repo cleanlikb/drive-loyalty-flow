@@ -196,8 +196,10 @@ function Sequences() {
               const emails = (s.sequence_emails ?? []).sort(
                 (a: any, b: any) => a.step - b.step,
               );
+              const isDraft = s.status === "drafting";
               const canStop = ["active", "scheduled", "drafting"].includes(s.status);
               const sentCount = emails.filter((e: any) => e.status === "sent").length;
+
               return (
                 <AccordionItem key={s.id} value={s.id} className="border-b last:border-0">
                   <AccordionTrigger className="hover:no-underline px-3 py-3">
