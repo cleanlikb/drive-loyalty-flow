@@ -116,8 +116,19 @@ export const Route = createFileRoute("/api/public/webhooks/resend")({
             }
           }
 
+          // 3. Fallback: match by the customer's From email + most recent active sequence.
+          if (!sequenceId && fromEmail) {
+            const { findSequenceForInbound } = await import("@/lib/replies.server");
+            const seq = await findSequenceForInbound(db, {
+              fromEmail,
+              inReplyTo,
+              references: headerVal(headers, "References"),
+            });
+            if (seq?.id) sequenceId = seq.id;
+          }
+
           if (!sequenceId) {
-            return Response.json({ ok: true, skipped: "no_sequence" }, { status: 200 });
+            return Response.json({ ok: true, skipped: "no_sequence", fromEmail }, { status: 200 });
           }
 
           // Process the reply through the existing classification/forwarding pipeline.
