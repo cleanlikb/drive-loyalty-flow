@@ -331,7 +331,7 @@ function SolutionSection() {
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="max-w-3xl mx-auto text-center mb-16">
           <span className="text-sm font-semibold text-primary uppercase tracking-wide">How it works</span>
-          <h2 className="mt-3 text-3xl md:text-4xl font-semibold tracking-tight text-foreground">So how do you get there before We Buy Any Car does?</h2>
+          <h2 className="mt-3 text-3xl md:text-4xl font-semibold tracking-tight text-foreground">Someone&apos;s going to sell your past customer their next car. Make sure it&apos;s you.</h2>
           <p className="mt-4 text-lg text-muted-foreground">More sales, better relationships, cheaper stock — in 3 simple steps.</p>
         </div>
 
