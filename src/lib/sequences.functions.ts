@@ -233,6 +233,43 @@ export const startSequence = createServerFn({ method: "POST" })
     return { ok: true };
   });
 
+export const startSequencesBulk = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) => z.object({ ids: z.array(z.string().uuid()).min(1).max(200) }).parse(d))
+  .handler(async ({ data, context }) => {
+    const { data: seqs, error } = await context.supabase
+      .from("sequences")
+      .select("id, status, sequence_emails(id, send_offset_days, status)")
+      .in("id", data.ids)
+      .eq("status", "drafting");
+    if (error) throw error;
+    const now = new Date();
+    let started = 0;
+    for (const seq of seqs ?? []) {
+      for (const e of seq.sequence_emails ?? []) {
+        if (e.status !== "draft") continue;
+        await context.supabase.from("sequence_emails").update({
+          status: "scheduled",
+          scheduled_for: addDays(now, e.send_offset_days).toISOString(),
+        }).eq("id", e.id);
+      }
+      await context.supabase.from("sequences").update({
+        status: "active",
+        started_at: now.toISOString(),
+        updated_at: now.toISOString(),
+      }).eq("id", seq.id);
+      started++;
+    }
+    const { data: dealer } = await context.supabase.from("dealers").select("id").eq("user_id", context.userId).single();
+    if (dealer && started > 0) {
+      await context.supabase.from("activity_log").insert({
+        dealer_id: dealer.id, kind: "sequences_started_bulk", payload: { count: started },
+      });
+    }
+    return { started };
+  });
+
+
 
 
 const dispatchEmail = async (supabase: any, email: any) => {
