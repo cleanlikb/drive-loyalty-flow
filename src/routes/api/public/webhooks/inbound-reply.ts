@@ -16,9 +16,8 @@ export const Route = createFileRoute("/api/public/webhooks/inbound-reply")({
         const secret = process.env.INBOUND_WEBHOOK_SECRET;
         if (!secret) return json({ error: "Webhook not configured" }, 500);
 
-        const url = new URL(request.url);
-        const token = url.searchParams.get("token") ?? request.headers.get("x-webhook-secret");
-        if (token !== secret) return json({ error: "Unauthorized" }, 401);
+        const token = request.headers.get("x-webhook-secret");
+        if (!token || token !== secret) return json({ error: "Unauthorized" }, 401);
 
         const ct = request.headers.get("content-type") ?? "";
         let payload: any = {};
