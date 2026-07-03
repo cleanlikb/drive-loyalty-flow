@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Mail, MessageSquare, Clock, ArrowLeft, CheckCircle2 } from "lucide-react";
-import logo from "@/assets/wynback-logo.jpg.asset.json";
+import logo from "@/assets/wynback-logo.png.asset.json";
 
 export const Route = createFileRoute("/contact")({
   component: ContactPage,

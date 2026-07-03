@@ -29,7 +29,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import logo from "@/assets/wynback-logo.jpg.asset.json";
+import logo from "@/assets/wynback-logo.png.asset.json";
 import explainerAsset from "@/assets/redrive-explainer.mp4.asset.json";
 
 export const Route = createFileRoute("/")({
