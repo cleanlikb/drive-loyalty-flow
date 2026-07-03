@@ -126,14 +126,22 @@ export async function processReply(
         fromAddress,
         subject: `[${labelFor(classification.classification)}] ${meta.subject ?? "New reply"} — ${seq.customer?.name ?? ""}`,
         replyTo: meta.fromEmail ?? seq.customer?.email ?? null,
-        text: [
-          `New inbound reply from ${seq.customer?.name ?? "customer"} <${meta.fromEmail ?? seq.customer?.email ?? ""}>`,
-          `Classified as: ${labelFor(classification.classification)} (${Math.round((classification.confidence ?? 0) * 100)}%)`,
-          classification.next_car_notes ? `Next-car notes: ${classification.next_car_notes}` : "",
-          "",
-          "— Original reply —",
-          text,
-        ].filter(Boolean).join("\n"),
+        text: (() => {
+          const custEmail = meta.fromEmail ?? seq.customer?.email ?? "";
+          const custName = seq.customer?.name ?? "customer";
+          return [
+            `New inbound reply from ${custName}`,
+            `Customer email: ${custEmail}`,
+            "",
+            `👉 Reply directly to ${custEmail} to continue the conversation with the customer. Do not reply to this forwarded message.`,
+            "",
+            `Classified as: ${labelFor(classification.classification)} (${Math.round((classification.confidence ?? 0) * 100)}%)`,
+            classification.next_car_notes ? `Next-car notes: ${classification.next_car_notes}` : "",
+            "",
+            "— Original reply —",
+            text,
+          ].filter(Boolean).join("\n");
+        })(),
       });
       if (replyRow?.id) {
         await supabase.from("replies").update({ forwarded_at: new Date().toISOString() }).eq("id", replyRow.id);
