@@ -385,6 +385,11 @@ function SenderEmailCard({ dealer }: { dealer: any }) {
           Verified domains available: {verifiedDomains.join(", ")}
         </p>
       )}
+      {restricted && (
+        <p className="text-xs text-muted-foreground">
+          Automatic domain check is unavailable with the current provider key — make sure your domain is verified in Resend before saving.
+        </p>
+      )}
       {domainsQ.data && !domainsQ.data.ok && (
         <p className="text-xs text-muted-foreground">{domainsQ.data.error}</p>
       )}
