@@ -87,10 +87,11 @@ function Leads() {
           </p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" onClick={() => rebuildMut.mutate()} disabled={rebuildMut.isPending}>
-            <RefreshCw className={`h-4 w-4 mr-2 ${rebuildMut.isPending ? "animate-spin" : ""}`} />
-            Rebuild
+          <Button variant="outline" onClick={() => generateLeads.mutate()} disabled={generateLeads.isPending}>
+            <RefreshCw className={`h-4 w-4 mr-2 ${generateLeads.isPending ? "animate-spin" : ""}`} />
+            Generate leads
           </Button>
+
           <Button onClick={startForSelected} disabled={selectedIds.length === 0 || busy}>
             <Send className="h-4 w-4 mr-2" />
             {busy ? "Generating…" : `Start sequences for selected (${selectedIds.length})`}
