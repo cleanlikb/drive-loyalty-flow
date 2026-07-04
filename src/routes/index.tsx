@@ -828,7 +828,7 @@ function PricingSection() {
                     variant={tier.popular ? "default" : "outline"}
                     className={`w-full h-12 ${tier.popular ? "shadow-lg shadow-primary/25" : ""}`}
                   >
-                    <a href="https://cal.com/kit-barrett-s02kic/demo" data-cal-namespace="demo" data-cal-link="kit-barrett-s02kic/demo" data-cal-config='{"layout":"month_view"}'>Book a demo</a>
+                    <a href="https://cal.com/kit-barrett-s02kic/demo" data-cal-namespace="demo" data-cal-link="kit-barrett-s02kic/demo" data-cal-config='{"layout":"month_view"}' onClick={() => trackEvent("book_demo_clicked", { location: `pricing_${tier.name.toLowerCase()}` })}>Book a demo</a>
                   </Button>
                   <p className="mt-3 text-center text-xs text-muted-foreground">
                     No setup fees. Cancel or change plans anytime.
