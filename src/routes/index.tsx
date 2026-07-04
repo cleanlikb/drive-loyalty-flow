@@ -96,30 +96,19 @@ function Landing() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Cal.com booking completion callback
+  // Cal.com booking completion via iframe postMessage
   useEffect(() => {
-    const bind = () => {
-      const cal = window.Cal;
-      if (!cal || !cal.ns || typeof cal.ns.demo !== "function") return false;
-      cal.ns.demo("on", {
-        action: "bookingSuccessful",
-        callback: (e: unknown) => {
-          const detail = (e as { detail?: { data?: Record<string, unknown> } })?.detail?.data ?? {};
-          trackEvent("demo_booked", detail);
-        },
-      });
-      return true;
+    const onMessage = (evt: MessageEvent) => {
+      const data = evt.data as { type?: string; namespace?: string; data?: Record<string, unknown> } | undefined;
+      if (!data || typeof data !== "object") return;
+      if (data.type === "bookingSuccessful" || data.type === "bookingSuccessfulV2") {
+        trackEvent("demo_booked", data.data ?? {});
+      }
     };
-    if (bind()) return;
-    const id = window.setInterval(() => {
-      if (bind()) window.clearInterval(id);
-    }, 500);
-    const timeout = window.setTimeout(() => window.clearInterval(id), 15000);
-    return () => {
-      window.clearInterval(id);
-      window.clearTimeout(timeout);
-    };
+    window.addEventListener("message", onMessage);
+    return () => window.removeEventListener("message", onMessage);
   }, []);
+
 
   return (
     <div className="min-h-screen bg-white text-foreground font-sans selection:bg-primary/30">
