@@ -50,6 +50,53 @@ function Landing() {
     });
   }, [navigate]);
 
+  // Scroll depth tracking (25/50/75/100), each fires once per session
+  useEffect(() => {
+    const fired = new Set<number>();
+    const thresholds = [25, 50, 75, 100];
+    const onScroll = () => {
+      const doc = document.documentElement;
+      const scrollTop = window.scrollY || doc.scrollTop;
+      const height = doc.scrollHeight - doc.clientHeight;
+      if (height <= 0) return;
+      const pct = Math.min(100, Math.round((scrollTop / height) * 100));
+      for (const t of thresholds) {
+        if (pct >= t && !fired.has(t)) {
+          fired.add(t);
+          trackEvent(`scroll_${t}`, { percent: t });
+        }
+      }
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  // Cal.com booking completion callback
+  useEffect(() => {
+    const bind = () => {
+      const cal = window.Cal;
+      if (!cal || !cal.ns || typeof cal.ns.demo !== "function") return false;
+      cal.ns.demo("on", {
+        action: "bookingSuccessful",
+        callback: (e: unknown) => {
+          const detail = (e as { detail?: { data?: Record<string, unknown> } })?.detail?.data ?? {};
+          trackEvent("demo_booked", detail);
+        },
+      });
+      return true;
+    };
+    if (bind()) return;
+    const id = window.setInterval(() => {
+      if (bind()) window.clearInterval(id);
+    }, 500);
+    const timeout = window.setTimeout(() => window.clearInterval(id), 15000);
+    return () => {
+      window.clearInterval(id);
+      window.clearTimeout(timeout);
+    };
+  }, []);
+
   return (
     <div className="min-h-screen bg-white text-foreground font-sans selection:bg-primary/30">
       <Header mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />
