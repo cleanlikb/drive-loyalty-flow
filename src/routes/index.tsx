@@ -219,7 +219,7 @@ function Header({
             Contact
           </Link>
           <Button asChild size="sm" className="ml-2">
-            <a href={DEMO_URL} data-cal-namespace="demo" data-cal-link="kit-barrett-s02kic/demo" data-cal-config='{"layout":"month_view"}' onClick={(event) => trackDemoClick(event, "header_nav")}>Book a demo</a>
+            <a href={DEMO_URL} onClick={(event) => trackDemoClick(event, "header_nav")}>Book a demo</a>
           </Button>
         </nav>
 
@@ -244,9 +244,9 @@ function Header({
           <Button asChild className="w-full mt-2" size="lg">
             <a
               href={DEMO_URL}
-              data-cal-namespace="demo"
-              data-cal-link="kit-barrett-s02kic/demo"
-              data-cal-config='{"layout":"month_view"}'
+             
+             
+             
               onClick={(event) => trackDemoClick(event, "mobile_nav", () => setMobileOpen(false))}
             >
               Book a demo
@@ -308,9 +308,9 @@ function BookDemoButton({
     <Button asChild size={size} variant={variant} className={className}>
       <a
         href={DEMO_URL}
-        data-cal-namespace="demo"
-        data-cal-link="kit-barrett-s02kic/demo"
-        data-cal-config='{"layout":"month_view"}'
+       
+       
+       
         onClick={(event) => trackDemoClick(event, location)}
       >
         {label}
@@ -338,7 +338,7 @@ function HeroSection() {
         </p>
         <div className="mt-9 flex flex-col sm:flex-row items-center justify-center gap-4">
           <Button asChild size="lg" className="h-12 px-8 text-base bg-white text-primary hover:bg-white/90 shadow-lg shadow-black/10 hover:shadow-black/20 transition-shadow">
-            <a href={DEMO_URL} data-cal-namespace="demo" data-cal-link="kit-barrett-s02kic/demo" data-cal-config='{"layout":"month_view"}' onClick={(event) => trackDemoClick(event, "hero")}>
+            <a href={DEMO_URL} onClick={(event) => trackDemoClick(event, "hero")}>
               Book a demo
               <ArrowRight className="h-4 w-4" />
             </a>
@@ -814,7 +814,7 @@ function FinalCTASection() {
             </p>
             <div className="mt-9 flex flex-col sm:flex-row items-center justify-center gap-4">
               <Button asChild size="lg" className="h-12 px-8 text-base shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-shadow">
-                <a href={DEMO_URL} data-cal-namespace="demo" data-cal-link="kit-barrett-s02kic/demo" data-cal-config='{"layout":"month_view"}' onClick={(event) => trackDemoClick(event, "final_cta")}>
+                <a href={DEMO_URL} onClick={(event) => trackDemoClick(event, "final_cta")}>
                   Book a demo
                   <ArrowRight className="h-4 w-4" />
                 </a>
@@ -928,7 +928,7 @@ function PricingSection() {
                     variant={tier.popular ? "default" : "outline"}
                     className={`w-full h-12 ${tier.popular ? "shadow-lg shadow-primary/25" : ""}`}
                   >
-                    <a href={DEMO_URL} data-cal-namespace="demo" data-cal-link="kit-barrett-s02kic/demo" data-cal-config='{"layout":"month_view"}' onClick={(event) => trackDemoClick(event, `pricing_${tier.name.toLowerCase()}`)}>Book a demo</a>
+                    <a href={DEMO_URL} onClick={(event) => trackDemoClick(event, `pricing_${tier.name.toLowerCase()}`)}>Book a demo</a>
                   </Button>
                   <p className="mt-3 text-center text-xs text-muted-foreground">
                     No setup fees. Cancel or change plans anytime.
