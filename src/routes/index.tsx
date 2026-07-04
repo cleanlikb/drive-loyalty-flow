@@ -274,6 +274,7 @@ function HeroSection() {
 function VideoSection() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
+  const firedRef = useRef({ play: false, half: false, complete: false });
 
   const togglePlay = () => {
     const video = videoRef.current;
@@ -308,9 +309,29 @@ function VideoSection() {
               webkit-playsinline="true"
               className="w-full h-full object-cover"
               aria-label="Wynback explainer video"
-              onPlay={() => setIsPlaying(true)}
+              onPlay={() => {
+                setIsPlaying(true);
+                if (!firedRef.current.play) {
+                  firedRef.current.play = true;
+                  trackEvent("video_play", { video: "explainer" });
+                }
+              }}
               onPause={() => setIsPlaying(false)}
-              onEnded={() => setIsPlaying(false)}
+              onEnded={() => {
+                setIsPlaying(false);
+                if (!firedRef.current.complete) {
+                  firedRef.current.complete = true;
+                  trackEvent("video_complete", { video: "explainer" });
+                }
+              }}
+              onTimeUpdate={(e) => {
+                const v = e.currentTarget;
+                if (!v.duration || firedRef.current.half) return;
+                if (v.currentTime / v.duration >= 0.5) {
+                  firedRef.current.half = true;
+                  trackEvent("video_progress_50", { video: "explainer" });
+                }
+              }}
             />
             {!isPlaying && (
               <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
