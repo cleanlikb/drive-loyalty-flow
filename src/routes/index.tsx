@@ -34,6 +34,7 @@ import {
 import logo from "@/assets/wynback-logo.png.asset.json";
 import explainerAsset from "@/assets/wynback-explainer.mp4.asset.json";
 import explainerPoster from "@/assets/wynback-explainer-poster.png.asset.json";
+import { trackEvent } from "@/lib/analytics";
 
 export const Route = createFileRoute("/")({
   component: Landing,
@@ -48,6 +49,53 @@ function Landing() {
       if (data.user) navigate({ to: "/dashboard", replace: true });
     });
   }, [navigate]);
+
+  // Scroll depth tracking (25/50/75/100), each fires once per session
+  useEffect(() => {
+    const fired = new Set<number>();
+    const thresholds = [25, 50, 75, 100];
+    const onScroll = () => {
+      const doc = document.documentElement;
+      const scrollTop = window.scrollY || doc.scrollTop;
+      const height = doc.scrollHeight - doc.clientHeight;
+      if (height <= 0) return;
+      const pct = Math.min(100, Math.round((scrollTop / height) * 100));
+      for (const t of thresholds) {
+        if (pct >= t && !fired.has(t)) {
+          fired.add(t);
+          trackEvent(`scroll_${t}`, { percent: t });
+        }
+      }
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  // Cal.com booking completion callback
+  useEffect(() => {
+    const bind = () => {
+      const cal = window.Cal;
+      if (!cal || !cal.ns || typeof cal.ns.demo !== "function") return false;
+      cal.ns.demo("on", {
+        action: "bookingSuccessful",
+        callback: (e: unknown) => {
+          const detail = (e as { detail?: { data?: Record<string, unknown> } })?.detail?.data ?? {};
+          trackEvent("demo_booked", detail);
+        },
+      });
+      return true;
+    };
+    if (bind()) return;
+    const id = window.setInterval(() => {
+      if (bind()) window.clearInterval(id);
+    }, 500);
+    const timeout = window.setTimeout(() => window.clearInterval(id), 15000);
+    return () => {
+      window.clearInterval(id);
+      window.clearTimeout(timeout);
+    };
+  }, []);
 
   return (
     <div className="min-h-screen bg-white text-foreground font-sans selection:bg-primary/30">
@@ -92,7 +140,7 @@ function Header({
             Contact
           </Link>
           <Button asChild size="sm" className="ml-2">
-            <a href="https://cal.com/kit-barrett-s02kic/demo" data-cal-namespace="demo" data-cal-link="kit-barrett-s02kic/demo" data-cal-config='{"layout":"month_view"}'>Book a demo</a>
+            <a href="https://cal.com/kit-barrett-s02kic/demo" data-cal-namespace="demo" data-cal-link="kit-barrett-s02kic/demo" data-cal-config='{"layout":"month_view"}' onClick={() => trackEvent("book_demo_clicked", { location: "header_nav" })}>Book a demo</a>
           </Button>
         </nav>
 
@@ -120,7 +168,7 @@ function Header({
               data-cal-namespace="demo"
               data-cal-link="kit-barrett-s02kic/demo"
               data-cal-config='{"layout":"month_view"}'
-              onClick={() => setMobileOpen(false)}
+              onClick={() => { trackEvent("book_demo_clicked", { location: "mobile_nav" }); setMobileOpen(false); }}
             >
               Book a demo
             </a>
@@ -168,12 +216,14 @@ function BookDemoButton({
   className = "",
   showArrow = false,
   size = "lg",
+  location = "unknown",
 }: {
   label?: string;
   variant?: "default" | "outline" | "secondary";
   className?: string;
   showArrow?: boolean;
   size?: "default" | "sm" | "lg";
+  location?: string;
 }) {
   return (
     <Button asChild size={size} variant={variant} className={className}>
@@ -182,6 +232,7 @@ function BookDemoButton({
         data-cal-namespace="demo"
         data-cal-link="kit-barrett-s02kic/demo"
         data-cal-config='{"layout":"month_view"}'
+        onClick={() => trackEvent("book_demo_clicked", { location })}
       >
         {label}
         {showArrow && <ArrowRight className="h-4 w-4" />}
@@ -208,7 +259,7 @@ function HeroSection() {
         </p>
         <div className="mt-9 flex flex-col sm:flex-row items-center justify-center gap-4">
           <Button asChild size="lg" className="h-12 px-8 text-base bg-white text-primary hover:bg-white/90 shadow-lg shadow-black/10 hover:shadow-black/20 transition-shadow">
-            <a href="https://cal.com/kit-barrett-s02kic/demo" data-cal-namespace="demo" data-cal-link="kit-barrett-s02kic/demo" data-cal-config='{"layout":"month_view"}'>
+            <a href="https://cal.com/kit-barrett-s02kic/demo" data-cal-namespace="demo" data-cal-link="kit-barrett-s02kic/demo" data-cal-config='{"layout":"month_view"}' onClick={() => trackEvent("book_demo_clicked", { location: "hero" })}>
               Book a demo
               <ArrowRight className="h-4 w-4" />
             </a>
@@ -223,6 +274,7 @@ function HeroSection() {
 function VideoSection() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
+  const firedRef = useRef({ play: false, half: false, complete: false });
 
   const togglePlay = () => {
     const video = videoRef.current;
@@ -257,9 +309,29 @@ function VideoSection() {
               webkit-playsinline="true"
               className="w-full h-full object-cover"
               aria-label="Wynback explainer video"
-              onPlay={() => setIsPlaying(true)}
+              onPlay={() => {
+                setIsPlaying(true);
+                if (!firedRef.current.play) {
+                  firedRef.current.play = true;
+                  trackEvent("video_play", { video: "explainer" });
+                }
+              }}
               onPause={() => setIsPlaying(false)}
-              onEnded={() => setIsPlaying(false)}
+              onEnded={() => {
+                setIsPlaying(false);
+                if (!firedRef.current.complete) {
+                  firedRef.current.complete = true;
+                  trackEvent("video_complete", { video: "explainer" });
+                }
+              }}
+              onTimeUpdate={(e) => {
+                const v = e.currentTarget;
+                if (!v.duration || firedRef.current.half) return;
+                if (v.currentTime / v.duration >= 0.5) {
+                  firedRef.current.half = true;
+                  trackEvent("video_progress_50", { video: "explainer" });
+                }
+              }}
             />
             {!isPlaying && (
               <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
@@ -284,7 +356,7 @@ function VideoSection() {
           </div>
         </div>
         <div className="mt-10 flex justify-center">
-          <BookDemoButton label="Book a demo" showArrow className="h-12 px-8 text-base shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-shadow" />
+          <BookDemoButton label="Book a demo" location="video_section" showArrow className="h-12 px-8 text-base shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-shadow" />
         </div>
       </div>
     </section>
@@ -392,7 +464,7 @@ function SolutionSection() {
           That&apos;s it. No campaigns to build, no lists to manage — most dealers spend under 10 minutes a month keeping it running.
         </p>
         <div className="mt-8 flex justify-center">
-          <BookDemoButton label="See it in action — book a demo" showArrow className="h-12 px-8 text-base shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-shadow" />
+          <BookDemoButton label="See it in action — book a demo" location="solution" showArrow className="h-12 px-8 text-base shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-shadow" />
         </div>
       </div>
     </section>
@@ -510,7 +582,7 @@ function BenefitsSection() {
           ))}
         </div>
         <div className="mt-14 flex justify-center">
-          <BookDemoButton label="Book a demo" showArrow className="h-12 px-8 text-base shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-shadow" />
+          <BookDemoButton label="Book a demo" location="benefits" showArrow className="h-12 px-8 text-base shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-shadow" />
         </div>
       </div>
     </section>
@@ -629,7 +701,7 @@ function CalculatorSection() {
           </div>
         </div>
         <div className="mt-10 flex justify-center">
-          <BookDemoButton label="Book a demo to unlock these numbers" showArrow className="h-12 px-8 text-base shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-shadow" />
+          <BookDemoButton label="Book a demo to unlock these numbers" location="calculator" showArrow className="h-12 px-8 text-base shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-shadow" />
         </div>
       </div>
     </section>
@@ -663,7 +735,7 @@ function FinalCTASection() {
             </p>
             <div className="mt-9 flex flex-col sm:flex-row items-center justify-center gap-4">
               <Button asChild size="lg" className="h-12 px-8 text-base shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-shadow">
-                <a href="https://cal.com/kit-barrett-s02kic/demo" data-cal-namespace="demo" data-cal-link="kit-barrett-s02kic/demo" data-cal-config='{"layout":"month_view"}'>
+                <a href="https://cal.com/kit-barrett-s02kic/demo" data-cal-namespace="demo" data-cal-link="kit-barrett-s02kic/demo" data-cal-config='{"layout":"month_view"}' onClick={() => trackEvent("book_demo_clicked", { location: "final_cta" })}>
                   Book a demo
                   <ArrowRight className="h-4 w-4" />
                 </a>
@@ -777,7 +849,7 @@ function PricingSection() {
                     variant={tier.popular ? "default" : "outline"}
                     className={`w-full h-12 ${tier.popular ? "shadow-lg shadow-primary/25" : ""}`}
                   >
-                    <a href="https://cal.com/kit-barrett-s02kic/demo" data-cal-namespace="demo" data-cal-link="kit-barrett-s02kic/demo" data-cal-config='{"layout":"month_view"}'>Book a demo</a>
+                    <a href="https://cal.com/kit-barrett-s02kic/demo" data-cal-namespace="demo" data-cal-link="kit-barrett-s02kic/demo" data-cal-config='{"layout":"month_view"}' onClick={() => trackEvent("book_demo_clicked", { location: `pricing_${tier.name.toLowerCase()}` })}>Book a demo</a>
                   </Button>
                   <p className="mt-3 text-center text-xs text-muted-foreground">
                     No setup fees. Cancel or change plans anytime.
@@ -849,7 +921,7 @@ function PricingFAQ() {
         </Accordion>
         <div className="mt-10 flex flex-col items-center gap-3">
           <p className="text-sm text-muted-foreground">Still have questions? Get them answered in 20 minutes.</p>
-          <BookDemoButton label="Book a demo" showArrow className="h-12 px-8 text-base shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-shadow" />
+          <BookDemoButton label="Book a demo" location="faq" showArrow className="h-12 px-8 text-base shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-shadow" />
         </div>
       </div>
     </section>
