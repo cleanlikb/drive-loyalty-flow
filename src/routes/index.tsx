@@ -32,14 +32,13 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
-import Cal, { getCalApi } from "@calcom/embed-react";
 import logo from "@/assets/wynback-logo.png.asset.json";
 import explainerAsset from "@/assets/wynback-explainer.mp4.asset.json";
 import explainerPoster from "@/assets/wynback-explainer-poster.png.asset.json";
 import { trackEvent } from "@/lib/analytics";
 
-const DEMO_URL = "https://cal.com/kit-barrett-s02kic/demo";
-const DEMO_CAL_LINK = "kit-barrett-s02kic/demo";
+const DEMO_URL = "https://calendly.com/kit-wynback/30min";
+
 
 function openDemoBooking() {
   if (typeof window !== "undefined") {
