@@ -91,12 +91,9 @@ function Header({
           <Link to="/contact" className="px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground rounded-md transition-colors">
             Contact
           </Link>
-          <Link to="/auth" className="ml-2">
-            <Button variant="ghost" size="sm">Sign in</Button>
-          </Link>
-          <Link to="/auth">
-            <Button size="sm">Get started</Button>
-          </Link>
+          <a href="https://cal.com/kit-barrett-s02kic/demo" data-cal-namespace="demo" data-cal-link="kit-barrett-s02kic/demo" data-cal-config='{"layout":"month_view"}' className="ml-2">
+            <Button size="sm" asChild={false}>Book a demo</Button>
+          </a>
         </nav>
 
         <button
