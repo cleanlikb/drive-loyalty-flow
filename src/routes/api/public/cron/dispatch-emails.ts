@@ -7,12 +7,8 @@ export const Route = createFileRoute("/api/public/cron/dispatch-emails")({
     handlers: {
       POST: async ({ request }) => {
         const cronSecret = request.headers.get("x-cron-secret");
-        const apiKey = request.headers.get("apikey");
         const expectedCron = process.env.CRON_SECRET;
-        const expectedApi = process.env.SUPABASE_PUBLISHABLE_KEY;
-        const cronOk = !!expectedCron && cronSecret === expectedCron;
-        const apiOk = !!expectedApi && apiKey === expectedApi;
-        if (!cronOk && !apiOk) {
+        if (!expectedCron || cronSecret !== expectedCron) {
           return new Response("Unauthorized", { status: 401 });
         }
 
