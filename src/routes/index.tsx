@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type MouseEvent } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
@@ -35,6 +35,37 @@ import logo from "@/assets/wynback-logo.png.asset.json";
 import explainerAsset from "@/assets/wynback-explainer.mp4.asset.json";
 import explainerPoster from "@/assets/wynback-explainer-poster.png.asset.json";
 import { trackEvent } from "@/lib/analytics";
+
+const DEMO_URL = "https://cal.com/kit-barrett-s02kic/demo";
+const DEMO_CAL_LINK = "kit-barrett-s02kic/demo";
+
+function openDemoBooking() {
+  const calDemo = window.Cal?.ns?.demo;
+  if (typeof calDemo === "function") {
+    calDemo("modal", {
+      calLink: DEMO_CAL_LINK,
+      config: { layout: "month_view" },
+    });
+    return;
+  }
+
+  const opened = window.open(DEMO_URL, "_blank", "noopener,noreferrer");
+  if (!opened) window.location.href = DEMO_URL;
+}
+
+function trackDemoClick(event: MouseEvent<HTMLAnchorElement>, location: string, afterTrack?: () => void) {
+  if (event.defaultPrevented) return;
+  if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
+    trackEvent("book_demo_clicked", { location });
+    afterTrack?.();
+    return;
+  }
+
+  event.preventDefault();
+  trackEvent("book_demo_clicked", { location });
+  afterTrack?.();
+  openDemoBooking();
+}
 
 export const Route = createFileRoute("/")({
   component: Landing,
@@ -140,7 +171,7 @@ function Header({
             Contact
           </Link>
           <Button asChild size="sm" className="ml-2">
-            <a href="https://cal.com/kit-barrett-s02kic/demo" data-cal-namespace="demo" data-cal-link="kit-barrett-s02kic/demo" data-cal-config='{"layout":"month_view"}' onClick={() => trackEvent("book_demo_clicked", { location: "header_nav" })}>Book a demo</a>
+            <a href={DEMO_URL} data-cal-namespace="demo" data-cal-link="kit-barrett-s02kic/demo" data-cal-config='{"layout":"month_view"}' onClick={(event) => trackDemoClick(event, "header_nav")}>Book a demo</a>
           </Button>
         </nav>
 
@@ -164,11 +195,11 @@ function Header({
           </Link>
           <Button asChild className="w-full mt-2" size="lg">
             <a
-              href="https://cal.com/kit-barrett-s02kic/demo"
+              href={DEMO_URL}
               data-cal-namespace="demo"
               data-cal-link="kit-barrett-s02kic/demo"
               data-cal-config='{"layout":"month_view"}'
-              onClick={() => { trackEvent("book_demo_clicked", { location: "mobile_nav" }); setMobileOpen(false); }}
+              onClick={(event) => trackDemoClick(event, "mobile_nav", () => setMobileOpen(false))}
             >
               Book a demo
             </a>
@@ -228,11 +259,11 @@ function BookDemoButton({
   return (
     <Button asChild size={size} variant={variant} className={className}>
       <a
-        href="https://cal.com/kit-barrett-s02kic/demo"
+        href={DEMO_URL}
         data-cal-namespace="demo"
         data-cal-link="kit-barrett-s02kic/demo"
         data-cal-config='{"layout":"month_view"}'
-        onClick={() => trackEvent("book_demo_clicked", { location })}
+        onClick={(event) => trackDemoClick(event, location)}
       >
         {label}
         {showArrow && <ArrowRight className="h-4 w-4" />}
@@ -259,7 +290,7 @@ function HeroSection() {
         </p>
         <div className="mt-9 flex flex-col sm:flex-row items-center justify-center gap-4">
           <Button asChild size="lg" className="h-12 px-8 text-base bg-white text-primary hover:bg-white/90 shadow-lg shadow-black/10 hover:shadow-black/20 transition-shadow">
-            <a href="https://cal.com/kit-barrett-s02kic/demo" data-cal-namespace="demo" data-cal-link="kit-barrett-s02kic/demo" data-cal-config='{"layout":"month_view"}' onClick={() => trackEvent("book_demo_clicked", { location: "hero" })}>
+            <a href={DEMO_URL} data-cal-namespace="demo" data-cal-link="kit-barrett-s02kic/demo" data-cal-config='{"layout":"month_view"}' onClick={(event) => trackDemoClick(event, "hero")}>
               Book a demo
               <ArrowRight className="h-4 w-4" />
             </a>
@@ -735,7 +766,7 @@ function FinalCTASection() {
             </p>
             <div className="mt-9 flex flex-col sm:flex-row items-center justify-center gap-4">
               <Button asChild size="lg" className="h-12 px-8 text-base shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-shadow">
-                <a href="https://cal.com/kit-barrett-s02kic/demo" data-cal-namespace="demo" data-cal-link="kit-barrett-s02kic/demo" data-cal-config='{"layout":"month_view"}' onClick={() => trackEvent("book_demo_clicked", { location: "final_cta" })}>
+                <a href={DEMO_URL} data-cal-namespace="demo" data-cal-link="kit-barrett-s02kic/demo" data-cal-config='{"layout":"month_view"}' onClick={(event) => trackDemoClick(event, "final_cta")}>
                   Book a demo
                   <ArrowRight className="h-4 w-4" />
                 </a>
@@ -849,7 +880,7 @@ function PricingSection() {
                     variant={tier.popular ? "default" : "outline"}
                     className={`w-full h-12 ${tier.popular ? "shadow-lg shadow-primary/25" : ""}`}
                   >
-                    <a href="https://cal.com/kit-barrett-s02kic/demo" data-cal-namespace="demo" data-cal-link="kit-barrett-s02kic/demo" data-cal-config='{"layout":"month_view"}' onClick={() => trackEvent("book_demo_clicked", { location: `pricing_${tier.name.toLowerCase()}` })}>Book a demo</a>
+                    <a href={DEMO_URL} data-cal-namespace="demo" data-cal-link="kit-barrett-s02kic/demo" data-cal-config='{"layout":"month_view"}' onClick={(event) => trackDemoClick(event, `pricing_${tier.name.toLowerCase()}`)}>Book a demo</a>
                   </Button>
                   <p className="mt-3 text-center text-xs text-muted-foreground">
                     No setup fees. Cancel or change plans anytime.
