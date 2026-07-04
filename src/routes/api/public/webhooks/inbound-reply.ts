@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { verifyResendWebhook } from "@/lib/resend.server";
 
 // Resend inbound email webhook.
 // Reply-to is a single shared address like `sales@reply.wynback.co.uk`.
@@ -10,18 +11,19 @@ export const Route = createFileRoute("/api/public/webhooks/inbound-reply")({
   server: {
     handlers: {
       POST: async ({ request }) => {
-        const secret = process.env.INBOUND_WEBHOOK_SECRET;
-        const headerSecret = request.headers.get("x-webhook-secret");
-        if (!secret || headerSecret !== secret) {
-          return new Response("Unauthorized", { status: 401 });
+        const secret = process.env.RESEND_WEBHOOK_SECRET;
+        if (!secret) {
+          return new Response("Webhook secret not configured", { status: 500 });
         }
 
         let payload: any;
         try {
-          payload = await request.json();
-        } catch {
-          return json({ error: "Invalid body" }, 400);
+          payload = await verifyResendWebhook(request, secret);
+        } catch (e: any) {
+          console.error("[inbound-reply] Resend webhook verification failed", e?.message);
+          return new Response("Invalid signature", { status: 401 });
         }
+
 
         console.log("[inbound-reply] payload keys:", Object.keys(payload ?? {}), "data keys:", Object.keys(payload?.data ?? {}));
 
