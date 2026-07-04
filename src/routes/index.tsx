@@ -32,14 +32,13 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
-import Cal, { getCalApi } from "@calcom/embed-react";
 import logo from "@/assets/wynback-logo.png.asset.json";
 import explainerAsset from "@/assets/wynback-explainer.mp4.asset.json";
 import explainerPoster from "@/assets/wynback-explainer-poster.png.asset.json";
 import { trackEvent } from "@/lib/analytics";
 
-const DEMO_URL = "https://cal.com/kit-barrett-s02kic/demo";
-const DEMO_CAL_LINK = "kit-barrett-s02kic/demo";
+const DEMO_URL = "https://calendly.com/kit-wynback/30min";
+
 
 function openDemoBooking() {
   if (typeof window !== "undefined") {
@@ -98,13 +97,15 @@ function Landing() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Cal.com booking completion via iframe postMessage
+  // Calendly booking completion via postMessage
   useEffect(() => {
     const onMessage = (evt: MessageEvent) => {
-      const data = evt.data as { type?: string; namespace?: string; data?: Record<string, unknown> } | undefined;
+      const data = evt.data as { event?: string; payload?: Record<string, unknown> } | undefined;
       if (!data || typeof data !== "object") return;
-      if (data.type === "bookingSuccessful" || data.type === "bookingSuccessfulV2") {
-        trackEvent("demo_booked", data.data ?? {});
+      if (typeof data.event === "string" && data.event.indexOf("calendly.") === 0) {
+        if (data.event === "calendly.event_scheduled") {
+          trackEvent("demo_booked", data.payload ?? {});
+        }
       }
     };
     window.addEventListener("message", onMessage);
@@ -146,53 +147,25 @@ function DemoModal() {
     return () => window.removeEventListener("open-demo-modal", onOpen);
   }, []);
 
-  // Preload Cal embed script on idle so the first open is instant
-  useEffect(() => {
-    let cancelled = false;
-    const preload = () => {
-      if (cancelled) return;
-      getCalApi({ namespace: "demo" })
-        .then((cal) => {
-          cal("ui", {
-            cssVarsPerTheme: {
-              light: { "cal-brand": "#0D3B36" },
-              dark: { "cal-brand": "#E8A33D" },
-            },
-            hideEventTypeDetails: false,
-            layout: "month_view",
-          });
-        })
-        .catch(() => {});
-    };
-    const w = window as Window & { requestIdleCallback?: (cb: () => void) => number };
-    if (typeof w.requestIdleCallback === "function") {
-      w.requestIdleCallback(preload);
-    } else {
-      window.setTimeout(preload, 800);
-    }
-    return () => {
-      cancelled = true;
-    };
-  }, []);
+  const src = `${DEMO_URL}?embed_domain=${typeof window !== "undefined" ? window.location.hostname : ""}&embed_type=Inline&hide_gdpr_banner=1&primary_color=0D3B36`;
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className="max-w-4xl w-[95vw] p-0 overflow-hidden sm:rounded-lg h-[85vh]">
         <DialogTitle className="sr-only">Book a demo</DialogTitle>
         {mounted && (
-          <div className="w-full h-full overflow-auto">
-            <Cal
-              namespace="demo"
-              calLink={DEMO_CAL_LINK}
-              style={{ width: "100%", height: "100%", overflow: "scroll" }}
-              config={{ layout: "month_view" }}
-            />
-          </div>
+          <iframe
+            src={src}
+            title="Book a demo"
+            className="w-full h-full border-0"
+            allow="camera; microphone; fullscreen"
+          />
         )}
       </DialogContent>
     </Dialog>
   );
 }
+
 
 
 
