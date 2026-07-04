@@ -9,38 +9,57 @@ import { toast } from "sonner";
 import logo from "@/assets/wynback-logo.png.asset.json";
 
 
+// Only allow same-origin relative paths as post-auth targets, e.g. the OAuth
+// consent URL. Prevents open-redirects via `?next=...`.
+function safeNext(next: unknown): string | null {
+  if (typeof next !== "string" || !next.startsWith("/") || next.startsWith("//")) return null;
+  return next;
+}
+
 export const Route = createFileRoute("/auth")({
   ssr: false,
-  beforeLoad: async () => {
+  validateSearch: (s: Record<string, unknown>) => ({
+    next: typeof s.next === "string" ? s.next : undefined,
+  }),
+  beforeLoad: async ({ search }) => {
     const { data } = await supabase.auth.getUser();
-    if (data.user) throw redirect({ to: "/dashboard" });
+    if (data.user) {
+      const next = safeNext(search.next);
+      if (next) throw redirect({ href: next });
+      throw redirect({ to: "/dashboard" });
+    }
   },
   component: AuthPage,
 });
 
 function AuthPage() {
+  const { next } = Route.useSearch();
   const [mode, setMode] = useState<"signin" | "signup">("signup");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const safeNextPath = safeNext(next);
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
     try {
       if (mode === "signup") {
+        const emailRedirectTo = window.location.origin + (safeNextPath ?? "/dashboard");
         const { error } = await supabase.auth.signUp({
           email, password,
-          options: { emailRedirectTo: window.location.origin + "/dashboard" },
+          options: { emailRedirectTo },
         });
         if (error) throw error;
         toast.success("Account created. Let's finish setting up your dealership.");
-        navigate({ to: "/onboarding" });
+        if (safeNextPath) window.location.href = safeNextPath;
+        else navigate({ to: "/onboarding" });
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
-        navigate({ to: "/dashboard" });
+        if (safeNextPath) window.location.href = safeNextPath;
+        else navigate({ to: "/dashboard" });
       }
     } catch (e: any) {
       toast.error(e?.message ?? "Something went wrong");
