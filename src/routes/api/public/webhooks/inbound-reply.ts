@@ -10,6 +10,12 @@ export const Route = createFileRoute("/api/public/webhooks/inbound-reply")({
   server: {
     handlers: {
       POST: async ({ request }) => {
+        const secret = process.env.INBOUND_WEBHOOK_SECRET;
+        const headerSecret = request.headers.get("x-webhook-secret");
+        if (!secret || headerSecret !== secret) {
+          return new Response("Unauthorized", { status: 401 });
+        }
+
         let payload: any;
         try {
           payload = await request.json();
