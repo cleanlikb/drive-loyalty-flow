@@ -900,7 +900,7 @@ function PricingFAQ() {
         </Accordion>
         <div className="mt-10 flex flex-col items-center gap-3">
           <p className="text-sm text-muted-foreground">Still have questions? Get them answered in 20 minutes.</p>
-          <BookDemoButton label="Book a demo" showArrow className="h-12 px-8 text-base shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-shadow" />
+          <BookDemoButton label="Book a demo" location="faq" showArrow className="h-12 px-8 text-base shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-shadow" />
         </div>
       </div>
     </section>
