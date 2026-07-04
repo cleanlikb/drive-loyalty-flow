@@ -140,7 +140,7 @@ function Header({
             Contact
           </Link>
           <Button asChild size="sm" className="ml-2">
-            <a href="https://cal.com/kit-barrett-s02kic/demo" data-cal-namespace="demo" data-cal-link="kit-barrett-s02kic/demo" data-cal-config='{"layout":"month_view"}'>Book a demo</a>
+            <a href="https://cal.com/kit-barrett-s02kic/demo" data-cal-namespace="demo" data-cal-link="kit-barrett-s02kic/demo" data-cal-config='{"layout":"month_view"}' onClick={() => trackEvent("book_demo_clicked", { location: "header_nav" })}>Book a demo</a>
           </Button>
         </nav>
 
