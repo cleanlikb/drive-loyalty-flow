@@ -47,10 +47,11 @@ function trackDemoClick(event: MouseEvent<HTMLAnchorElement>, location: string, 
   }
 
   event.preventDefault();
-  trackEvent("book_demo_clicked", { location }, () => {
+  trackEvent("book_demo_clicked", { location });
+  window.setTimeout(() => {
     afterTrack?.();
     window.location.href = DEMO_URL;
-  });
+  }, 900);
 }
 
 export const Route = createFileRoute("/")({
