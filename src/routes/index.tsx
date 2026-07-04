@@ -126,9 +126,37 @@ function Landing() {
         <FinalCTASection />
       </main>
       <Footer />
+      <DemoModal />
     </div>
   );
 }
+
+function DemoModal() {
+  const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    const onOpen = () => setOpen(true);
+    window.addEventListener("open-demo-modal", onOpen);
+    return () => window.removeEventListener("open-demo-modal", onOpen);
+  }, []);
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogContent className="max-w-4xl w-[95vw] p-0 overflow-hidden sm:rounded-lg h-[85vh]">
+        <DialogTitle className="sr-only">Book a demo</DialogTitle>
+        {open && (
+          <iframe
+            src={`${DEMO_URL}?embed=true&embedType=modal&layout=month_view`}
+            title="Book a demo"
+            className="w-full h-full border-0"
+            allow="camera; microphone; fullscreen; payment"
+          />
+        )}
+      </DialogContent>
+    </Dialog>
+  );
+}
+
 
 function Header({
   mobileOpen,
