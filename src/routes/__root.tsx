@@ -90,6 +90,23 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 Cal("init", "demo", {origin:"https://cal.com"});
 Cal.ns.demo("ui", {"cssVarsPerTheme":{"light":{"cal-brand":"#0D3B36"},"dark":{"cal-brand":"#E8A33D"}},"hideEventTypeDetails":false,"layout":"month_view"});`,
       },
+      {
+        async: true,
+        src: "https://www.googletagmanager.com/gtag/js?id=G-HW40JP52ZD",
+      },
+      {
+        children: `window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-HW40JP52ZD');`,
+      },
+      {
+        children: `(function(c,l,a,r,i,t,y){
+  c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+  t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+  y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+})(window, document, "clarity", "script", "xh6l2de07l");`,
+      },
     ],
   }),
   shellComponent: RootShell,
