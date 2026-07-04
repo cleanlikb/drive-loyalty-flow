@@ -135,29 +135,65 @@ function Landing() {
 
 function DemoModal() {
   const [open, setOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    const onOpen = () => setOpen(true);
+    const onOpen = () => {
+      setMounted(true);
+      setOpen(true);
+    };
     window.addEventListener("open-demo-modal", onOpen);
     return () => window.removeEventListener("open-demo-modal", onOpen);
+  }, []);
+
+  // Preload Cal embed script on idle so the first open is instant
+  useEffect(() => {
+    let cancelled = false;
+    const preload = () => {
+      if (cancelled) return;
+      getCalApi({ namespace: "demo" })
+        .then((cal) => {
+          cal("ui", {
+            cssVarsPerTheme: {
+              light: { "cal-brand": "#0D3B36" },
+              dark: { "cal-brand": "#E8A33D" },
+            },
+            hideEventTypeDetails: false,
+            layout: "month_view",
+          });
+        })
+        .catch(() => {});
+    };
+    const w = window as Window & { requestIdleCallback?: (cb: () => void) => number };
+    if (typeof w.requestIdleCallback === "function") {
+      w.requestIdleCallback(preload);
+    } else {
+      window.setTimeout(preload, 800);
+    }
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className="max-w-4xl w-[95vw] p-0 overflow-hidden sm:rounded-lg h-[85vh]">
         <DialogTitle className="sr-only">Book a demo</DialogTitle>
-        {open && (
-          <iframe
-            src={`${DEMO_URL}?embed=true&embedType=modal&layout=month_view`}
-            title="Book a demo"
-            className="w-full h-full border-0"
-            allow="camera; microphone; fullscreen; payment"
-          />
+        {mounted && (
+          <div className="w-full h-full overflow-auto">
+            <Cal
+              namespace="demo"
+              calLink={DEMO_CAL_LINK}
+              style={{ width: "100%", height: "100%", overflow: "scroll" }}
+              config={{ layout: "month_view" }}
+            />
+          </div>
         )}
       </DialogContent>
     </Dialog>
   );
 }
+
 
 
 function Header({
