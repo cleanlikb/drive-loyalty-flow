@@ -114,12 +114,17 @@ function Header({
           <Link to="/contact" onClick={() => setMobileOpen(false)} className="px-3 py-2.5 text-base font-medium text-foreground hover:bg-accent rounded-md transition-colors">
             Contact
           </Link>
-          <Link to="/auth" onClick={() => setMobileOpen(false)} className="mt-2">
-            <Button className="w-full" size="lg">Get started</Button>
-          </Link>
-          <Link to="/auth" onClick={() => setMobileOpen(false)} className="text-center text-sm text-muted-foreground py-2">
-            Already have an account? Sign in
-          </Link>
+          <Button asChild className="w-full mt-2" size="lg">
+            <a
+              href="https://cal.com/kit-barrett-s02kic/demo"
+              data-cal-namespace="demo"
+              data-cal-link="kit-barrett-s02kic/demo"
+              data-cal-config='{"layout":"month_view"}'
+              onClick={() => setMobileOpen(false)}
+            >
+              Book a demo
+            </a>
+          </Button>
         </div>
       )}
     </header>
