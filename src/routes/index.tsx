@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type MouseEvent } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
@@ -38,7 +38,7 @@ import { trackEvent } from "@/lib/analytics";
 
 const DEMO_URL = "https://cal.com/kit-barrett-s02kic/demo";
 
-function trackDemoClick(event: React.MouseEvent<HTMLAnchorElement>, location: string, afterTrack?: () => void) {
+function trackDemoClick(event: MouseEvent<HTMLAnchorElement>, location: string, afterTrack?: () => void) {
   if (event.defaultPrevented) return;
   if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
     trackEvent("book_demo_clicked", { location });
