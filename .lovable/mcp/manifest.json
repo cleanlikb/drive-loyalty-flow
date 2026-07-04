@@ -1,0 +1,114 @@
+{
+  "version": 1,
+  "sdk_version": "0.20.0",
+  "path": "/mcp",
+  "auth": {
+    "type": "oauth",
+    "issuer": "https://behqgotkvrgiwbmozhtm.supabase.co/auth/v1",
+    "accepted_audiences": [
+      "authenticated"
+    ]
+  },
+  "mcp": {
+    "server": {
+      "name": "wynback-mcp",
+      "version": "0.1.0",
+      "title": "Wynback"
+    },
+    "tools": [
+      {
+        "name": "dashboard_stats",
+        "title": "Dashboard stats",
+        "description": "Return this month's key metrics for the signed-in dealer: leads surfaced, sequences started, emails sent, replies, hot leads.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {}
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "list_hot_leads",
+        "title": "List hot leads",
+        "description": "List customers flagged as hot leads — replies that showed clear buying intent.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {}
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "list_recent_replies",
+        "title": "List recent replies",
+        "description": "List recent customer replies with AI classification (hot_lead, interested, no_longer_owns, unsubscribe, replied).",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "limit": {
+              "description": "Max rows to return (default 25).",
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            },
+            "classification": {
+              "description": "Optional filter on the reply classification.",
+              "type": "string",
+              "enum": [
+                "replied",
+                "no_longer_owns",
+                "unsubscribe",
+                "interested",
+                "hot_lead"
+              ]
+            }
+          }
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "list_customers",
+        "title": "List customers",
+        "description": "List the signed-in dealer's past car buyers, most recent sale first.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "limit": {
+              "description": "Max rows to return (default 50).",
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 200
+            },
+            "search": {
+              "description": "Optional case-insensitive filter on name or email.",
+              "type": "string"
+            }
+          }
+        },
+        "outputSchema": null
+      }
+    ]
+  }
+}
