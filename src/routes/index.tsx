@@ -31,6 +31,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import logo from "@/assets/wynback-logo.png.asset.json";
 import explainerAsset from "@/assets/wynback-explainer.mp4.asset.json";
 import explainerPoster from "@/assets/wynback-explainer-poster.png.asset.json";
@@ -40,18 +41,11 @@ const DEMO_URL = "https://cal.com/kit-barrett-s02kic/demo";
 const DEMO_CAL_LINK = "kit-barrett-s02kic/demo";
 
 function openDemoBooking() {
-  const calDemo = window.Cal?.ns?.demo;
-  if (typeof calDemo === "function") {
-    calDemo("modal", {
-      calLink: DEMO_CAL_LINK,
-      config: { layout: "month_view" },
-    });
-    return;
+  if (typeof window !== "undefined") {
+    window.dispatchEvent(new CustomEvent("open-demo-modal"));
   }
-
-  const opened = window.open(DEMO_URL, "_blank", "noopener,noreferrer");
-  if (!opened) window.location.href = DEMO_URL;
 }
+
 
 function trackDemoClick(event: MouseEvent<HTMLAnchorElement>, location: string, afterTrack?: () => void) {
   if (event.defaultPrevented) return;
@@ -103,30 +97,19 @@ function Landing() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Cal.com booking completion callback
+  // Cal.com booking completion via iframe postMessage
   useEffect(() => {
-    const bind = () => {
-      const cal = window.Cal;
-      if (!cal || !cal.ns || typeof cal.ns.demo !== "function") return false;
-      cal.ns.demo("on", {
-        action: "bookingSuccessful",
-        callback: (e: unknown) => {
-          const detail = (e as { detail?: { data?: Record<string, unknown> } })?.detail?.data ?? {};
-          trackEvent("demo_booked", detail);
-        },
-      });
-      return true;
+    const onMessage = (evt: MessageEvent) => {
+      const data = evt.data as { type?: string; namespace?: string; data?: Record<string, unknown> } | undefined;
+      if (!data || typeof data !== "object") return;
+      if (data.type === "bookingSuccessful" || data.type === "bookingSuccessfulV2") {
+        trackEvent("demo_booked", data.data ?? {});
+      }
     };
-    if (bind()) return;
-    const id = window.setInterval(() => {
-      if (bind()) window.clearInterval(id);
-    }, 500);
-    const timeout = window.setTimeout(() => window.clearInterval(id), 15000);
-    return () => {
-      window.clearInterval(id);
-      window.clearTimeout(timeout);
-    };
+    window.addEventListener("message", onMessage);
+    return () => window.removeEventListener("message", onMessage);
   }, []);
+
 
   return (
     <div className="min-h-screen bg-white text-foreground font-sans selection:bg-primary/30">
@@ -144,9 +127,37 @@ function Landing() {
         <FinalCTASection />
       </main>
       <Footer />
+      <DemoModal />
     </div>
   );
 }
+
+function DemoModal() {
+  const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    const onOpen = () => setOpen(true);
+    window.addEventListener("open-demo-modal", onOpen);
+    return () => window.removeEventListener("open-demo-modal", onOpen);
+  }, []);
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogContent className="max-w-4xl w-[95vw] p-0 overflow-hidden sm:rounded-lg h-[85vh]">
+        <DialogTitle className="sr-only">Book a demo</DialogTitle>
+        {open && (
+          <iframe
+            src={`${DEMO_URL}?embed=true&embedType=modal&layout=month_view`}
+            title="Book a demo"
+            className="w-full h-full border-0"
+            allow="camera; microphone; fullscreen; payment"
+          />
+        )}
+      </DialogContent>
+    </Dialog>
+  );
+}
+
 
 function Header({
   mobileOpen,
