@@ -91,9 +91,9 @@ function Header({
           <Link to="/contact" className="px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground rounded-md transition-colors">
             Contact
           </Link>
-          <a href="https://cal.com/kit-barrett-s02kic/demo" data-cal-namespace="demo" data-cal-link="kit-barrett-s02kic/demo" data-cal-config='{"layout":"month_view"}' className="ml-2">
-            <Button size="sm" asChild={false}>Book a demo</Button>
-          </a>
+          <Button asChild size="sm" className="ml-2">
+            <a href="https://cal.com/kit-barrett-s02kic/demo" data-cal-namespace="demo" data-cal-link="kit-barrett-s02kic/demo" data-cal-config='{"layout":"month_view"}'>Book a demo</a>
+          </Button>
         </nav>
 
         <button
