@@ -13,6 +13,8 @@ declare global {
 export function trackEvent(name: string, params?: Record<string, unknown>) {
   if (typeof window === "undefined") return;
   try {
+    // eslint-disable-next-line no-console
+    console.log(`[analytics] ${name}`, params ?? {});
     if (typeof window.gtag === "function") {
       window.gtag("event", name, params ?? {});
     } else {
