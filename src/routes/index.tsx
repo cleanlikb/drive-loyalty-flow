@@ -136,35 +136,59 @@ function Landing() {
 
 function DemoModal() {
   const [open, setOpen] = useState(false);
-  const [mounted, setMounted] = useState(false);
+  const [prewarm, setPrewarm] = useState(false);
 
   useEffect(() => {
-    const onOpen = () => {
-      setMounted(true);
-      setOpen(true);
-    };
+    const onOpen = () => setOpen(true);
     window.addEventListener("open-demo-modal", onOpen);
     return () => window.removeEventListener("open-demo-modal", onOpen);
+  }, []);
+
+  // Prewarm the Calendly iframe on idle so it's ready before the user clicks
+  useEffect(() => {
+    const w = window as Window & { requestIdleCallback?: (cb: () => void) => number };
+    const start = () => setPrewarm(true);
+    if (typeof w.requestIdleCallback === "function") {
+      w.requestIdleCallback(start);
+    } else {
+      window.setTimeout(start, 1200);
+    }
   }, []);
 
   const src = `${DEMO_URL}?embed_domain=${typeof window !== "undefined" ? window.location.hostname : ""}&embed_type=Inline&hide_gdpr_banner=1&primary_color=0D3B36`;
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="max-w-4xl w-[95vw] p-0 overflow-hidden sm:rounded-lg h-[85vh]">
-        <DialogTitle className="sr-only">Book a demo</DialogTitle>
-        {mounted && (
-          <iframe
-            src={src}
-            title="Book a demo"
-            className="w-full h-full border-0"
-            allow="camera; microphone; fullscreen"
-          />
-        )}
-      </DialogContent>
-    </Dialog>
+    <>
+      {/* Hidden prewarmed iframe — loads Calendly in the background so the modal appears instantly */}
+      {prewarm && !open && (
+        <iframe
+          src={src}
+          title=""
+          aria-hidden="true"
+          tabIndex={-1}
+          style={{ position: "fixed", width: 1, height: 1, opacity: 0, pointerEvents: "none", left: -9999, top: -9999 }}
+        />
+      )}
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent
+          aria-describedby={undefined}
+          className="max-w-4xl w-[95vw] p-0 overflow-hidden sm:rounded-lg h-[85vh]"
+        >
+          <DialogTitle className="sr-only">Book a demo</DialogTitle>
+          {open && (
+            <iframe
+              src={src}
+              title="Book a demo"
+              className="w-full h-full border-0"
+              allow="camera; microphone; fullscreen"
+            />
+          )}
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }
+
 
 
 
