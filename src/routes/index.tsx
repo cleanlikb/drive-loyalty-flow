@@ -216,12 +216,14 @@ function BookDemoButton({
   className = "",
   showArrow = false,
   size = "lg",
+  location = "unknown",
 }: {
   label?: string;
   variant?: "default" | "outline" | "secondary";
   className?: string;
   showArrow?: boolean;
   size?: "default" | "sm" | "lg";
+  location?: string;
 }) {
   return (
     <Button asChild size={size} variant={variant} className={className}>
@@ -230,6 +232,7 @@ function BookDemoButton({
         data-cal-namespace="demo"
         data-cal-link="kit-barrett-s02kic/demo"
         data-cal-config='{"layout":"month_view"}'
+        onClick={() => trackEvent("book_demo_clicked", { location })}
       >
         {label}
         {showArrow && <ArrowRight className="h-4 w-4" />}
