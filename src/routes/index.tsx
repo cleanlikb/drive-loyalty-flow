@@ -345,7 +345,7 @@ function SolutionSection() {
           <StepCard
             step={2}
             title="We automatically flag every customer at the right moment"
-            body="Each month we surface buyers at 12, 18, 24, 36, 48 or 60 months — exactly when they're likely to change car again."
+            body="Each month we identify buyers at 12, 18, 24, 36, 48 or 60 months—periods when statistics show replacement intent peaks and finance agreements typically end. Two signals, one perfect moment."
             mockup={<MilestoneMockup />}
           />
           <StepCard
