@@ -40,18 +40,11 @@ const DEMO_URL = "https://cal.com/kit-barrett-s02kic/demo";
 const DEMO_CAL_LINK = "kit-barrett-s02kic/demo";
 
 function openDemoBooking() {
-  const calDemo = window.Cal?.ns?.demo;
-  if (typeof calDemo === "function") {
-    calDemo("modal", {
-      calLink: DEMO_CAL_LINK,
-      config: { layout: "month_view" },
-    });
-    return;
+  if (typeof window !== "undefined") {
+    window.dispatchEvent(new CustomEvent("open-demo-modal"));
   }
-
-  const opened = window.open(DEMO_URL, "_blank", "noopener,noreferrer");
-  if (!opened) window.location.href = DEMO_URL;
 }
+
 
 function trackDemoClick(event: MouseEvent<HTMLAnchorElement>, location: string, afterTrack?: () => void) {
   if (event.defaultPrevented) return;
