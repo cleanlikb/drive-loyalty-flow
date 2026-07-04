@@ -12,12 +12,19 @@ declare global {
   }
 }
 
-export function trackEvent(name: string, params?: Record<string, unknown>) {
+export function trackEvent(name: string, params?: Record<string, unknown>, callback?: () => void) {
   if (typeof window === "undefined") return;
   try {
+    let callbackCalled = false;
+    const done = () => {
+      if (callbackCalled) return;
+      callbackCalled = true;
+      callback?.();
+    };
     const eventParams = {
       send_to: GA_MEASUREMENT_ID,
       transport_type: "beacon",
+      ...(callback ? { event_callback: done, event_timeout: 1000 } : {}),
       ...(params ?? {}),
     };
     // eslint-disable-next-line no-console
@@ -27,8 +34,10 @@ export function trackEvent(name: string, params?: Record<string, unknown>) {
     } else {
       window.dataLayer = window.dataLayer || [];
       window.dataLayer.push(["event", name, eventParams]);
+      if (callback) window.setTimeout(done, 50);
     }
   } catch {
+    callback?.();
     /* noop */
   }
 }
