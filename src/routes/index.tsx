@@ -36,6 +36,23 @@ import explainerAsset from "@/assets/wynback-explainer.mp4.asset.json";
 import explainerPoster from "@/assets/wynback-explainer-poster.png.asset.json";
 import { trackEvent } from "@/lib/analytics";
 
+const DEMO_URL = "https://cal.com/kit-barrett-s02kic/demo";
+
+function trackDemoClick(event: React.MouseEvent<HTMLAnchorElement>, location: string, afterTrack?: () => void) {
+  if (event.defaultPrevented) return;
+  if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
+    trackEvent("book_demo_clicked", { location });
+    afterTrack?.();
+    return;
+  }
+
+  event.preventDefault();
+  trackEvent("book_demo_clicked", { location }, () => {
+    afterTrack?.();
+    window.location.href = DEMO_URL;
+  });
+}
+
 export const Route = createFileRoute("/")({
   component: Landing,
 });
@@ -140,7 +157,7 @@ function Header({
             Contact
           </Link>
           <Button asChild size="sm" className="ml-2">
-            <a href="https://cal.com/kit-barrett-s02kic/demo" data-cal-namespace="demo" data-cal-link="kit-barrett-s02kic/demo" data-cal-config='{"layout":"month_view"}' onClick={() => trackEvent("book_demo_clicked", { location: "header_nav" })}>Book a demo</a>
+            <a href={DEMO_URL} data-cal-namespace="demo" data-cal-link="kit-barrett-s02kic/demo" data-cal-config='{"layout":"month_view"}' onClick={(event) => trackDemoClick(event, "header_nav")}>Book a demo</a>
           </Button>
         </nav>
 
@@ -164,11 +181,11 @@ function Header({
           </Link>
           <Button asChild className="w-full mt-2" size="lg">
             <a
-              href="https://cal.com/kit-barrett-s02kic/demo"
+              href={DEMO_URL}
               data-cal-namespace="demo"
               data-cal-link="kit-barrett-s02kic/demo"
               data-cal-config='{"layout":"month_view"}'
-              onClick={() => { trackEvent("book_demo_clicked", { location: "mobile_nav" }); setMobileOpen(false); }}
+              onClick={(event) => trackDemoClick(event, "mobile_nav", () => setMobileOpen(false))}
             >
               Book a demo
             </a>
@@ -228,11 +245,11 @@ function BookDemoButton({
   return (
     <Button asChild size={size} variant={variant} className={className}>
       <a
-        href="https://cal.com/kit-barrett-s02kic/demo"
+        href={DEMO_URL}
         data-cal-namespace="demo"
         data-cal-link="kit-barrett-s02kic/demo"
         data-cal-config='{"layout":"month_view"}'
-        onClick={() => trackEvent("book_demo_clicked", { location })}
+        onClick={(event) => trackDemoClick(event, location)}
       >
         {label}
         {showArrow && <ArrowRight className="h-4 w-4" />}
