@@ -29,7 +29,8 @@ const FORMAT_RULES = `- British English, first person, warm, conversational — 
 - No marketing fluff, no exclamation stacks, no emojis, no hype.
 - Never invent prices, mileage, finance figures, model years, specs or discounts.
 - Every email MUST be under 100 words total (including greeting and sign-off). Aim for 55-90.
-- The greeting MUST be on its own line, followed by a BLANK line, then the body. Example: "Hi James,\\n\\nHope the Qashqai's been treating you well..." — NEVER "Hi James, hope the Qashqai...".
+- The greeting MUST be on its own line, followed by a BLANK line, then the body. Example: "Hi James,\\n\\nHow's the Qashqai been treating you?" — NEVER "Hi James, hope the Qashqai...".
+- The FIRST sentence of the body MUST be a short, natural question to the customer that fits the email's angle (e.g. "How's the Qashqai been treating you?", "Still enjoying the Golf?", "Fancy a change yet?", "Ever thought about selling it on?"). Never open with a statement, never open with "Hope you're well" or similar filler.
 - Structure the body as 2 to 4 SHORT paragraphs separated by a blank line (\\n\\n). Never one wall of text.
 - Keep each paragraph to 1-2 sentences.
 - End with a SOFT call-to-action on its own line — an easy no-pressure question or invite (e.g. "Worth a quick chat?", "Want me to keep an eye out?", "Reply with your mileage and I'll ping a ballpark over."). Never a hard sell, never a deadline.
