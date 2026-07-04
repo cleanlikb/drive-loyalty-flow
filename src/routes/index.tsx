@@ -162,6 +162,34 @@ function MobileNavLink({
   );
 }
 
+function BookDemoButton({
+  label = "Book a demo",
+  variant = "default",
+  className = "",
+  showArrow = false,
+  size = "lg",
+}: {
+  label?: string;
+  variant?: "default" | "outline" | "secondary";
+  className?: string;
+  showArrow?: boolean;
+  size?: "default" | "sm" | "lg";
+}) {
+  return (
+    <Button asChild size={size} variant={variant} className={className}>
+      <a
+        href="https://cal.com/kit-barrett-s02kic/demo"
+        data-cal-namespace="demo"
+        data-cal-link="kit-barrett-s02kic/demo"
+        data-cal-config='{"layout":"month_view"}'
+      >
+        {label}
+        {showArrow && <ArrowRight className="h-4 w-4" />}
+      </a>
+    </Button>
+  );
+}
+
 function HeroSection() {
   return (
     <section className="relative overflow-hidden bg-gradient-to-br from-primary via-primary to-fuchsia-600 text-primary-foreground pt-24 pb-28 md:pt-32 md:pb-36">
