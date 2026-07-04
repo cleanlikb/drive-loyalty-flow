@@ -41,10 +41,15 @@ const DEMO_URL = "https://calendly.com/kit-wynback/30min";
 
 
 function openDemoBooking() {
-  if (typeof window !== "undefined") {
-    window.dispatchEvent(new CustomEvent("open-demo-modal"));
+  if (typeof window === "undefined") return;
+  // On mobile, open Calendly in a new tab — native mobile layout works better than any iframe modal
+  if (window.matchMedia("(max-width: 640px)").matches) {
+    window.open(DEMO_URL, "_blank", "noopener,noreferrer");
+    return;
   }
+  window.dispatchEvent(new CustomEvent("open-demo-modal"));
 }
+
 
 
 function trackDemoClick(event: MouseEvent<HTMLAnchorElement>, location: string, afterTrack?: () => void) {
