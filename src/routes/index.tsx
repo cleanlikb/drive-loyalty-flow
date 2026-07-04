@@ -162,6 +162,34 @@ function MobileNavLink({
   );
 }
 
+function BookDemoButton({
+  label = "Book a demo",
+  variant = "default",
+  className = "",
+  showArrow = false,
+  size = "lg",
+}: {
+  label?: string;
+  variant?: "default" | "outline" | "secondary";
+  className?: string;
+  showArrow?: boolean;
+  size?: "default" | "sm" | "lg";
+}) {
+  return (
+    <Button asChild size={size} variant={variant} className={className}>
+      <a
+        href="https://cal.com/kit-barrett-s02kic/demo"
+        data-cal-namespace="demo"
+        data-cal-link="kit-barrett-s02kic/demo"
+        data-cal-config='{"layout":"month_view"}'
+      >
+        {label}
+        {showArrow && <ArrowRight className="h-4 w-4" />}
+      </a>
+    </Button>
+  );
+}
+
 function HeroSection() {
   return (
     <section className="relative overflow-hidden bg-gradient-to-br from-primary via-primary to-fuchsia-600 text-primary-foreground pt-24 pb-28 md:pt-32 md:pb-36">
@@ -254,6 +282,9 @@ function VideoSection() {
               </button>
             )}
           </div>
+        </div>
+        <div className="mt-10 flex justify-center">
+          <BookDemoButton label="Book a demo" showArrow className="h-12 px-8 text-base shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-shadow" />
         </div>
       </div>
     </section>
@@ -360,6 +391,9 @@ function SolutionSection() {
         <p className="mt-12 text-center text-base md:text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed">
           That&apos;s it. No campaigns to build, no lists to manage — most dealers spend under 10 minutes a month keeping it running.
         </p>
+        <div className="mt-8 flex justify-center">
+          <BookDemoButton label="See it in action — book a demo" showArrow className="h-12 px-8 text-base shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-shadow" />
+        </div>
       </div>
     </section>
   );
@@ -474,6 +508,9 @@ function BenefitsSection() {
               <p className="mt-3 text-muted-foreground leading-relaxed">{benefit.body}</p>
             </div>
           ))}
+        </div>
+        <div className="mt-14 flex justify-center">
+          <BookDemoButton label="Book a demo" showArrow className="h-12 px-8 text-base shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-shadow" />
         </div>
       </div>
     </section>
@@ -590,6 +627,9 @@ function CalculatorSection() {
               <span className="font-semibold text-foreground">£{Math.round(stats.netAnnualProfit).toLocaleString()} net profit</span>.
             </p>
           </div>
+        </div>
+        <div className="mt-10 flex justify-center">
+          <BookDemoButton label="Book a demo to unlock these numbers" showArrow className="h-12 px-8 text-base shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-shadow" />
         </div>
       </div>
     </section>
@@ -807,6 +847,10 @@ function PricingFAQ() {
             </AccordionItem>
           ))}
         </Accordion>
+        <div className="mt-10 flex flex-col items-center gap-3">
+          <p className="text-sm text-muted-foreground">Still have questions? Get them answered in 20 minutes.</p>
+          <BookDemoButton label="Book a demo" showArrow className="h-12 px-8 text-base shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-shadow" />
+        </div>
       </div>
     </section>
   );
