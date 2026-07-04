@@ -168,7 +168,7 @@ function Header({
               data-cal-namespace="demo"
               data-cal-link="kit-barrett-s02kic/demo"
               data-cal-config='{"layout":"month_view"}'
-              onClick={() => setMobileOpen(false)}
+              onClick={() => { trackEvent("book_demo_clicked", { location: "mobile_nav" }); setMobileOpen(false); }}
             >
               Book a demo
             </a>
