@@ -32,6 +32,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import Cal, { getCalApi } from "@calcom/embed-react";
 import logo from "@/assets/wynback-logo.png.asset.json";
 import explainerAsset from "@/assets/wynback-explainer.mp4.asset.json";
 import explainerPoster from "@/assets/wynback-explainer-poster.png.asset.json";
@@ -134,29 +135,65 @@ function Landing() {
 
 function DemoModal() {
   const [open, setOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    const onOpen = () => setOpen(true);
+    const onOpen = () => {
+      setMounted(true);
+      setOpen(true);
+    };
     window.addEventListener("open-demo-modal", onOpen);
     return () => window.removeEventListener("open-demo-modal", onOpen);
+  }, []);
+
+  // Preload Cal embed script on idle so the first open is instant
+  useEffect(() => {
+    let cancelled = false;
+    const preload = () => {
+      if (cancelled) return;
+      getCalApi({ namespace: "demo" })
+        .then((cal) => {
+          cal("ui", {
+            cssVarsPerTheme: {
+              light: { "cal-brand": "#0D3B36" },
+              dark: { "cal-brand": "#E8A33D" },
+            },
+            hideEventTypeDetails: false,
+            layout: "month_view",
+          });
+        })
+        .catch(() => {});
+    };
+    const w = window as Window & { requestIdleCallback?: (cb: () => void) => number };
+    if (typeof w.requestIdleCallback === "function") {
+      w.requestIdleCallback(preload);
+    } else {
+      window.setTimeout(preload, 800);
+    }
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className="max-w-4xl w-[95vw] p-0 overflow-hidden sm:rounded-lg h-[85vh]">
         <DialogTitle className="sr-only">Book a demo</DialogTitle>
-        {open && (
-          <iframe
-            src={`${DEMO_URL}?embed=true&embedType=modal&layout=month_view`}
-            title="Book a demo"
-            className="w-full h-full border-0"
-            allow="camera; microphone; fullscreen; payment"
-          />
+        {mounted && (
+          <div className="w-full h-full overflow-auto">
+            <Cal
+              namespace="demo"
+              calLink={DEMO_CAL_LINK}
+              style={{ width: "100%", height: "100%", overflow: "scroll" }}
+              config={{ layout: "month_view" }}
+            />
+          </div>
         )}
       </DialogContent>
     </Dialog>
   );
 }
+
 
 
 function Header({
@@ -182,7 +219,7 @@ function Header({
             Contact
           </Link>
           <Button asChild size="sm" className="ml-2">
-            <a href={DEMO_URL} data-cal-namespace="demo" data-cal-link="kit-barrett-s02kic/demo" data-cal-config='{"layout":"month_view"}' onClick={(event) => trackDemoClick(event, "header_nav")}>Book a demo</a>
+            <a href={DEMO_URL} onClick={(event) => trackDemoClick(event, "header_nav")}>Book a demo</a>
           </Button>
         </nav>
 
@@ -207,9 +244,9 @@ function Header({
           <Button asChild className="w-full mt-2" size="lg">
             <a
               href={DEMO_URL}
-              data-cal-namespace="demo"
-              data-cal-link="kit-barrett-s02kic/demo"
-              data-cal-config='{"layout":"month_view"}'
+             
+             
+             
               onClick={(event) => trackDemoClick(event, "mobile_nav", () => setMobileOpen(false))}
             >
               Book a demo
@@ -271,9 +308,9 @@ function BookDemoButton({
     <Button asChild size={size} variant={variant} className={className}>
       <a
         href={DEMO_URL}
-        data-cal-namespace="demo"
-        data-cal-link="kit-barrett-s02kic/demo"
-        data-cal-config='{"layout":"month_view"}'
+       
+       
+       
         onClick={(event) => trackDemoClick(event, location)}
       >
         {label}
@@ -301,7 +338,7 @@ function HeroSection() {
         </p>
         <div className="mt-9 flex flex-col sm:flex-row items-center justify-center gap-4">
           <Button asChild size="lg" className="h-12 px-8 text-base bg-white text-primary hover:bg-white/90 shadow-lg shadow-black/10 hover:shadow-black/20 transition-shadow">
-            <a href={DEMO_URL} data-cal-namespace="demo" data-cal-link="kit-barrett-s02kic/demo" data-cal-config='{"layout":"month_view"}' onClick={(event) => trackDemoClick(event, "hero")}>
+            <a href={DEMO_URL} onClick={(event) => trackDemoClick(event, "hero")}>
               Book a demo
               <ArrowRight className="h-4 w-4" />
             </a>
@@ -777,7 +814,7 @@ function FinalCTASection() {
             </p>
             <div className="mt-9 flex flex-col sm:flex-row items-center justify-center gap-4">
               <Button asChild size="lg" className="h-12 px-8 text-base shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-shadow">
-                <a href={DEMO_URL} data-cal-namespace="demo" data-cal-link="kit-barrett-s02kic/demo" data-cal-config='{"layout":"month_view"}' onClick={(event) => trackDemoClick(event, "final_cta")}>
+                <a href={DEMO_URL} onClick={(event) => trackDemoClick(event, "final_cta")}>
                   Book a demo
                   <ArrowRight className="h-4 w-4" />
                 </a>
@@ -891,7 +928,7 @@ function PricingSection() {
                     variant={tier.popular ? "default" : "outline"}
                     className={`w-full h-12 ${tier.popular ? "shadow-lg shadow-primary/25" : ""}`}
                   >
-                    <a href={DEMO_URL} data-cal-namespace="demo" data-cal-link="kit-barrett-s02kic/demo" data-cal-config='{"layout":"month_view"}' onClick={(event) => trackDemoClick(event, `pricing_${tier.name.toLowerCase()}`)}>Book a demo</a>
+                    <a href={DEMO_URL} onClick={(event) => trackDemoClick(event, `pricing_${tier.name.toLowerCase()}`)}>Book a demo</a>
                   </Button>
                   <p className="mt-3 text-center text-xs text-muted-foreground">
                     No setup fees. Cancel or change plans anytime.
