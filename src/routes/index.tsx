@@ -283,6 +283,9 @@ function VideoSection() {
             )}
           </div>
         </div>
+        <div className="mt-10 flex justify-center">
+          <BookDemoButton label="Book a demo" showArrow className="h-12 px-8 text-base shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-shadow" />
+        </div>
       </div>
     </section>
   );
