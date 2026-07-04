@@ -17,6 +17,7 @@ export function trackEvent(name: string, params?: Record<string, unknown>) {
   try {
     const eventParams = {
       send_to: GA_MEASUREMENT_ID,
+      transport_type: "beacon",
       ...(params ?? {}),
     };
     // eslint-disable-next-line no-console
