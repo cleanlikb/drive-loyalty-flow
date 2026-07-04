@@ -350,8 +350,8 @@ function SolutionSection() {
           />
           <StepCard
             step={3}
-            title="Review the AI emails and approve the whole month in one click"
-            body="Three warm, personalised emails per customer are written for you. Approve once, and Wynback schedules everything automatically."
+            title="AI writes warm, personalised emails that actually prompt replies"
+            body="Review them once, they go out automatically — no templates, no generic fluff. Just real conversations with past customers."
             mockup={<SequenceMockup />}
           />
         </div>
