@@ -91,12 +91,9 @@ function Header({
           <Link to="/contact" className="px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground rounded-md transition-colors">
             Contact
           </Link>
-          <Link to="/auth" className="ml-2">
-            <Button variant="ghost" size="sm">Sign in</Button>
-          </Link>
-          <Link to="/auth">
-            <Button size="sm">Get started</Button>
-          </Link>
+          <Button asChild size="sm" className="ml-2">
+            <a href="https://cal.com/kit-barrett-s02kic/demo" data-cal-namespace="demo" data-cal-link="kit-barrett-s02kic/demo" data-cal-config='{"layout":"month_view"}'>Book a demo</a>
+          </Button>
         </nav>
 
         <button
@@ -117,12 +114,17 @@ function Header({
           <Link to="/contact" onClick={() => setMobileOpen(false)} className="px-3 py-2.5 text-base font-medium text-foreground hover:bg-accent rounded-md transition-colors">
             Contact
           </Link>
-          <Link to="/auth" onClick={() => setMobileOpen(false)} className="mt-2">
-            <Button className="w-full" size="lg">Get started</Button>
-          </Link>
-          <Link to="/auth" onClick={() => setMobileOpen(false)} className="text-center text-sm text-muted-foreground py-2">
-            Already have an account? Sign in
-          </Link>
+          <Button asChild className="w-full mt-2" size="lg">
+            <a
+              href="https://cal.com/kit-barrett-s02kic/demo"
+              data-cal-namespace="demo"
+              data-cal-link="kit-barrett-s02kic/demo"
+              data-cal-config='{"layout":"month_view"}'
+              onClick={() => setMobileOpen(false)}
+            >
+              Book a demo
+            </a>
+          </Button>
         </div>
       )}
     </header>
@@ -178,10 +180,10 @@ function HeroSection() {
         </p>
         <div className="mt-9 flex flex-col sm:flex-row items-center justify-center gap-4">
           <Button asChild size="lg" className="h-12 px-8 text-base bg-white text-primary hover:bg-white/90 shadow-lg shadow-black/10 hover:shadow-black/20 transition-shadow">
-            <Link to="/auth">
-              Get started
+            <a href="https://cal.com/kit-barrett-s02kic/demo" data-cal-namespace="demo" data-cal-link="kit-barrett-s02kic/demo" data-cal-config='{"layout":"month_view"}'>
+              Book a demo
               <ArrowRight className="h-4 w-4" />
-            </Link>
+            </a>
           </Button>
         </div>
         <p className="mt-3 text-sm text-white/70">No setup fees · We configure it for you</p>
@@ -621,10 +623,10 @@ function FinalCTASection() {
             </p>
             <div className="mt-9 flex flex-col sm:flex-row items-center justify-center gap-4">
               <Button asChild size="lg" className="h-12 px-8 text-base shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-shadow">
-                <Link to="/auth">
-                  Get started
+                <a href="https://cal.com/kit-barrett-s02kic/demo" data-cal-namespace="demo" data-cal-link="kit-barrett-s02kic/demo" data-cal-config='{"layout":"month_view"}'>
+                  Book a demo
                   <ArrowRight className="h-4 w-4" />
-                </Link>
+                </a>
               </Button>
             </div>
             <p className="mt-3 text-sm text-muted-foreground">No setup fees</p>
@@ -735,7 +737,7 @@ function PricingSection() {
                     variant={tier.popular ? "default" : "outline"}
                     className={`w-full h-12 ${tier.popular ? "shadow-lg shadow-primary/25" : ""}`}
                   >
-                    <Link to="/auth">Get started</Link>
+                    <a href="https://cal.com/kit-barrett-s02kic/demo" data-cal-namespace="demo" data-cal-link="kit-barrett-s02kic/demo" data-cal-config='{"layout":"month_view"}'>Book a demo</a>
                   </Button>
                   <p className="mt-3 text-center text-xs text-muted-foreground">
                     No setup fees. Cancel or change plans anytime.
