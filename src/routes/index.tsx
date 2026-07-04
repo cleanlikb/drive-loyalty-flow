@@ -34,6 +34,7 @@ import {
 import logo from "@/assets/wynback-logo.png.asset.json";
 import explainerAsset from "@/assets/wynback-explainer.mp4.asset.json";
 import explainerPoster from "@/assets/wynback-explainer-poster.png.asset.json";
+import { trackEvent } from "@/lib/analytics";
 
 export const Route = createFileRoute("/")({
   component: Landing,
