@@ -37,6 +37,21 @@ import explainerPoster from "@/assets/wynback-explainer-poster.png.asset.json";
 import { trackEvent } from "@/lib/analytics";
 
 const DEMO_URL = "https://cal.com/kit-barrett-s02kic/demo";
+const DEMO_CAL_LINK = "kit-barrett-s02kic/demo";
+
+function openDemoBooking() {
+  const calDemo = window.Cal?.ns?.demo;
+  if (typeof calDemo === "function") {
+    calDemo("modal", {
+      calLink: DEMO_CAL_LINK,
+      config: { layout: "month_view" },
+    });
+    return;
+  }
+
+  const opened = window.open(DEMO_URL, "_blank", "noopener,noreferrer");
+  if (!opened) window.location.href = DEMO_URL;
+}
 
 function trackDemoClick(event: MouseEvent<HTMLAnchorElement>, location: string, afterTrack?: () => void) {
   if (event.defaultPrevented) return;
@@ -48,10 +63,8 @@ function trackDemoClick(event: MouseEvent<HTMLAnchorElement>, location: string, 
 
   event.preventDefault();
   trackEvent("book_demo_clicked", { location });
-  window.setTimeout(() => {
-    afterTrack?.();
-    window.location.href = DEMO_URL;
-  }, 900);
+  afterTrack?.();
+  openDemoBooking();
 }
 
 export const Route = createFileRoute("/")({
