@@ -443,7 +443,7 @@ function SolutionSection() {
           That&apos;s it. No campaigns to build, no lists to manage — most dealers spend under 10 minutes a month keeping it running.
         </p>
         <div className="mt-8 flex justify-center">
-          <BookDemoButton label="See it in action — book a demo" showArrow className="h-12 px-8 text-base shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-shadow" />
+          <BookDemoButton label="See it in action — book a demo" location="solution" showArrow className="h-12 px-8 text-base shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-shadow" />
         </div>
       </div>
     </section>
