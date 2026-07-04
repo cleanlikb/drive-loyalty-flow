@@ -509,6 +509,9 @@ function BenefitsSection() {
             </div>
           ))}
         </div>
+        <div className="mt-14 flex justify-center">
+          <BookDemoButton label="Book a demo" showArrow className="h-12 px-8 text-base shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-shadow" />
+        </div>
       </div>
     </section>
   );
