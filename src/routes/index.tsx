@@ -579,33 +579,35 @@ function StepCard({
   );
 }
 
-import stepCustomersCropped from "@/assets/step-customers-cropped.png";
-import stepLeadsCropped from "@/assets/step-leads-cropped.png";
-import stepSequencesCropped from "@/assets/step-sequences-cropped.png";
+import stepCustomers from "@/assets/step-customers-v2.png.asset.json";
+import stepLeads from "@/assets/step-leads-v2.png.asset.json";
+import stepSequences from "@/assets/step-sequences-v2.png.asset.json";
 
 function ScreenshotFrame({ src, alt }: { src: string; alt: string }) {
   return (
-    <div className="rounded-xl border border-border bg-background overflow-hidden shadow-sm aspect-[16/11]">
+    <div className="rounded-xl border border-border bg-background overflow-hidden shadow-sm aspect-[4/3] sm:aspect-[16/11] group">
       <img
         src={src}
         alt={alt}
         loading="lazy"
-        className="w-full h-full object-cover"
+        width={1024}
+        height={704}
+        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.02]"
       />
     </div>
   );
 }
 
 function UploadMockup() {
-  return <ScreenshotFrame src={stepCustomersCropped} alt="Wynback customers page showing imported sales history" />;
+  return <ScreenshotFrame src={stepCustomers.url} alt="Wynback customers page showing imported sales history" />;
 }
 
 function MilestoneMockup() {
-  return <ScreenshotFrame src={stepLeadsCropped} alt="Wynback monthly leads grouped by ownership milestone" />;
+  return <ScreenshotFrame src={stepLeads.url} alt="Wynback monthly leads grouped by ownership milestone" />;
 }
 
 function SequenceMockup() {
-  return <ScreenshotFrame src={stepSequencesCropped} alt="Wynback AI-generated 3-email sequence preview" />;
+  return <ScreenshotFrame src={stepSequences.url} alt="Wynback AI-generated 3-email sequence preview" />;
 }
 
 
