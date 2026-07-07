@@ -41,7 +41,7 @@ function ContactPage() {
     const body = encodeURIComponent(
       `Name: ${form.name}\nDealership: ${form.dealership}\nEmail: ${form.email}\n\n${form.message}`,
     );
-    window.location.href = `mailto:hello@wynback.com?subject=${subject}&body=${body}`;
+    window.location.href = `mailto:kit@wynback.co.uk?subject=${subject}&body=${body}`;
     setSubmitted(true);
   };
 
@@ -78,8 +78,8 @@ function ContactPage() {
             <InfoCard
               icon={<Mail className="h-5 w-5" />}
               title="Email"
-              body="hello@wynback.com"
-              href="mailto:hello@wynback.com"
+              body="kit@wynback.co.uk"
+              href="mailto:kit@wynback.co.uk"
             />
             <InfoCard
               icon={<MessageSquare className="h-5 w-5" />}
@@ -100,8 +100,8 @@ function ContactPage() {
                 <h2 className="mt-4 text-xl font-semibold">Thanks — your email client is open</h2>
                 <p className="mt-2 text-muted-foreground">
                   If nothing happened, email us directly at{" "}
-                  <a href="mailto:hello@wynback.com" className="text-primary underline">
-                    hello@wynback.com
+                  <a href="mailto:kit@wynback.co.uk" className="text-primary underline">
+                    kit@wynback.co.uk
                   </a>
                   .
                 </p>
