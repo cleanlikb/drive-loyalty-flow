@@ -31,6 +31,7 @@ import { Route as ApiPublicWebhooksInboundReplyRouteImport } from './routes/api/
 import { Route as ApiPublicCronRescanRepliesRouteImport } from './routes/api/public/cron/rescan-replies'
 import { Route as ApiPublicCronMonthlyCohortRouteImport } from './routes/api/public/cron/monthly-cohort'
 import { Route as ApiPublicCronDispatchEmailsRouteImport } from './routes/api/public/cron/dispatch-emails'
+import { Route as ApiPublicAdminSeedDemoRouteImport } from './routes/api/public/admin/seed-demo'
 
 const McpRoute = McpRouteImport.update({
   id: '/mcp',
@@ -150,6 +151,11 @@ const ApiPublicCronDispatchEmailsRoute =
     path: '/api/public/cron/dispatch-emails',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicAdminSeedDemoRoute = ApiPublicAdminSeedDemoRouteImport.update({
+  id: '/api/public/admin/seed-demo',
+  path: '/api/public/admin/seed-demo',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -168,6 +174,7 @@ export interface FileRoutesByFullPath {
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/sequences/$id': typeof AuthenticatedSequencesIdRoute
   '/sequences/': typeof AuthenticatedSequencesIndexRoute
+  '/api/public/admin/seed-demo': typeof ApiPublicAdminSeedDemoRoute
   '/api/public/cron/dispatch-emails': typeof ApiPublicCronDispatchEmailsRoute
   '/api/public/cron/monthly-cohort': typeof ApiPublicCronMonthlyCohortRoute
   '/api/public/cron/rescan-replies': typeof ApiPublicCronRescanRepliesRoute
@@ -191,6 +198,7 @@ export interface FileRoutesByTo {
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/sequences/$id': typeof AuthenticatedSequencesIdRoute
   '/sequences': typeof AuthenticatedSequencesIndexRoute
+  '/api/public/admin/seed-demo': typeof ApiPublicAdminSeedDemoRoute
   '/api/public/cron/dispatch-emails': typeof ApiPublicCronDispatchEmailsRoute
   '/api/public/cron/monthly-cohort': typeof ApiPublicCronMonthlyCohortRoute
   '/api/public/cron/rescan-replies': typeof ApiPublicCronRescanRepliesRoute
@@ -216,6 +224,7 @@ export interface FileRoutesById {
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/_authenticated/sequences/$id': typeof AuthenticatedSequencesIdRoute
   '/_authenticated/sequences/': typeof AuthenticatedSequencesIndexRoute
+  '/api/public/admin/seed-demo': typeof ApiPublicAdminSeedDemoRoute
   '/api/public/cron/dispatch-emails': typeof ApiPublicCronDispatchEmailsRoute
   '/api/public/cron/monthly-cohort': typeof ApiPublicCronMonthlyCohortRoute
   '/api/public/cron/rescan-replies': typeof ApiPublicCronRescanRepliesRoute
@@ -241,6 +250,7 @@ export interface FileRouteTypes {
     | '/.mcp/invoke-tool/$tool'
     | '/sequences/$id'
     | '/sequences/'
+    | '/api/public/admin/seed-demo'
     | '/api/public/cron/dispatch-emails'
     | '/api/public/cron/monthly-cohort'
     | '/api/public/cron/rescan-replies'
@@ -264,6 +274,7 @@ export interface FileRouteTypes {
     | '/.mcp/invoke-tool/$tool'
     | '/sequences/$id'
     | '/sequences'
+    | '/api/public/admin/seed-demo'
     | '/api/public/cron/dispatch-emails'
     | '/api/public/cron/monthly-cohort'
     | '/api/public/cron/rescan-replies'
@@ -288,6 +299,7 @@ export interface FileRouteTypes {
     | '/.mcp/invoke-tool/$tool'
     | '/_authenticated/sequences/$id'
     | '/_authenticated/sequences/'
+    | '/api/public/admin/seed-demo'
     | '/api/public/cron/dispatch-emails'
     | '/api/public/cron/monthly-cohort'
     | '/api/public/cron/rescan-replies'
@@ -305,6 +317,7 @@ export interface RootRouteChildren {
   Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   DotlovableOauthConsentRoute: typeof DotlovableOauthConsentRoute
   Char91DotmcpChar93InvokeToolToolRoute: typeof Char91DotmcpChar93InvokeToolToolRoute
+  ApiPublicAdminSeedDemoRoute: typeof ApiPublicAdminSeedDemoRoute
   ApiPublicCronDispatchEmailsRoute: typeof ApiPublicCronDispatchEmailsRoute
   ApiPublicCronMonthlyCohortRoute: typeof ApiPublicCronMonthlyCohortRoute
   ApiPublicCronRescanRepliesRoute: typeof ApiPublicCronRescanRepliesRoute
@@ -468,6 +481,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicCronDispatchEmailsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/admin/seed-demo': {
+      id: '/api/public/admin/seed-demo'
+      path: '/api/public/admin/seed-demo'
+      fullPath: '/api/public/admin/seed-demo'
+      preLoaderRoute: typeof ApiPublicAdminSeedDemoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -507,6 +527,7 @@ const rootRouteChildren: RootRouteChildren = {
     Char91DotwellKnownChar93OauthProtectedResourceRoute,
   DotlovableOauthConsentRoute: DotlovableOauthConsentRoute,
   Char91DotmcpChar93InvokeToolToolRoute: Char91DotmcpChar93InvokeToolToolRoute,
+  ApiPublicAdminSeedDemoRoute: ApiPublicAdminSeedDemoRoute,
   ApiPublicCronDispatchEmailsRoute: ApiPublicCronDispatchEmailsRoute,
   ApiPublicCronMonthlyCohortRoute: ApiPublicCronMonthlyCohortRoute,
   ApiPublicCronRescanRepliesRoute: ApiPublicCronRescanRepliesRoute,
