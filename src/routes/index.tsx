@@ -672,7 +672,7 @@ function BenefitsSection() {
 
 function CalculatorSection() {
   const [carsPerMonth, setCarsPerMonth] = useState(20);
-  const [monthlyPayment, setMonthlyPayment] = useState(149);
+  const [monthlyPayment, setMonthlyPayment] = useState(75);
 
   const PROFIT_PER_SALE = 2000;
   const CONVERSION_RATE = 0.005;
@@ -692,9 +692,9 @@ function CalculatorSection() {
   const formatSales = (n: number) => (n < 1 ? n.toFixed(1) : Math.round(n).toLocaleString());
 
   const plans = [
-    { name: "Forecourt", price: 99 },
-    { name: "Showroom", price: 149 },
-    { name: "Supersite", price: 299 },
+    { name: "Forecourt", price: 49 },
+    { name: "Showroom", price: 75 },
+    { name: "Supersite", price: 150 },
   ];
 
   return (
@@ -836,19 +836,19 @@ function PricingSection() {
   const tiers = [
     {
       name: "Forecourt",
-      monthly: 99,
-      limit: "Up to 40 vehicles in stock",
+      monthly: 49,
+      limit: "Up to 25 vehicles in stock",
       popular: false,
     },
     {
       name: "Showroom",
-      monthly: 149,
+      monthly: 75,
       limit: "Up to 100 vehicles in stock",
       popular: true,
     },
     {
       name: "Supersite",
-      monthly: 299,
+      monthly: 150,
       limit: "100+ vehicles in stock",
       popular: false,
     },
