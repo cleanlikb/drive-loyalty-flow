@@ -31,23 +31,18 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+
 import logo from "@/assets/wynback-logo.png.asset.json";
 import explainerAsset from "@/assets/wynback-explainer.mp4.asset.json";
 import explainerPoster from "@/assets/wynback-explainer-poster.png.asset.json";
 import { trackEvent } from "@/lib/analytics";
 
-const DEMO_URL = "https://calendly.com/kit-wynback/30min";
+const DEMO_URL = "https://calendar.app.google/tjezLnaDgZ53Dhc78";
 
 
 function openDemoBooking() {
   if (typeof window === "undefined") return;
-  // On mobile, open Calendly in a new tab — native mobile layout works better than any iframe modal
-  if (window.matchMedia("(max-width: 640px)").matches) {
-    window.open(DEMO_URL, "_blank", "noopener,noreferrer");
-    return;
-  }
-  window.dispatchEvent(new CustomEvent("open-demo-modal"));
+  window.open(DEMO_URL, "_blank", "noopener,noreferrer");
 }
 
 
@@ -102,21 +97,6 @@ function Landing() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Calendly booking completion via postMessage
-  useEffect(() => {
-    const onMessage = (evt: MessageEvent) => {
-      const data = evt.data as { event?: string; payload?: Record<string, unknown> } | undefined;
-      if (!data || typeof data !== "object") return;
-      if (typeof data.event === "string" && data.event.indexOf("calendly.") === 0) {
-        if (data.event === "calendly.event_scheduled") {
-          trackEvent("demo_booked", data.payload ?? {});
-        }
-      }
-    };
-    window.addEventListener("message", onMessage);
-    return () => window.removeEventListener("message", onMessage);
-  }, []);
-
 
   return (
     <div className="min-h-screen bg-white text-foreground font-sans selection:bg-primary/30">
@@ -134,65 +114,10 @@ function Landing() {
         <FinalCTASection />
       </main>
       <Footer />
-      <DemoModal />
     </div>
   );
 }
 
-function DemoModal() {
-  const [open, setOpen] = useState(false);
-  const [prewarm, setPrewarm] = useState(false);
-
-  useEffect(() => {
-    const onOpen = () => setOpen(true);
-    window.addEventListener("open-demo-modal", onOpen);
-    return () => window.removeEventListener("open-demo-modal", onOpen);
-  }, []);
-
-  // Prewarm the Calendly iframe on idle so it's ready before the user clicks
-  useEffect(() => {
-    const w = window as Window & { requestIdleCallback?: (cb: () => void) => number };
-    const start = () => setPrewarm(true);
-    if (typeof w.requestIdleCallback === "function") {
-      w.requestIdleCallback(start);
-    } else {
-      window.setTimeout(start, 1200);
-    }
-  }, []);
-
-  const src = `${DEMO_URL}?embed_domain=${typeof window !== "undefined" ? window.location.hostname : ""}&embed_type=Inline&hide_gdpr_banner=1&primary_color=0D3B36`;
-
-  return (
-    <>
-      {/* Hidden prewarmed iframe — loads Calendly in the background so the modal appears instantly */}
-      {prewarm && !open && (
-        <iframe
-          src={src}
-          title=""
-          aria-hidden="true"
-          tabIndex={-1}
-          style={{ position: "fixed", width: 1, height: 1, opacity: 0, pointerEvents: "none", left: -9999, top: -9999 }}
-        />
-      )}
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent
-          aria-describedby={undefined}
-          className="max-w-4xl w-[95vw] p-0 overflow-hidden sm:rounded-lg h-[85vh]"
-        >
-          <DialogTitle className="sr-only">Book a demo</DialogTitle>
-          {open && (
-            <iframe
-              src={src}
-              title="Book a demo"
-              className="w-full h-full border-0"
-              allow="camera; microphone; fullscreen"
-            />
-          )}
-        </DialogContent>
-      </Dialog>
-    </>
-  );
-}
 
 
 
