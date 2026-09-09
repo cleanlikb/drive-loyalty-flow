@@ -47,18 +47,9 @@ function openDemoBooking() {
 
 
 
-function trackDemoClick(event: MouseEvent<HTMLAnchorElement>, location: string, afterTrack?: () => void) {
+function trackDemoClick(event: MouseEvent<HTMLAnchorElement>, location: string) {
   if (event.defaultPrevented) return;
-  if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
-    trackEvent("book_demo_clicked", { location });
-    afterTrack?.();
-    return;
-  }
-
-  event.preventDefault();
   trackEvent("book_demo_clicked", { location });
-  afterTrack?.();
-  openDemoBooking();
 }
 
 export const Route = createFileRoute("/")({
