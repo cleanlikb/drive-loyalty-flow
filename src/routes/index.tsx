@@ -351,7 +351,7 @@ function TimingSection() {
     <section className="py-16 md:py-20 bg-secondary/30">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <p className="text-xs font-semibold uppercase tracking-widest text-primary">The timing</p>
-        <h2 className="mt-3 text-2xl md:text-4xl font-bold tracking-tight">We email each customer at six moments they're most likely to change car.</h2>
+        <h2 className="mt-3 text-2xl md:text-4xl font-bold tracking-tight">Wynback emails each customer at six moments they&apos;re most likely to change car.</h2>
         <div className="mt-8 grid grid-cols-3 md:grid-cols-6 gap-2 md:gap-3">
           {ms.map((x) => (
             <div key={x.m} className={`rounded-xl border p-3 ${x.hi ? "border-primary bg-primary/10 ring-1 ring-primary/30" : "border-border bg-card"}`}>
@@ -383,7 +383,7 @@ function HowItWorksSection() {
         <SectionHead
           eyebrow="How it works"
           title="Set up once. A fresh list of prospects every month."
-          intro="We do the setup. After that, your part takes under 10 minutes a month."
+          intro="Wynback does the setup. After that, your part takes under 10 minutes a month."
         />
         <div className="grid md:grid-cols-3 gap-8">
           {steps.map((s) => (
@@ -730,7 +730,7 @@ function PricingSection() {
     { name: "Supersite", monthly: 175, limit: "Over 250 previous customers a month", stock: "Est. over 150 cars in stock" },
   ];
   const features = [
-    "Free setup. We import your data and configure everything",
+    "Free setup. Wynback imports your data and configures everything",
     "Replies go straight to your own inbox",
     "Milestones at 12, 18, 24, 36, 48 and 60 months",
     "AI-written emails about each customer's exact car",
@@ -748,7 +748,7 @@ function PricingSection() {
   return (
     <section id="pricing" className="py-24 bg-secondary/30">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <SectionHead eyebrow="Pricing" title="One extra sale pays for the year." intro="Simple monthly plans based on how many past customers we contact for you each month. Setup is free on every plan." />
+        <SectionHead eyebrow="Pricing" title="One extra sale pays for the year." intro="Simple monthly plans based on how many past customers Wynback contacts for you each month. Setup is free on every plan." />
         <div className="flex justify-center mb-12 -mt-4">
           <div className="inline-flex items-center gap-1 rounded-full border border-border bg-card p-1">
             <button onClick={() => setAnnual(false)} className={`px-5 py-2 rounded-full text-sm font-medium ${!annual ? "bg-primary text-primary-foreground" : "text-muted-foreground"}`}>Monthly</button>
