@@ -263,9 +263,11 @@ function HeroEmail() {
         </div>
         <p className="mt-3 text-xs text-muted-foreground">From <span className="text-foreground font-medium">James at Whitfield Motors</span> to <span className="text-foreground font-medium">Emma Clarke</span></p>
         <p className="mt-2 font-semibold text-foreground">Checking in — how&apos;s the 3 Series?</p>
-        <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
-          Hi Emma, it&apos;s been three years since you drove away in your BMW 3 Series [AB23 DGL], so I wanted to see how you&apos;re getting on with it. We&apos;ve had a lot of interest in 3 Series part-exchanges lately. No pitch, just keeping in touch.
-        </p>
+        <div className="mt-2 space-y-2 text-sm text-muted-foreground leading-relaxed">
+          <p>Hi Emma,</p>
+          <p>It&apos;s been three years since you drove away in your BMW 3 Series [AB23 DGL], so I wanted to see how you&apos;re getting on with it.</p>
+          <p>We&apos;ve had a lot of interest in 3 Series part-exchanges lately. No pitch, just keeping in touch.</p>
+        </div>
       </div>
       <div className="rounded-2xl border border-primary/30 bg-card/95 backdrop-blur shadow-xl p-5 md:ml-8">
         <div className="flex items-center justify-between">
