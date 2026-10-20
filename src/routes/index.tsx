@@ -36,16 +36,16 @@ export const Route = createFileRoute("/")({
   component: Landing,
   head: () => ({
     meta: [
-      { title: "Wynback — Your next sale is already in your customer list" },
+      { title: "Wynback — Sell more cars. Make more profit." },
       {
         name: "description",
         content:
-          "Wynback emails every past buyer at the moments they're most likely to change car and puts their replies in your inbox. Built for UK independent car dealers.",
+          "Sell more cars and make more profit from the customers you've already sold to. Wynback emails each past buyer at the moments they're most likely to change car and puts their replies in your inbox. Built for UK independent car dealers.",
       },
-      { property: "og:title", content: "Wynback — Your next sale is already in your customer list" },
+      { property: "og:title", content: "Wynback — Sell more cars. Make more profit." },
       {
         property: "og:description",
-        content: "Automatic, personal emails to past customers at 12–60 month ownership milestones. From £75/month, free setup.",
+        content: "Sell more cars and make more profit from customers you've already sold to. Automatic, personal emails at 12–60 month ownership milestones. From £75/month, free setup.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
