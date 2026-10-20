@@ -776,7 +776,7 @@ function PricingSection() {
                   <span className="text-muted-foreground">/month</span>
                 </div>
                 <p className="mt-1 text-xs text-muted-foreground h-4">{annual ? `£${(price * 12).toLocaleString()} billed yearly` : "\u00A0"}</p>
-                <DemoLink location={`pricing_${t.name.toLowerCase()}`} variant={t.popular ? "default" : "outline"} className="mt-8 w-full h-12">Book a demo</DemoLink>
+                <DemoLink location={`pricing_${t.name.toLowerCase()}`} variant="default" className="mt-8 w-full h-12">Book a demo</DemoLink>
                 <p className="mt-3 text-center text-xs text-muted-foreground">{coverLine(yearly)}</p>
               </div>
             );
