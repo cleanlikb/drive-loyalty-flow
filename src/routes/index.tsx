@@ -24,9 +24,6 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 
 import logo from "@/assets/wynback-logo.png.asset.json";
 import dealerImg from "@/assets/dealer-forecourt.png.asset.json";
-import stepCustomersCropped from "@/assets/step-customers-cropped.png";
-import stepLeadsCropped from "@/assets/step-leads-cropped.png";
-import stepSequencesCropped from "@/assets/step-sequences-cropped.png";
 import { trackEvent } from "@/lib/analytics";
 
 const DEMO_URL = "https://calendar.app.google/tjezLnaDgZ53Dhc78";
@@ -432,10 +429,82 @@ function SolutionSection() {
 }
 
 function HowItWorksSection() {
+  const customers = [
+    { n: "Emma Clarke", c: "BMW 3 Series", d: "Mar 2023" },
+    { n: "Ben Hughes", c: "Ford Kuga", d: "Jun 2022" },
+    { n: "Grace Patel", c: "Audi A3", d: "Oct 2021" },
+  ];
+  const leads = [
+    { m: 36, n: "Emma Clarke", c: "BMW 3 Series", hi: true },
+    { m: 24, n: "Ben Hughes", c: "Ford Kuga" },
+    { m: 60, n: "Grace Patel", c: "Audi A3" },
+  ];
+  const Initials = ({ n }: { n: string }) => (
+    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-bold text-primary">
+      {n.split(" ").map((p) => p[0]).join("")}
+    </span>
+  );
+  const mockCustomers = (
+    <div className="space-y-2">
+      <div className="flex items-center justify-between rounded-lg bg-card px-3 py-2 text-sm border border-border">
+        <span className="font-semibold text-foreground">sales-2021-2024.csv</span>
+        <span className="flex items-center gap-1 text-xs font-semibold text-primary"><Check className="h-3.5 w-3.5" /> 1,200 imported</span>
+      </div>
+      {customers.map((x) => (
+        <div key={x.n} className="flex items-center gap-3 rounded-lg bg-card px-3 py-2.5 border border-border">
+          <Initials n={x.n} />
+          <div className="min-w-0 flex-1">
+            <p className="text-sm font-semibold text-foreground">{x.n}</p>
+            <p className="text-xs text-muted-foreground">{x.c}</p>
+          </div>
+          <span className="text-xs text-muted-foreground">{x.d}</span>
+        </div>
+      ))}
+    </div>
+  );
+  const mockLeads = (
+    <div className="space-y-2">
+      <div className="flex items-center justify-between px-1 text-sm">
+        <span className="font-semibold text-foreground">This month's prospects</span>
+        <span className="rounded-full bg-primary px-2 py-0.5 text-xs font-bold text-primary-foreground">42</span>
+      </div>
+      {leads.map((x) => (
+        <div key={x.n} className={`flex items-center gap-3 rounded-lg bg-card px-3 py-2.5 border ${x.hi ? "border-primary" : "border-border"}`}>
+          <span className={`w-10 text-center font-display text-2xl leading-none tabular-nums ${x.hi ? "text-primary" : "text-foreground"}`}>{x.m}</span>
+          <div className="min-w-0 flex-1">
+            <p className="text-sm font-semibold text-foreground">{x.n}</p>
+            <p className="text-xs text-muted-foreground">{x.c} · {x.m} months</p>
+          </div>
+          {x.hi && <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[11px] font-semibold text-primary">PCP ends</span>}
+        </div>
+      ))}
+    </div>
+  );
+  const mockEmails = (
+    <div className="space-y-2">
+      <div className="rounded-lg bg-card p-3 border border-border">
+        <p className="text-xs text-muted-foreground">To Emma Clarke · Day 0</p>
+        <p className="mt-1 text-sm font-semibold text-foreground">How's the 3 Series treating you?</p>
+        <p className="mt-1 text-xs text-muted-foreground leading-relaxed">Hi Emma, it's been three years since you drove away in your BMW…</p>
+        <div className="mt-3 flex gap-2">
+          <span className="flex items-center gap-1 rounded-md bg-primary px-2.5 py-1 text-xs font-semibold text-primary-foreground"><Check className="h-3.5 w-3.5" /> Approve</span>
+          <span className="rounded-md border border-border px-2.5 py-1 text-xs font-semibold text-foreground">Edit</span>
+        </div>
+      </div>
+      <div className="flex items-start gap-3 rounded-lg bg-card p-3 border border-primary">
+        <Reply className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+        <div className="min-w-0 flex-1">
+          <p className="text-sm font-semibold text-foreground">Emma replied</p>
+          <p className="text-xs text-muted-foreground">"Funny you ask — I've been looking at the 4 Series."</p>
+        </div>
+        <span className="flex items-center gap-1 rounded-full bg-primary/10 px-2 py-0.5 text-[11px] font-semibold text-primary"><Flame className="h-3 w-3" /> Hot</span>
+      </div>
+    </div>
+  );
   const steps = [
-    { tag: "Step 1 · Once", t: "Wynback finds your customers in your existing sales data", b: "Everyone who's bought from you is already in your records. A simple export from your DMS or spreadsheet is all it needs: name, email, car and sale date. Setup is done for you.", img: stepCustomersCropped, alt: "Customers page" },
-    { tag: "Step 2 · 1st of every month", t: "Your prospect list builds itself", b: "Wynback finds every customer hitting a milestone and lists them by how long they've owned the car. You get a notification when it's ready.", img: stepLeadsCropped, alt: "Monthly leads page" },
-    { tag: "Step 3 · 10 minutes", t: "Approve the emails. Take the calls.", b: "Three short emails per customer, written about their exact car and signed by you. Read them, tweak anything, approve. Replies land in your inbox.", img: stepSequencesCropped, alt: "Email sequence page" },
+    { tag: "Step 1 · Once", t: "Wynback finds your customers in your existing sales data", b: "Everyone who's bought from you is already in your records. A simple export from your DMS or spreadsheet is all it needs: name, email, car and sale date. Setup is done for you.", mock: mockCustomers, alt: "Imported customer list" },
+    { tag: "Step 2 · 1st of every month", t: "Your prospect list builds itself", b: "Wynback finds every customer hitting a milestone and lists them by how long they've owned the car. You get a notification when it's ready.", mock: mockLeads, alt: "Monthly prospects list" },
+    { tag: "Step 3 · 10 minutes", t: "Approve the emails. Take the calls.", b: "Three short emails per customer, written about their exact car and signed by you. Read them, tweak anything, approve. Replies land in your inbox.", mock: mockEmails, alt: "Email approval and a customer reply" },
   ];
   return (
     <section id="how-it-works" className="py-24 lg:py-32 bg-secondary/30">
@@ -454,8 +523,8 @@ function HowItWorksSection() {
                 <p className="mt-3 text-muted-foreground leading-relaxed">{s.b}</p>
               </div>
               <div className="mt-auto p-6 pt-0">
-                <div className="rounded-xl border border-border overflow-hidden aspect-[16/11]">
-                  <img src={s.img} alt={s.alt} loading="lazy" className="w-full h-full object-cover" />
+                <div role="img" aria-label={s.alt} className="rounded-xl border border-border bg-secondary/40 p-4 shadow-sm">
+                  {s.mock}
                 </div>
               </div>
             </div>
