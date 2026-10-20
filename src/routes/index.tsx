@@ -266,7 +266,7 @@ function HeroEmail() {
         <p className="mt-2 font-semibold text-foreground">Checking in — how&apos;s the 3 Series?</p>
         <div className="mt-2 space-y-2 text-sm text-muted-foreground leading-relaxed">
           <p>Hi Emma,</p>
-          <p>It&apos;s been three years since you drove away in your BMW 3 Series [AB23 DGL], so I wanted to see how you&apos;re getting on with it.</p>
+          <p>It&apos;s been three years since you drove away in your BMW 3 Series AB23 DGL, so I wanted to see how you&apos;re getting on with it.</p>
           <p>We&apos;ve had a lot of interest in 3 Series part-exchanges lately. No pitch, just keeping in touch.</p>
         </div>
       </div>
