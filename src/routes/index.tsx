@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
@@ -9,8 +9,6 @@ import {
   ArrowRight,
   Check,
   Sparkles,
-  Play,
-  Pause,
   Minus,
   Plus,
   Flame,
@@ -27,8 +25,6 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 
 import logo from "@/assets/wynback-logo.png.asset.json";
 import dealerImg from "@/assets/dealer-forecourt.png.asset.json";
-import explainerAsset from "@/assets/wynback-explainer.mp4.asset.json";
-import explainerPoster from "@/assets/wynback-explainer-poster.png.asset.json";
 import stepCustomersCropped from "@/assets/step-customers-cropped.png";
 import stepLeadsCropped from "@/assets/step-leads-cropped.png";
 import stepSequencesCropped from "@/assets/step-sequences-cropped.png";
@@ -405,68 +401,11 @@ function HowItWorksSection() {
             </div>
           ))}
         </div>
-        <VideoBlock />
       </div>
     </section>
   );
 }
 
-function VideoBlock() {
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const fired = useRef({ play: false, half: false, complete: false });
-  const toggle = () => {
-    const v = videoRef.current;
-    if (!v) return;
-    if (v.paused || v.ended) void v.play();
-    else v.pause();
-  };
-  return (
-    <div className="mt-16 max-w-4xl mx-auto rounded-2xl border border-border bg-card p-2 md:p-3">
-      <div className="relative aspect-video overflow-hidden rounded-xl bg-muted group cursor-pointer" onClick={toggle}>
-        <video
-          ref={videoRef}
-          src={explainerAsset.url}
-          poster={explainerPoster.url}
-          preload="metadata"
-          playsInline
-          className="w-full h-full object-cover"
-          aria-label="Wynback explainer video"
-          onPlay={() => {
-            setIsPlaying(true);
-            if (!fired.current.play) { fired.current.play = true; trackEvent("video_play", { video: "explainer" }); }
-          }}
-          onPause={() => setIsPlaying(false)}
-          onEnded={() => {
-            setIsPlaying(false);
-            if (!fired.current.complete) { fired.current.complete = true; trackEvent("video_complete", { video: "explainer" }); }
-          }}
-          onTimeUpdate={(e) => {
-            const v = e.currentTarget;
-            if (!v.duration || fired.current.half) return;
-            if (v.currentTime / v.duration >= 0.5) { fired.current.half = true; trackEvent("video_progress_50", { video: "explainer" }); }
-          }}
-        />
-        {!isPlaying ? (
-          <div className="pointer-events-none absolute inset-0 grid place-items-center">
-            <div className="h-16 w-16 md:h-20 md:w-20 rounded-full bg-primary text-primary-foreground shadow-lg grid place-items-center">
-              <Play className="h-7 w-7 fill-current ml-1" />
-            </div>
-          </div>
-        ) : (
-          <button
-            type="button"
-            onClick={(e) => { e.stopPropagation(); toggle(); }}
-            className="absolute top-3 right-3 h-10 w-10 rounded-full bg-foreground/60 text-background grid place-items-center opacity-0 group-hover:opacity-100 focus:opacity-100"
-            aria-label="Pause video"
-          >
-            <Pause className="h-5 w-5 fill-current" />
-          </button>
-        )}
-      </div>
-    </div>
-  );
-}
 
 type EmailSet = { subject: string; body: string }[];
 const exampleCustomers: { id: string; name: string; car: string; emails: EmailSet }[] = [
