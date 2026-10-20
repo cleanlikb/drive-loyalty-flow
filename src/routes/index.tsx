@@ -340,12 +340,12 @@ function ProblemSection() {
 
 function SolutionSection() {
   const ms = [
-    { m: 12, t: "Check-in" },
-    { m: 18, t: "Life changes" },
-    { m: 24, t: "Short finance ends" },
-    { m: 36, t: "PCP ends", hi: true },
-    { m: 48, t: "Long finance ends" },
-    { m: 60, t: "Ready for newer" },
+    { m: 12, t: "Check-in", why: "the new-car shine has worn off and they've started noticing what else is out there." },
+    { m: 18, t: "Life changes", why: "a new job, a baby or a move, and the car they bought stops fitting the life they've got." },
+    { m: 24, t: "Short finance ends", why: "the two-year deal finishes, so part-exchange looks easier than another payment." },
+    { m: 36, t: "PCP ends", hi: true, why: "the balloon payment lands. They settle it or hand the car back, and either way they're buying again." },
+    { m: 48, t: "Long finance ends", why: "the long agreement winds up, the warranty is gone and repair bills start to loom." },
+    { m: 60, t: "Ready for newer", why: "five years of servicing and tax are climbing, while the car still trades well enough to put towards something newer." },
   ];
   return (
     <section className="py-16 md:py-20 bg-secondary/30">
@@ -364,6 +364,19 @@ function SolutionSection() {
               <div className="text-2xl font-bold text-primary leading-none">{x.m}</div>
               <div className="text-[10px] uppercase tracking-wide text-muted-foreground">months</div>
               <div className="mt-1.5 text-xs font-medium text-foreground leading-tight">{x.t}</div>
+            </div>
+          ))}
+        </div>
+        <p className="mt-10 text-sm font-semibold text-foreground">Why they move at each one</p>
+        <div className="mx-auto mt-3 max-w-3xl overflow-hidden rounded-2xl border border-border bg-card text-left">
+          {ms.map((x) => (
+            <div key={x.m} className="flex items-start gap-3 border-b border-border/70 p-4 last:border-b-0">
+              <span className={`mt-0.5 inline-flex h-7 shrink-0 items-center justify-center rounded-full px-2.5 text-[11px] font-bold ${x.hi ? "bg-primary text-primary-foreground" : "bg-primary/10 text-primary"}`}>
+                {x.m} mo
+              </span>
+              <p className="text-sm leading-snug text-muted-foreground">
+                <span className="font-semibold text-foreground">{x.t}</span> &mdash; {x.why}
+              </p>
             </div>
           ))}
         </div>
