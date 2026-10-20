@@ -8,7 +8,6 @@ import {
   X,
   ArrowRight,
   Check,
-  Sparkles,
   Minus,
   Plus,
   Flame,
@@ -730,9 +729,9 @@ function StatBox({ label, value }: { label: string; value: string }) {
 function PricingSection() {
   const [annual, setAnnual] = useState(false);
   const tiers = [
-    { name: "Forecourt", monthly: 75, limit: "Up to 125 previous customers a month", popular: false },
-    { name: "Showroom", monthly: 125, limit: "Up to 250 previous customers a month", popular: true },
-    { name: "Supersite", monthly: 175, limit: "Over 250 previous customers a month", popular: false },
+    { name: "Forecourt", monthly: 75, limit: "Up to 125 previous customers a month", stock: "Est. up to 40 cars in stock" },
+    { name: "Showroom", monthly: 125, limit: "Up to 250 previous customers a month", stock: "Est. up to 80 cars in stock" },
+    { name: "Supersite", monthly: 175, limit: "Over 250 previous customers a month", stock: "Est. over 150 cars in stock" },
   ];
   const features = [
     "Free setup. We import your data and configure everything",
@@ -767,20 +766,16 @@ function PricingSection() {
             const price = annual ? Math.round(t.monthly * 0.8) : t.monthly;
             const yearly = annual ? price * 12 : t.monthly * 12;
             return (
-              <div key={t.name} className={`relative flex flex-col rounded-2xl border bg-card p-8 ${t.popular ? "border-primary/40 shadow-xl shadow-primary/20 ring-1 ring-primary/30" : "border-border"}`}>
-                {t.popular && (
-                  <span className="absolute -top-3 left-1/2 -translate-x-1/2 inline-flex items-center gap-1 rounded-full bg-primary px-3 py-1 text-xs font-semibold text-primary-foreground">
-                    <Sparkles className="h-3 w-3" />Most popular
-                  </span>
-                )}
+              <div key={t.name} className="relative flex flex-col rounded-2xl border border-border bg-card p-8">
                 <h3 className="text-xl font-semibold">{t.name}</h3>
                 <p className="mt-1 text-sm text-muted-foreground">{t.limit}</p>
+                <p className="mt-0.5 text-xs font-medium text-foreground/70">{t.stock}</p>
                 <div className="mt-6 flex items-baseline gap-1">
                   <span className="text-5xl font-semibold tracking-tight">£{price}</span>
                   <span className="text-muted-foreground">/month</span>
                 </div>
                 <p className="mt-1 text-xs text-muted-foreground h-4">{annual ? `£${(price * 12).toLocaleString()} billed yearly` : "\u00A0"}</p>
-                <DemoLink location={`pricing_${t.name.toLowerCase()}`} variant={t.popular ? "default" : "outline"} className="mt-8 w-full h-12">Book a demo</DemoLink>
+                <DemoLink location={`pricing_${t.name.toLowerCase()}`} variant="default" className="mt-8 w-full h-12">Book a demo</DemoLink>
                 <p className="mt-3 text-center text-xs text-muted-foreground">{coverLine(yearly)}</p>
               </div>
             );
