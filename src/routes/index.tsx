@@ -467,7 +467,13 @@ function HowItWorksSection() {
 }
 
 
-type EmailSet = { subject: string; body: string[] }[];
+type EmailSet = {
+  subject: string;
+  body: string[];
+  reply: string[];
+  replyTag: "hot_lead" | "interested";
+  replyWhen: string;
+}[];
 const exampleCustomers: { id: string; name: string; car: string; emails: EmailSet }[] = [
   {
     id: "emma",
@@ -482,6 +488,12 @@ const exampleCustomers: { id: string; name: string; car: string; emails: EmailSe
           "Three years is when a lot of owners start thinking about what's next, so I wanted you to hear from us first.",
           "No rush at all.",
         ],
+        reply: [
+          "Thanks for checking in — it's still going strong.",
+          "We've only just started talking about what's next though, so you've timed it well.",
+        ],
+        replyTag: "interested",
+        replyWhen: "3 hours later",
       },
       {
         subject: "What's next after the 3 Series?",
@@ -490,6 +502,12 @@ const exampleCustomers: { id: string; name: string; car: string; emails: EmailSe
           "Quick one. When the time comes to change, would you stay with a 3 Series, step up to something bigger, or try a hybrid?",
           "Tell me what you're after and I'll keep an eye out for the right car.",
         ],
+        reply: [
+          "Honestly, I've been looking at the 4 Series.",
+          "Do you have anything coming in?",
+        ],
+        replyTag: "hot_lead",
+        replyWhen: "same day",
       },
       {
         subject: "A figure for your 3 Series?",
@@ -498,6 +516,12 @@ const exampleCustomers: { id: string; name: string; car: string; emails: EmailSe
           "Last one from me. 3 Series are in demand at the moment, so if you reply with your current mileage I'll come back with a part-exchange figure.",
           "No obligation.",
         ],
+        reply: [
+          "Just under 42,000 miles.",
+          "What would you give for it?",
+        ],
+        replyTag: "hot_lead",
+        replyWhen: "20 minutes later",
       },
     ],
   },
@@ -513,6 +537,12 @@ const exampleCustomers: { id: string; name: string; car: string; emails: EmailSe
           "It's a year since you picked up your Kuga Titanium, so I wanted to say thanks again for buying from us. I hope you're enjoying it.",
           "And if any friends or family are looking for a car, we'd love to help them too.",
         ],
+        reply: [
+          "Thanks James, we're loving it.",
+          "I'll send you a shout if anyone's looking.",
+        ],
+        replyTag: "interested",
+        replyWhen: "the next morning",
       },
       {
         subject: "Still the right car?",
@@ -520,6 +550,12 @@ const exampleCustomers: { id: string; name: string; car: string; emails: EmailSe
           "Hi Ben,",
           "A lot can change in a year. If the Kuga's still perfect, great. If you need more space, or something cheaper to run for a new commute, I'm always happy to chat.",
         ],
+        reply: [
+          "Actually, yes — number two arrives in spring, so more space would help.",
+          "What's about?",
+        ],
+        replyTag: "hot_lead",
+        replyWhen: "1 hour later",
       },
       {
         subject: "Here if you need us",
@@ -527,6 +563,12 @@ const exampleCustomers: { id: string; name: string; car: string; emails: EmailSe
           "Hi Ben,",
           "I won't fill up your inbox. If you ever want to know what the Kuga's worth, reply with the mileage and I'll send you a figure.",
         ],
+        reply: [
+          "Not this month, but keep me posted.",
+          "I'll be looking properly in the new year.",
+        ],
+        replyTag: "interested",
+        replyWhen: "that evening",
       },
     ],
   },
@@ -543,6 +585,12 @@ const exampleCustomers: { id: string; name: string; car: string; emails: EmailSe
           "Around now a lot of owners start thinking about something newer, with lower running costs and the latest safety kit.",
           "Worth a look if you've been wondering.",
         ],
+        reply: [
+          "Can't believe it's five years already.",
+          "It's fine, but I've been thinking something smaller and cheaper to run would suit us now.",
+        ],
+        replyTag: "interested",
+        replyWhen: "2 days later",
       },
       {
         subject: "Something newer for you?",
@@ -551,6 +599,12 @@ const exampleCustomers: { id: string; name: string; car: string; emails: EmailSe
           "If you did fancy a change, what matters most this time? Lower running costs, an automatic, a bit more room?",
           "Let me know and I'll pick out a few that fit.",
         ],
+        reply: [
+          "Lower running costs and an automatic, definitely.",
+          "Anything around £150 a month?",
+        ],
+        replyTag: "hot_lead",
+        replyWhen: "same day",
       },
       {
         subject: "What's the Corsa worth?",
@@ -558,6 +612,12 @@ const exampleCustomers: { id: string; name: string; car: string; emails: EmailSe
           "Hi Grace,",
           "Last one from me. Reply with the Corsa's mileage and I'll tell you what it's worth against something newer.",
         ],
+        reply: [
+          "Just over 40,000 miles.",
+          "Is that enough to put towards something newer?",
+        ],
+        replyTag: "hot_lead",
+        replyWhen: "an hour later",
       },
     ],
   },
@@ -581,7 +641,7 @@ function EmailsSection() {
           title="Emails designed to start conversations — and replies from customers ready to change or sell their car."
           intro={`No templates, no mail merge, no "Dear Valued Customer". Every email is written for one customer: the car they bought, how long they've had it and where they are in ownership. No two customers get the same email.`}
         />
-        <p className="text-center text-sm text-muted-foreground mb-4">Pick an example customer to see how the emails change</p>
+        <p className="text-center text-sm text-muted-foreground mb-4">Pick an example customer to see the emails and the replies they bring back</p>
         <div className="grid sm:grid-cols-3 gap-3">
           {exampleCustomers.map((x, i) => (
             <button
@@ -618,6 +678,19 @@ function EmailsSection() {
               ))}
             </div>
             <p className="mt-6 text-foreground">James, Whitfield Motors</p>
+            <div className="mt-6 rounded-xl border border-primary/30 bg-primary/5 p-4 md:p-5">
+              <div className="flex items-center justify-between gap-3">
+                <span className="text-xs text-muted-foreground"><Reply className="inline h-3.5 w-3.5 mr-1" />{c.name.split(" ")[0]} replied · {e.replyWhen}</span>
+                <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2 py-0.5 text-[11px] font-semibold text-primary">
+                  {e.replyTag === "hot_lead" ? (<><Flame className="h-3 w-3" />Hot lead</>) : "Interested"}
+                </span>
+              </div>
+              <div className="mt-2 space-y-2 text-sm leading-relaxed text-foreground">
+                {e.reply.map((p, i) => (
+                  <p key={i}>{p}</p>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
         <p className="mt-6 text-center text-sm text-muted-foreground max-w-3xl mx-auto">
