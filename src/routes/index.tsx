@@ -94,7 +94,7 @@ function SectionHead({ eyebrow, title, intro }: { eyebrow: string; title: string
   return (
     <div className="max-w-3xl mx-auto text-center mb-14">
       <Eyebrow>{eyebrow}</Eyebrow>
-      <h2 className="mt-3 text-3xl md:text-4xl font-semibold tracking-tight text-foreground">{title}</h2>
+      <h2 className="mt-3 text-3xl md:text-4xl lg:text-5xl font-semibold tracking-tight text-foreground">{title}</h2>
       {intro && <p className="mt-4 text-lg text-muted-foreground">{intro}</p>}
     </div>
   );
@@ -226,7 +226,7 @@ function HeroSection() {
       <div className="relative max-w-7xl mx-auto px-6 lg:px-8 pt-14 pb-12 md:py-24 grid md:grid-cols-2 gap-12 items-center">
         <div>
           <p className="text-xs md:text-sm font-medium tracking-[0.25em] uppercase text-muted-foreground">For UK independent car dealers</p>
-          <h1 className="mt-5 text-[2.35rem] sm:text-5xl md:text-6xl font-extrabold tracking-tight leading-[0.95] text-foreground">
+          <h1 className="mt-5 text-[2.35rem] sm:text-5xl md:text-6xl lg:text-7xl font-semibold tracking-tight leading-[0.98] text-foreground">
             <span className="block">Sell more cars.</span>
             <span className="block">Make more profit<span className="text-primary">.</span></span>
           </h1>
@@ -314,10 +314,10 @@ function ProblemSection() {
     { t: "Happy customers buy elsewhere", b: "because nobody got in touch when they were ready." },
   ];
   return (
-    <section className="py-16 md:py-20 bg-background">
+    <section className="py-16 md:py-20 lg:py-28 bg-background">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <p className="text-xs font-semibold uppercase tracking-widest text-primary text-center">The problem</p>
-        <h2 className="mt-3 text-2xl md:text-4xl font-bold tracking-tight text-center text-balance">You know you should be in touch when past customers are ready to change car. <span className="mt-2 block text-muted-foreground">You don&apos;t have two days a month to do it consistently.</span></h2>
+        <h2 className="mt-3 text-2xl md:text-4xl lg:text-5xl font-semibold tracking-tight text-center text-balance">You know you should be in touch when past customers are ready to change car. <span className="mt-2 block text-muted-foreground">You don&apos;t have two days a month to do it consistently.</span></h2>
         <ul className="mt-8 grid sm:grid-cols-2 gap-3">
           {pains.map((p) => (
             <li key={p.t} className="flex gap-3 rounded-xl border border-border bg-card p-4">
@@ -348,10 +348,10 @@ function SolutionSection() {
     { m: 60, t: "Ready for newer", why: "five years of servicing and tax are climbing, while the car still trades well enough to put towards something newer." },
   ];
   return (
-    <section className="py-16 md:py-20 bg-secondary/30">
+    <section className="py-16 md:py-20 lg:py-28 bg-secondary/30">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <p className="text-xs font-semibold uppercase tracking-widest text-primary">The solution</p>
-        <h2 className="mt-3 text-2xl md:text-4xl font-bold tracking-tight text-balance">
+        <h2 className="mt-3 text-2xl md:text-4xl lg:text-5xl font-semibold tracking-tight text-balance">
           Wynback uses AI to work out when your customers are most likely to change car.
         </h2>
         <p className="mx-auto mt-4 max-w-2xl text-base text-muted-foreground text-balance">
@@ -397,7 +397,7 @@ function HowItWorksSection() {
     { tag: "Step 3 · 10 minutes", t: "Approve the emails. Take the calls.", b: "Three short emails per customer, written about their exact car and signed by you. Read them, tweak anything, approve. Replies land in your inbox.", img: stepSequencesCropped, alt: "Email sequence page" },
   ];
   return (
-    <section id="how-it-works" className="py-24 bg-secondary/30">
+    <section id="how-it-works" className="py-24 lg:py-32 bg-secondary/30">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <SectionHead
           eyebrow="How it works"
@@ -533,7 +533,7 @@ function EmailsSection() {
   const c = exampleCustomers[cust];
   const e = c.emails[tab];
   return (
-    <section id="emails" className="py-24 bg-background">
+    <section id="emails" className="py-24 lg:py-32 bg-background">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         <SectionHead
           eyebrow="The emails"
@@ -597,7 +597,7 @@ function SafeguardsSection() {
     { icon: Eye, t: "You see everything first", b: "Every email waits for your approval. Edit, rewrite or skip anyone before it sends." },
   ];
   return (
-    <section className="py-24 bg-background">
+    <section className="py-24 lg:py-32 bg-background">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <SectionHead eyebrow="Built in" title="Designed so it never embarrasses you." intro="Automated doesn't mean careless. These rules are built into every sequence." />
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -628,7 +628,7 @@ function ComparisonSection() {
     { label: "Your time", w: "Under 10 minutes a month", p: "Managing listings and leads", d: "Two days a month" },
   ];
   return (
-    <section className="py-24 bg-secondary/30">
+    <section className="py-24 lg:py-32 bg-secondary/30">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         <SectionHead eyebrow="Compared" title="The cheapest warm leads you'll ever get." />
         <div className="overflow-x-auto rounded-2xl border border-border bg-card">
@@ -678,11 +678,11 @@ function CalculatorSection() {
   const fmt = (n: number) => (n < 10 ? n.toFixed(1) : Math.round(n).toLocaleString());
 
   return (
-    <section id="calculator" className="py-24 bg-background">
+    <section id="calculator" className="py-24 lg:py-32 bg-background">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="max-w-3xl mx-auto text-center mb-12">
           <span className="inline-flex items-center gap-2 text-sm font-semibold text-primary uppercase tracking-wide"><Calculator className="h-4 w-4" />ROI calculator</span>
-          <h2 className="mt-3 text-3xl md:text-4xl font-semibold tracking-tight">What could your customer list be worth?</h2>
+          <h2 className="mt-3 text-3xl md:text-4xl lg:text-5xl font-semibold tracking-tight">What could your customer list be worth?</h2>
           <p className="mt-4 text-lg text-muted-foreground">Move the sliders to match your dealership. The figures update as you go.</p>
         </div>
         <div className="rounded-3xl border border-border bg-card p-6 md:p-12 shadow-xl shadow-primary/5">
@@ -765,7 +765,7 @@ function PricingSection() {
   };
 
   return (
-    <section id="pricing" className="py-24 bg-secondary/30">
+    <section id="pricing" className="py-24 lg:py-32 bg-secondary/30">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <SectionHead eyebrow="Pricing" title="One extra sale pays for the year." intro="Simple monthly plans based on how many past customers Wynback contacts for you each month. Setup is free on every plan." />
         <div className="flex justify-center mb-12 -mt-4">
@@ -814,7 +814,7 @@ function PricingSection() {
 
 function FounderSection() {
   return (
-    <section className="py-24 bg-background">
+    <section className="py-24 lg:py-32 bg-background">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <Eyebrow>Why I built Wynback</Eyebrow>
         <Quote className="mx-auto mt-6 h-8 w-8 text-primary/40" />
@@ -838,7 +838,7 @@ function FAQSection() {
     { q: "Is there a contract?", a: "No. Plans are monthly and you can cancel anytime. Annual billing saves 20% if you'd rather pay upfront. Your data is yours and you can export it whenever you like." },
   ];
   return (
-    <section id="faq" className="py-24 bg-secondary/30">
+    <section id="faq" className="py-24 lg:py-32 bg-secondary/30">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
         <SectionHead eyebrow="Questions" title="Everything dealers ask us." />
         <Accordion type="single" collapsible className="rounded-2xl border border-border bg-card divide-y divide-border">
@@ -856,7 +856,7 @@ function FAQSection() {
 
 function FinalCTASection() {
   return (
-    <section className="py-24 bg-background">
+    <section className="py-24 lg:py-32 bg-background">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="relative overflow-hidden rounded-3xl border border-primary/20 bg-card p-10 md:p-16 text-center">
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[500px] h-[300px] bg-primary/20 rounded-full blur-3xl pointer-events-none" />

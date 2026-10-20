@@ -170,3 +170,15 @@
 @utility milestone-36 { background: oklch(0.94 0.04 300); color: oklch(0.35 0.1 305); }
 @utility milestone-48 { background: oklch(0.94 0.04 55); color: oklch(0.4 0.12 55); }
 @utility milestone-60 { background: oklch(0.94 0.04 20); color: oklch(0.4 0.14 20); }
+
+@theme {
+  --font-display: "Fraunces", ui-serif, Georgia, serif;
+}
+
+@layer base {
+  h1, h2 {
+    font-family: var(--font-display);
+    font-optical-sizing: auto;
+    letter-spacing: -0.02em;
+  }
+}
