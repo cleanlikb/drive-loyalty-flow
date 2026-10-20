@@ -351,7 +351,7 @@ function TimingSection() {
     <section className="py-16 md:py-20 bg-secondary/30">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <p className="text-xs font-semibold uppercase tracking-widest text-primary">The timing</p>
-        <h2 className="mt-3 text-2xl md:text-4xl font-bold tracking-tight">Wynback emails each customer at six moments they&apos;re most likely to change car.</h2>
+        <h2 className="mt-3 text-2xl md:text-4xl font-bold tracking-tight text-balance">Wynback emails each customer at six moments they&apos;re most likely to change car.</h2>
         <div className="mt-8 grid grid-cols-3 md:grid-cols-6 gap-2 md:gap-3">
           {ms.map((x) => (
             <div key={x.m} className={`rounded-xl border p-3 ${x.hi ? "border-primary bg-primary/10 ring-1 ring-primary/30" : "border-border bg-card"}`}>
