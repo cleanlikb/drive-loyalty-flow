@@ -1,65 +1,114 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useEffect, useMemo, useRef, useState, type MouseEvent } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import {
   Menu,
   X,
-  Zap,
-  Database,
-  Users,
-  PenTool,
-  UploadCloud,
-  Flag,
-  Send,
-  ShieldCheck,
-  MousePointerClick,
-  Lock,
   ArrowRight,
-  CheckCircle2,
-  Mail,
-  Calculator,
   Check,
   Sparkles,
   Play,
   Pause,
+  Minus,
+  Plus,
+  Flame,
+  Reply,
+  Ban,
+  MailX,
+  CalendarClock,
+  Calculator,
+  Eye,
+  ShieldCheck,
+  Quote,
 } from "lucide-react";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
 import logo from "@/assets/wynback-logo.png.asset.json";
 import dealerImg from "@/assets/dealer-forecourt.png.asset.json";
 import explainerAsset from "@/assets/wynback-explainer.mp4.asset.json";
 import explainerPoster from "@/assets/wynback-explainer-poster.png.asset.json";
+import stepCustomersCropped from "@/assets/step-customers-cropped.png";
+import stepLeadsCropped from "@/assets/step-leads-cropped.png";
+import stepSequencesCropped from "@/assets/step-sequences-cropped.png";
 import { trackEvent } from "@/lib/analytics";
 
 const DEMO_URL = "https://calendar.app.google/tjezLnaDgZ53Dhc78";
 
-
-function openDemoBooking() {
-  if (typeof window === "undefined") return;
-  window.open(DEMO_URL, "_blank", "noopener,noreferrer");
-}
-
-
-
-function trackDemoClick(event: MouseEvent<HTMLAnchorElement>, location: string) {
-  if (event.defaultPrevented) return;
-  trackEvent("book_demo_clicked", { location });
-}
-
 export const Route = createFileRoute("/")({
   component: Landing,
+  head: () => ({
+    meta: [
+      { title: "Wynback — Your next sale is already in your customer list" },
+      {
+        name: "description",
+        content:
+          "Wynback emails every past buyer at the moments they're most likely to change car and puts their replies in your inbox. Built for UK independent car dealers.",
+      },
+      { property: "og:title", content: "Wynback — Your next sale is already in your customer list" },
+      {
+        property: "og:description",
+        content: "Automatic, personal emails to past customers at 12–60 month ownership milestones. From £49/month, free setup.",
+      },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+    ],
+  }),
 });
+
+function DemoLink({
+  location,
+  children,
+  className,
+  variant = "default",
+  size = "lg",
+  onClick,
+}: {
+  location: string;
+  children: ReactNode;
+  className?: string;
+  variant?: "default" | "outline" | "secondary";
+  size?: "default" | "sm" | "lg";
+  onClick?: () => void;
+}) {
+  return (
+    <Button asChild size={size} variant={variant} className={className}>
+      <a
+        href={DEMO_URL}
+        target="_blank"
+        rel="noopener noreferrer"
+        onClick={() => {
+          trackEvent("book_demo_clicked", { location });
+          onClick?.();
+        }}
+      >
+        {children}
+      </a>
+    </Button>
+  );
+}
+
+const ctaClass = "h-12 px-8 text-base shadow-lg shadow-primary/25";
+
+function Eyebrow({ children }: { children: ReactNode }) {
+  return <span className="text-sm font-semibold text-primary uppercase tracking-wide">{children}</span>;
+}
+
+function SectionHead({ eyebrow, title, intro }: { eyebrow: string; title: string; intro?: string }) {
+  return (
+    <div className="max-w-3xl mx-auto text-center mb-14">
+      <Eyebrow>{eyebrow}</Eyebrow>
+      <h2 className="mt-3 text-3xl md:text-4xl font-semibold tracking-tight text-foreground">{title}</h2>
+      {intro && <p className="mt-4 text-lg text-muted-foreground">{intro}</p>}
+    </div>
+  );
+}
 
 function Landing() {
   const navigate = useNavigate();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [showSticky, setShowSticky] = useState(false);
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => {
@@ -67,17 +116,16 @@ function Landing() {
     });
   }, [navigate]);
 
-  // Scroll depth tracking (25/50/75/100), each fires once per session
   useEffect(() => {
     const fired = new Set<number>();
-    const thresholds = [25, 50, 75, 100];
     const onScroll = () => {
       const doc = document.documentElement;
       const scrollTop = window.scrollY || doc.scrollTop;
+      setShowSticky(scrollTop > 700);
       const height = doc.scrollHeight - doc.clientHeight;
       if (height <= 0) return;
       const pct = Math.min(100, Math.round((scrollTop / height) * 100));
-      for (const t of thresholds) {
+      for (const t of [25, 50, 75, 100]) {
         if (pct >= t && !fired.has(t)) {
           fired.add(t);
           trackEvent(`scroll_${t}`, { percent: t });
@@ -89,59 +137,64 @@ function Landing() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-
   return (
-    <div className="min-h-screen bg-white text-foreground font-sans selection:bg-primary/30">
+    <div className="min-h-screen bg-background text-foreground font-sans selection:bg-primary/30">
       <Header mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />
       <main>
         <HeroSection />
-        <VideoSection />
-        <FounderSection />
-        <PainSection />
-        <SolutionSection />
-        <BenefitsSection />
-        <PricingSection />
+        <NumbersSection />
+        <ProblemSection />
+        <TimingSection />
+        <HowItWorksSection />
+        <EmailsSection />
+        <SafeguardsSection />
+        <ComparisonSection />
         <CalculatorSection />
-        <PricingFAQ />
+        <PricingSection />
+        <FounderSection />
+        <FAQSection />
         <FinalCTASection />
       </main>
       <Footer />
+      <div
+        className={`md:hidden fixed inset-x-0 bottom-0 z-40 border-t border-border bg-background/95 backdrop-blur p-3 transition-transform ${
+          showSticky ? "translate-y-0" : "translate-y-full"
+        }`}
+      >
+        <DemoLink location="mobile_sticky" className="w-full h-12 text-base">
+          Book a 20-minute demo <ArrowRight className="h-4 w-4" />
+        </DemoLink>
+      </div>
     </div>
   );
 }
 
+const navLinks = [
+  { href: "#how-it-works", label: "How it works" },
+  { href: "#emails", label: "The emails" },
+  { href: "#pricing", label: "Pricing" },
+  { href: "#calculator", label: "ROI" },
+  { href: "#faq", label: "FAQ" },
+];
 
-
-
-
-
-function Header({
-  mobileOpen,
-  setMobileOpen,
-}: {
-  mobileOpen: boolean;
-  setMobileOpen: (open: boolean) => void;
-}) {
+function Header({ mobileOpen, setMobileOpen }: { mobileOpen: boolean; setMobileOpen: (o: boolean) => void }) {
   return (
     <header className="sticky top-0 z-50 border-b border-border/60 bg-background/80 backdrop-blur">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
         <Link to="/" className="flex items-center">
           <img src={logo.url} alt="Wynback" className="h-8 w-auto object-contain" />
         </Link>
-
         <nav className="hidden md:flex items-center gap-1">
-          <NavLink href="#how-it-works">How it works</NavLink>
-          <NavLink href="#benefits">Benefits</NavLink>
-          <NavLink href="#pricing">Pricing</NavLink>
-          <NavLink href="#calculator">ROI calculator</NavLink>
-          <Link to="/contact" className="px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground rounded-md transition-colors">
+          {navLinks.map((l) => (
+            <a key={l.href} href={l.href} className="px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+              {l.label}
+            </a>
+          ))}
+          <Link to="/contact" className="px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
             Contact
           </Link>
-          <Button asChild size="sm" className="ml-2">
-            <a href={DEMO_URL} onClick={(event) => trackDemoClick(event, "header_nav")}>Book a demo</a>
-          </Button>
+          <DemoLink location="header_nav" size="sm" className="ml-2">Book a demo</DemoLink>
         </nav>
-
         <button
           className="md:hidden p-2 rounded-md hover:bg-accent transition-colors"
           onClick={() => setMobileOpen(!mobileOpen)}
@@ -150,267 +203,589 @@ function Header({
           {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
         </button>
       </div>
-
       {mobileOpen && (
-        <div className="md:hidden border-t border-border bg-card px-4 py-4 flex flex-col gap-2">
-          <MobileNavLink href="#how-it-works" onClick={() => setMobileOpen(false)}>How it works</MobileNavLink>
-          <MobileNavLink href="#benefits" onClick={() => setMobileOpen(false)}>Benefits</MobileNavLink>
-          <MobileNavLink href="#pricing" onClick={() => setMobileOpen(false)}>Pricing</MobileNavLink>
-          <MobileNavLink href="#calculator" onClick={() => setMobileOpen(false)}>ROI calculator</MobileNavLink>
-          <Link to="/contact" onClick={() => setMobileOpen(false)} className="px-3 py-2.5 text-base font-medium text-foreground hover:bg-accent rounded-md transition-colors">
+        <div className="md:hidden border-t border-border bg-card px-4 py-4 flex flex-col gap-1">
+          {navLinks.map((l) => (
+            <a key={l.href} href={l.href} onClick={() => setMobileOpen(false)} className="block px-3 py-3 rounded-md text-base font-medium hover:bg-accent">
+              {l.label}
+            </a>
+          ))}
+          <Link to="/contact" onClick={() => setMobileOpen(false)} className="block px-3 py-3 rounded-md text-base font-medium hover:bg-accent">
             Contact
           </Link>
-          <Button asChild className="w-full mt-2" size="lg">
-            <a
-              href={DEMO_URL}
-             
-             
-             
-              onClick={(event) => { trackDemoClick(event, "mobile_nav"); setMobileOpen(false); }}
-            >
-              Book a demo
-            </a>
-          </Button>
+          <DemoLink location="mobile_nav" className="w-full mt-2" onClick={() => setMobileOpen(false)}>Book a demo</DemoLink>
         </div>
       )}
     </header>
   );
 }
 
-function NavLink({ href, children }: { href: string; children: React.ReactNode }) {
-  return (
-    <a
-      href={href}
-      className="px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-    >
-      {children}
-    </a>
-  );
-}
-
-function MobileNavLink({
-  href,
-  onClick,
-  children,
-}: {
-  href: string;
-  onClick: () => void;
-  children: React.ReactNode;
-}) {
-  return (
-    <a
-      href={href}
-      onClick={onClick}
-      className="block px-3 py-3 rounded-md text-base font-medium text-foreground hover:bg-accent transition-colors"
-    >
-      {children}
-    </a>
-  );
-}
-
-function BookDemoButton({
-  label = "Book a demo",
-  variant = "default",
-  className = "",
-  showArrow = false,
-  size = "lg",
-  location = "unknown",
-}: {
-  label?: string;
-  variant?: "default" | "outline" | "secondary";
-  className?: string;
-  showArrow?: boolean;
-  size?: "default" | "sm" | "lg";
-  location?: string;
-}) {
-  return (
-    <Button asChild size={size} variant={variant} className={className}>
-      <a
-        href={DEMO_URL}
-       
-       
-       
-        onClick={(event) => trackDemoClick(event, location)}
-      >
-        {label}
-        {showArrow && <ArrowRight className="h-4 w-4" />}
-      </a>
-    </Button>
-  );
-}
-
 function HeroSection() {
-  const activity = [
-    { title: "Email sent", sub: "Range Rover Sport (2019)", time: "2 hours ago", done: true },
-    { title: "Customer replied", sub: "Interested in a test drive", time: "4 hours ago", done: true },
-    { title: "Follow-up scheduled", sub: "BMW 3 Series (2020)", time: "Tomorrow", done: false },
-  ];
   return (
     <section className="relative overflow-hidden bg-background">
-      <div className="absolute inset-x-0 bottom-0 h-[60%] md:inset-y-0 md:left-auto md:right-0 md:h-full md:w-[62%]">
+      <div className="absolute inset-x-0 bottom-0 h-[55%] md:inset-y-0 md:left-auto md:right-0 md:h-full md:w-[60%]">
         <img src={dealerImg.url} alt="Dealership forecourt at sunset" className="h-full w-full object-cover object-right" />
         <div className="absolute inset-0 bg-gradient-to-b from-background via-background/40 to-transparent md:bg-gradient-to-r md:via-background/30" />
       </div>
 
-      <div className="relative max-w-7xl mx-auto px-6 lg:px-8 pt-14 pb-10 md:py-28">
-        <div className="max-w-xl">
-          <p className="text-xs md:text-sm font-medium tracking-[0.25em] uppercase text-muted-foreground">
-            Built for UK independent dealerships
-          </p>
-          <h1 className="mt-5 text-[2.6rem] sm:text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight leading-[0.95] text-foreground">
-            Your next sale is already in your customer database<span className="text-primary">.</span>
+      <div className="relative max-w-7xl mx-auto px-6 lg:px-8 pt-14 pb-12 md:py-24 grid md:grid-cols-2 gap-12 items-center">
+        <div>
+          <p className="text-xs md:text-sm font-medium tracking-[0.25em] uppercase text-muted-foreground">For UK independent car dealers</p>
+          <h1 className="mt-5 text-[2.6rem] sm:text-5xl md:text-6xl font-extrabold tracking-tight leading-[0.95] text-foreground">
+            Your next sale is already in your customer list<span className="text-primary">.</span>
           </h1>
-          <p className="mt-6 text-lg md:text-xl text-muted-foreground leading-relaxed">
-            Wynback automatically brings past customers back when they&apos;re ready to change their car — without adding work for your team.
+          <p className="mt-6 text-lg text-muted-foreground leading-relaxed">
+            Wynback emails every past buyer at the moments they&apos;re most likely to change car, from 12 to 60 months after they bought, and puts their replies in your inbox. No portal fees. No cold leads. Under 10 minutes a month.
           </p>
-          <Button asChild size="lg" className="mt-8 h-14 px-8 text-lg rounded-xl shadow-lg">
-            <a href="#how-it-works">
-              See how Wynback works <ArrowRight className="h-5 w-5" />
-            </a>
-          </Button>
-          <p className="mt-4 text-sm text-primary">
-            <span className="underline underline-offset-4">No setup fees</span> · We configure it for you
-          </p>
-        </div>
-
-        <div className="mt-12 md:mt-16 max-w-md [perspective:1200px]">
-          <div className="flex rounded-2xl border border-border bg-card/95 backdrop-blur shadow-2xl [transform:rotateY(8deg)_rotateX(4deg)]">
-            <div className="flex flex-col items-center gap-4 border-r border-border p-3">
-              <img src={logo.url} alt="" className="h-6 w-6 object-cover object-left" />
-              <span className="rounded-lg bg-primary/10 p-2 text-primary"><Zap className="h-4 w-4" /></span>
-              <Users className="h-4 w-4 text-muted-foreground" />
-              <Send className="h-4 w-4 text-muted-foreground" />
-              <Mail className="h-4 w-4 text-muted-foreground" />
-            </div>
-            <div className="flex-1 p-4">
-              <div className="flex items-start justify-between">
-                <div>
-                  <p className="text-[11px] text-muted-foreground">Good morning</p>
-                  <p className="font-semibold text-foreground">Your campaigns</p>
-                </div>
-                <span className="rounded-md border border-border px-2 py-1 text-[10px] text-muted-foreground">Last 30 days</span>
-              </div>
-              <div className="mt-3 grid grid-cols-2 gap-2">
-                <div className="rounded-xl border border-border p-3">
-                  <p className="text-xs text-foreground">Customers ready to upgrade</p>
-                  <p className="mt-1 flex items-center gap-2 text-xl font-semibold"><Users className="h-4 w-4 text-primary" />128</p>
-                  <p className="text-[10px] text-muted-foreground">customers</p>
-                </div>
-                <div className="rounded-xl border border-border p-3">
-                  <p className="text-xs text-foreground">Personalised follow-ups</p>
-                  <p className="mt-1 flex items-center gap-2 text-xl font-semibold"><Mail className="h-4 w-4 text-primary" />14</p>
-                  <p className="text-[10px] text-muted-foreground">replies this week</p>
-                </div>
-              </div>
-              <div className="mt-2 rounded-xl border border-border p-3">
-                <p className="text-xs font-medium text-foreground">Campaign activity</p>
-                <ul className="mt-2 space-y-2">
-                  {activity.map((a) => (
-                    <li key={a.title} className="flex items-start gap-2">
-                      <span className={`mt-1 h-2 w-2 rounded-full ${a.done ? "bg-primary" : "bg-muted-foreground/40"}`} />
-                      <div className="flex-1">
-                        <p className="text-xs text-foreground">{a.title}</p>
-                        <p className="text-[10px] text-muted-foreground">{a.sub}</p>
-                      </div>
-                      <span className="text-[10px] text-muted-foreground">{a.time}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
+          <div className="mt-8 flex flex-col sm:flex-row gap-3">
+            <DemoLink location="hero" className="h-14 px-7 text-base rounded-xl shadow-lg">
+              Book a 20-minute demo <ArrowRight className="h-5 w-5" />
+            </DemoLink>
+            <Button asChild size="lg" variant="outline" className="h-14 px-7 text-base rounded-xl bg-background/80">
+              <a href="#emails">See the emails</a>
+            </Button>
           </div>
+          <ul className="mt-5 flex flex-wrap gap-x-4 gap-y-1 text-sm text-primary">
+            {["Free setup, done for you", "Starts from a CSV", "Cancel anytime"].map((t) => (
+              <li key={t} className="flex items-center gap-1.5"><Check className="h-4 w-4" />{t}</li>
+            ))}
+          </ul>
+        </div>
+        <HeroEmail />
+      </div>
+    </section>
+  );
+}
+
+function HeroEmail() {
+  return (
+    <div className="relative max-w-md w-full md:ml-auto space-y-3">
+      <div className="rounded-2xl border border-border bg-card/95 backdrop-blur shadow-2xl p-5">
+        <div className="flex items-center justify-between text-[11px] text-muted-foreground">
+          <span>Sent automatically · 36 months after purchase</span>
+          <span className="rounded-full bg-muted px-2 py-0.5">Example</span>
+        </div>
+        <p className="mt-3 text-xs text-muted-foreground">From <span className="text-foreground font-medium">James at Whitfield Motors</span> to <span className="text-foreground font-medium">Emma Clarke</span></p>
+        <p className="mt-2 font-semibold text-foreground">Checking in — how&apos;s the 3 Series?</p>
+        <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
+          Hi Emma, it&apos;s been three years since you drove away in your BMW 3 Series [AB23 DGL], so I wanted to see how you&apos;re getting on with it. We&apos;ve had a lot of interest in 3 Series part-exchanges lately. No pitch, just keeping in touch.
+        </p>
+      </div>
+      <div className="rounded-2xl border border-primary/30 bg-card/95 backdrop-blur shadow-xl p-5 md:ml-8">
+        <div className="flex items-center justify-between">
+          <span className="text-xs text-muted-foreground"><Reply className="inline h-3.5 w-3.5 mr-1" />Emma replied · 2 hours later</span>
+          <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 text-primary px-2 py-0.5 text-[11px] font-semibold"><Flame className="h-3 w-3" />Hot lead</span>
+        </div>
+        <p className="mt-2 text-sm text-foreground">&ldquo;Funny timing. It&apos;s on 41,000 miles and we were thinking about changing. What would you give me for it?&rdquo;</p>
+      </div>
+    </div>
+  );
+}
+
+function NumbersSection() {
+  const [cars, setCars] = useState(20);
+  const clamp = (n: number) => Math.max(1, Math.min(500, n));
+  return (
+    <section className="py-16 bg-secondary/30 border-y border-border/60">
+      <div className="max-w-3xl mx-auto px-4 text-center">
+        <p className="text-lg font-medium text-foreground">How many cars do you sell a month?</p>
+        <div className="mt-4 inline-flex items-center gap-3 rounded-full border border-border bg-card p-1.5">
+          <button aria-label="Fewer" onClick={() => setCars((c) => clamp(c - 1))} className="h-10 w-10 rounded-full grid place-items-center hover:bg-accent"><Minus className="h-4 w-4" /></button>
+          <span className="w-12 text-2xl font-semibold tabular-nums">{cars}</span>
+          <button aria-label="More" onClick={() => setCars((c) => clamp(c + 1))} className="h-10 w-10 rounded-full grid place-items-center hover:bg-accent"><Plus className="h-4 w-4" /></button>
+        </div>
+        <p className="mt-6 text-2xl md:text-3xl font-semibold tracking-tight">
+          <span className="text-primary">{(cars * 6).toLocaleString()}</span> of your past customers hit a buying milestone every month.
+        </p>
+        <p className="mt-3 text-lg text-muted-foreground">
+          That&apos;s <span className="font-semibold text-foreground">{(cars * 72).toLocaleString()}</span> a year. Who&apos;s emailing them?
+        </p>
+        <p className="mt-4 text-xs text-muted-foreground">Six milestones from 12 to 60 months after purchase, once you have five years of sales history.</p>
+      </div>
+    </section>
+  );
+}
+
+function ProblemSection() {
+  const pains = [
+    { t: "Every lead costs more, and none of them know you.", b: "Portals and ads put you in front of buyers who are comparing you with every dealer in the postcode. You pay again for every sale, and you win on price or not at all." },
+    { t: "Happy customers buy their next car elsewhere.", b: "They liked you. But three years on, nobody's been in touch. So when they're ready to change, they open Autotrader like everyone else, and your name never comes up." },
+    { t: "Follow-up never makes it to the top of the list.", b: "Between the phones, the prep and the test drives, nobody has a spare afternoon to write forty personal emails. So the customer database just sits there." },
+    { t: "Their part-exchange goes to the car-buying sites.", b: "When an old customer changes car without you, you lose the sale and the trade-in. A car you sold, know and could retail again goes to an instant-offer site instead." },
+  ];
+  return (
+    <section className="py-24 bg-background">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <SectionHead
+          eyebrow="The problem"
+          title="You're paying to chase strangers while your best prospects go quiet."
+          intro="The people most likely to buy from you are the ones who already have. Most dealers never speak to them again."
+        />
+        <div className="grid md:grid-cols-2 gap-6">
+          {pains.map((p, i) => (
+            <div key={p.t} className="rounded-2xl border border-border bg-card p-8">
+              <span className="h-9 w-9 rounded-full bg-primary/10 text-primary grid place-items-center font-semibold">{i + 1}</span>
+              <h3 className="mt-4 text-xl font-semibold">{p.t}</h3>
+              <p className="mt-3 text-muted-foreground leading-relaxed">{p.b}</p>
+            </div>
+          ))}
+        </div>
+        <div className="mt-10 rounded-2xl bg-primary text-primary-foreground p-8 md:p-10 flex flex-col md:flex-row items-center gap-6 justify-between">
+          <p className="text-lg md:text-xl font-medium max-w-2xl">Wynback turns your past sales into a monthly list of warm prospects, and writes to every one of them for you.</p>
+          <DemoLink location="problem_banner" variant="secondary" className="h-12 px-8 text-base shrink-0">
+            Book a demo <ArrowRight className="h-4 w-4" />
+          </DemoLink>
         </div>
       </div>
     </section>
   );
 }
 
-function VideoSection() {
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const firedRef = useRef({ play: false, half: false, complete: false });
-
-  const togglePlay = () => {
-    const video = videoRef.current;
-    if (!video) return;
-    if (video.paused || video.ended) {
-      void video.play();
-    } else {
-      video.pause();
-    }
-  };
-
+function TimingSection() {
+  const ms = [
+    { m: 12, t: "First year done", b: "A friendly check-in. Builds the relationship before they need anything." },
+    { m: 18, t: "Settled in", b: "Life changes: a new job, a new baby, a longer commute." },
+    { m: 24, t: "Two years in", b: "Shorter finance deals start to finish. Some are ready to upgrade." },
+    { m: 36, t: "Classic change point", b: "Many PCP agreements run three years. Prime time to talk.", hi: true },
+    { m: 48, t: "Four years in", b: "Longer agreements end. Mileage and bills start to climb." },
+    { m: 60, t: "Five years on", b: "Plenty of owners are ready for something newer." },
+  ];
   return (
-    <section className="py-16 md:py-24 bg-white">
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <h2 className="text-3xl md:text-4xl font-semibold tracking-tight text-foreground">
-          See how it works in 60 seconds
-        </h2>
-        <p className="mt-3 text-base md:text-lg text-muted-foreground max-w-2xl mx-auto">
-          Watch how Wynback turns your existing customer list into a reliable, low-cost source of extra sales and stock opportunities.
+    <section className="py-24 bg-secondary/30">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <SectionHead
+          eyebrow="The timing"
+          title="Every buyer reaches a point where they start looking again."
+          intro="Wynback watches the date each customer bought and gets in touch at six points in their ownership, so you're the first dealer they hear from."
+        />
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          {ms.map((x) => (
+            <div key={x.m} className={`rounded-2xl border p-6 ${x.hi ? "border-primary bg-primary/5 ring-1 ring-primary/30" : "border-border bg-card"}`}>
+              <div className="text-3xl font-bold text-primary">{x.m} <span className="text-base font-medium text-muted-foreground">months</span></div>
+              <h3 className="mt-2 font-semibold text-foreground">{x.t}</h3>
+              <p className="mt-1 text-sm text-muted-foreground">{x.b}</p>
+            </div>
+          ))}
+        </div>
+        <p className="mt-8 text-center text-sm text-muted-foreground max-w-3xl mx-auto">
+          You choose which milestones to use. Customers who don&apos;t own the car any more, have unsubscribed, or were contacted in the last six months are left out automatically.
         </p>
-        <div className="mt-10 rounded-2xl border border-border bg-card p-2 md:p-3 shadow-sm">
-          <div
-            className="relative aspect-video overflow-hidden rounded-xl bg-muted group cursor-pointer"
-            onClick={togglePlay}
-          >
-            <video
-              ref={videoRef}
-              src={explainerAsset.url}
-              poster={explainerPoster.url}
-              preload="metadata"
-              playsInline
-              webkit-playsinline="true"
-              className="w-full h-full object-cover"
-              aria-label="Wynback explainer video"
-              onPlay={() => {
-                setIsPlaying(true);
-                if (!firedRef.current.play) {
-                  firedRef.current.play = true;
-                  trackEvent("video_play", { video: "explainer" });
-                }
-              }}
-              onPause={() => setIsPlaying(false)}
-              onEnded={() => {
-                setIsPlaying(false);
-                if (!firedRef.current.complete) {
-                  firedRef.current.complete = true;
-                  trackEvent("video_complete", { video: "explainer" });
-                }
-              }}
-              onTimeUpdate={(e) => {
-                const v = e.currentTarget;
-                if (!v.duration || firedRef.current.half) return;
-                if (v.currentTime / v.duration >= 0.5) {
-                  firedRef.current.half = true;
-                  trackEvent("video_progress_50", { video: "explainer" });
-                }
-              }}
-            />
-            {!isPlaying && (
-              <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-                <div className="h-16 w-16 md:h-20 md:w-20 rounded-full bg-primary text-white shadow-lg shadow-primary/30 grid place-items-center transition-transform group-hover:scale-110">
-                  <Play className="h-7 w-7 md:h-8 md:w-8 fill-current ml-1" />
+      </div>
+    </section>
+  );
+}
+
+function HowItWorksSection() {
+  const steps = [
+    { tag: "Step 1 · Once", t: "Wynback finds your customers in your existing sales data", b: "Everyone who's bought from you is already in your records. A simple export from your DMS or spreadsheet is all it needs: name, email, car and sale date. Setup is done for you.", img: stepCustomersCropped, alt: "Customers page" },
+    { tag: "Step 2 · 1st of every month", t: "Your prospect list builds itself", b: "Wynback finds every customer hitting a milestone and lists them by how long they've owned the car. You get a notification when it's ready.", img: stepLeadsCropped, alt: "Monthly leads page" },
+    { tag: "Step 3 · 10 minutes", t: "Approve the emails. Take the calls.", b: "Three short emails per customer, written about their exact car and signed by you. Read them, tweak anything, approve. Replies land in your inbox.", img: stepSequencesCropped, alt: "Email sequence page" },
+  ];
+  return (
+    <section id="how-it-works" className="py-24 bg-background">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <SectionHead
+          eyebrow="How it works"
+          title="Set up once. A fresh list of prospects every month."
+          intro="We do the setup. After that, your part takes under 10 minutes a month."
+        />
+        <div className="grid md:grid-cols-3 gap-8">
+          {steps.map((s) => (
+            <div key={s.tag} className="flex flex-col rounded-2xl border border-border bg-card overflow-hidden">
+              <div className="p-8 pb-6">
+                <span className="text-xs font-semibold uppercase tracking-wide text-primary">{s.tag}</span>
+                <h3 className="mt-3 text-xl font-semibold">{s.t}</h3>
+                <p className="mt-3 text-muted-foreground leading-relaxed">{s.b}</p>
+              </div>
+              <div className="mt-auto p-6 pt-0">
+                <div className="rounded-xl border border-border overflow-hidden aspect-[16/11]">
+                  <img src={s.img} alt={s.alt} loading="lazy" className="w-full h-full object-cover" />
                 </div>
               </div>
-            )}
-            {isPlaying && (
+            </div>
+          ))}
+        </div>
+        <VideoBlock />
+      </div>
+    </section>
+  );
+}
+
+function VideoBlock() {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const fired = useRef({ play: false, half: false, complete: false });
+  const toggle = () => {
+    const v = videoRef.current;
+    if (!v) return;
+    if (v.paused || v.ended) void v.play();
+    else v.pause();
+  };
+  return (
+    <div className="mt-16 max-w-4xl mx-auto rounded-2xl border border-border bg-card p-2 md:p-3">
+      <div className="relative aspect-video overflow-hidden rounded-xl bg-muted group cursor-pointer" onClick={toggle}>
+        <video
+          ref={videoRef}
+          src={explainerAsset.url}
+          poster={explainerPoster.url}
+          preload="metadata"
+          playsInline
+          className="w-full h-full object-cover"
+          aria-label="Wynback explainer video"
+          onPlay={() => {
+            setIsPlaying(true);
+            if (!fired.current.play) { fired.current.play = true; trackEvent("video_play", { video: "explainer" }); }
+          }}
+          onPause={() => setIsPlaying(false)}
+          onEnded={() => {
+            setIsPlaying(false);
+            if (!fired.current.complete) { fired.current.complete = true; trackEvent("video_complete", { video: "explainer" }); }
+          }}
+          onTimeUpdate={(e) => {
+            const v = e.currentTarget;
+            if (!v.duration || fired.current.half) return;
+            if (v.currentTime / v.duration >= 0.5) { fired.current.half = true; trackEvent("video_progress_50", { video: "explainer" }); }
+          }}
+        />
+        {!isPlaying ? (
+          <div className="pointer-events-none absolute inset-0 grid place-items-center">
+            <div className="h-16 w-16 md:h-20 md:w-20 rounded-full bg-primary text-primary-foreground shadow-lg grid place-items-center">
+              <Play className="h-7 w-7 fill-current ml-1" />
+            </div>
+          </div>
+        ) : (
+          <button
+            type="button"
+            onClick={(e) => { e.stopPropagation(); toggle(); }}
+            className="absolute top-3 right-3 h-10 w-10 rounded-full bg-foreground/60 text-background grid place-items-center opacity-0 group-hover:opacity-100 focus:opacity-100"
+            aria-label="Pause video"
+          >
+            <Pause className="h-5 w-5 fill-current" />
+          </button>
+        )}
+      </div>
+    </div>
+  );
+}
+
+type EmailSet = { subject: string; body: string }[];
+const exampleCustomers: { id: string; name: string; car: string; emails: EmailSet }[] = [
+  {
+    id: "emma",
+    name: "Emma Clarke",
+    car: "BMW 3 Series M Sport · owned 3 years",
+    emails: [
+      { subject: "Three years with the 3 Series", body: "Hi Emma, Hard to believe it's three years since you collected your 3 Series M Sport. I hope it's still putting a smile on your face. Three years is when a lot of owners start thinking about what's next, so I wanted you to hear from us first. No rush at all." },
+      { subject: "What's next after the 3 Series?", body: "Hi Emma, Quick one. When the time comes to change, would you stay with a 3 Series, step up to something bigger, or try a hybrid? Tell me what you're after and I'll keep an eye out for the right car." },
+      { subject: "A figure for your 3 Series?", body: "Hi Emma, Last one from me. 3 Series are in demand at the moment, so if you reply with your current mileage I'll come back with a part-exchange figure. No obligation." },
+    ],
+  },
+  {
+    id: "ben",
+    name: "Ben Hughes",
+    car: "Ford Kuga Titanium · owned 1 year",
+    emails: [
+      { subject: "A year with the Kuga", body: "Hi Ben, It's a year since you picked up your Kuga Titanium, so I wanted to say thanks again for buying from us. I hope you're enjoying it. And if any friends or family are looking for a car, we'd love to help them too." },
+      { subject: "Still the right car?", body: "Hi Ben, A lot can change in a year. If the Kuga's still perfect, great. If you need more space, or something cheaper to run for a new commute, I'm always happy to chat." },
+      { subject: "Here if you need us", body: "Hi Ben, I won't fill up your inbox. If you ever want to know what the Kuga's worth, reply with the mileage and I'll send you a figure." },
+    ],
+  },
+  {
+    id: "grace",
+    name: "Grace Lloyd",
+    car: "Vauxhall Corsa SRi · owned 5 years",
+    emails: [
+      { subject: "Five years with the Corsa", body: "Hi Grace, Five years ago you drove away in your Corsa SRi. I hope it's served you well. Around now a lot of owners start thinking about something newer, with lower running costs and the latest safety kit. Worth a look if you've been wondering." },
+      { subject: "Something newer for you?", body: "Hi Grace, If you did fancy a change, what matters most this time? Lower running costs, an automatic, a bit more room? Let me know and I'll pick out a few that fit." },
+      { subject: "What's the Corsa worth?", body: "Hi Grace, Last one from me. Reply with the Corsa's mileage and I'll tell you what it's worth against something newer." },
+    ],
+  },
+];
+const emailTabs = [
+  { day: "Day 0", name: "Check-in", desc: "Warm hello, no selling" },
+  { day: "Day 4", name: "What's next?", desc: "Opens the upgrade conversation" },
+  { day: "Day 10", name: "Easy yes", desc: "One-line reply to get a figure" },
+];
+
+function EmailsSection() {
+  const [cust, setCust] = useState(0);
+  const [tab, setTab] = useState(0);
+  const c = exampleCustomers[cust];
+  const e = c.emails[tab];
+  return (
+    <section id="emails" className="py-24 bg-secondary/30">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <SectionHead
+          eyebrow="The emails"
+          title="Short, personal emails that read like they came from you."
+          intro={`No templates, no mail merge, no "Dear Valued Customer". Every email is written for one customer: the car they bought, how long they've had it and where they are in ownership. No two customers get the same email.`}
+        />
+        <p className="text-center text-sm text-muted-foreground mb-4">Pick an example customer to see how the emails change</p>
+        <div className="grid sm:grid-cols-3 gap-3">
+          {exampleCustomers.map((x, i) => (
+            <button
+              key={x.id}
+              onClick={() => setCust(i)}
+              className={`rounded-xl border p-4 text-left transition-all ${i === cust ? "border-primary bg-card ring-1 ring-primary/30" : "border-border bg-card/60 hover:border-primary/30"}`}
+            >
+              <p className="font-semibold text-foreground">{x.name}</p>
+              <p className="text-xs text-muted-foreground mt-1">{x.car}</p>
+            </button>
+          ))}
+        </div>
+        <div className="mt-6 rounded-2xl border border-border bg-card overflow-hidden">
+          <div className="grid grid-cols-3 border-b border-border">
+            {emailTabs.map((t, i) => (
               <button
-                type="button"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  togglePlay();
-                }}
-                className="absolute top-3 right-3 h-10 w-10 rounded-full bg-black/60 text-white backdrop-blur-sm grid place-items-center opacity-0 group-hover:opacity-100 transition-opacity focus:opacity-100"
-                aria-label="Pause video"
+                key={t.day}
+                onClick={() => setTab(i)}
+                className={`p-3 md:p-4 text-left border-b-2 transition-colors ${i === tab ? "border-primary bg-primary/5" : "border-transparent hover:bg-accent/50"}`}
               >
-                <Pause className="h-5 w-5 fill-current" />
+                <p className="text-xs font-semibold text-primary">{t.day} — {t.name}</p>
+                <p className="hidden sm:block text-xs text-muted-foreground mt-0.5">{t.desc}</p>
               </button>
-            )}
+            ))}
+          </div>
+          <div className="p-6 md:p-8">
+            <div className="flex items-center justify-between gap-3">
+              <p className="font-semibold text-foreground">{e.subject}</p>
+              <span className="rounded-full bg-muted px-2 py-0.5 text-[11px] text-muted-foreground">Example</span>
+            </div>
+            <p className="mt-4 text-muted-foreground leading-relaxed">{e.body}</p>
+            <p className="mt-4 text-foreground">James, Whitfield Motors</p>
           </div>
         </div>
+        <p className="mt-6 text-center text-sm text-muted-foreground max-w-3xl mx-auto">
+          These are examples. Your emails are written fresh from each customer&apos;s own record, signed by you, and wait for your approval before anything sends. If a customer replies, the rest of their sequence stops straight away.
+        </p>
+      </div>
+    </section>
+  );
+}
+
+function SafeguardsSection() {
+  const items = [
+    { icon: Reply, t: "A reply stops everything", b: "The moment a customer replies, their remaining emails are cancelled. No awkward follow-ups." },
+    { icon: Ban, t: "Sold the car? Removed for good", b: "If someone replies that they no longer own it, they're taken off every future list." },
+    { icon: MailX, t: "Unsubscribes handled for you", b: "Every email has a one-click unsubscribe, and opt-outs are never emailed again." },
+    { icon: CalendarClock, t: "No over-contacting", b: "Anyone contacted in the last six months is skipped, so nobody hears from you too often." },
+    { icon: ShieldCheck, t: "No made-up numbers", b: "The AI never invents prices, discounts or finance figures. Facts come from your own records." },
+    { icon: Eye, t: "You see everything first", b: "Every email waits for your approval. Edit, rewrite or skip anyone before it sends." },
+  ];
+  return (
+    <section className="py-24 bg-background">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <SectionHead eyebrow="Built in" title="Designed so it never embarrasses you." intro="Automated doesn't mean careless. These rules are built into every sequence." />
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {items.map((x) => (
+            <div key={x.t} className="rounded-2xl border border-border bg-card p-6">
+              <div className="h-11 w-11 rounded-xl bg-primary/10 text-primary grid place-items-center"><x.icon className="h-5 w-5" /></div>
+              <h3 className="mt-4 font-semibold text-foreground">{x.t}</h3>
+              <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{x.b}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function ComparisonSection() {
+  const rows: { label: string; w: ReactNode; p: ReactNode; d: ReactNode }[] = [
+    { label: "Who you reach", w: "People who've already bought from you", p: "Anyone browsing", d: "Whoever you remember" },
+    { label: "Who you're up against", w: "Nobody. It's your customer.", p: "Every dealer nearby", d: "Nobody" },
+    { label: "Timing", w: "Automatic, at each ownership milestone", p: "When they're already shopping", d: "When you get round to it" },
+    {
+      label: "Monthly cost",
+      w: <>From £49<span className="block text-xs text-muted-foreground">Free setup</span></>,
+      p: <>Listing fees, ad spend or cost per lead<span className="block text-xs text-muted-foreground">Paid again for every buyer</span></>,
+      d: "Hours of staff time",
+    },
+    { label: "Your time", w: "Under 10 minutes a month", p: "Managing listings and leads", d: "An afternoon a month, minimum" },
+  ];
+  return (
+    <section className="py-24 bg-secondary/30">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <SectionHead eyebrow="Compared" title="The cheapest warm leads you'll ever get." />
+        <div className="overflow-x-auto rounded-2xl border border-border bg-card">
+          <table className="w-full min-w-[640px] text-sm">
+            <thead>
+              <tr className="border-b border-border">
+                <th className="p-4 text-left font-medium text-muted-foreground" />
+                <th className="p-4 text-left font-semibold text-primary bg-primary/5">Wynback</th>
+                <th className="p-4 text-left font-semibold text-foreground">Portals and paid ads</th>
+                <th className="p-4 text-left font-semibold text-foreground">Doing it yourself</th>
+              </tr>
+            </thead>
+            <tbody>
+              {rows.map((r) => (
+                <tr key={r.label} className="border-b border-border last:border-0">
+                  <td className="p-4 font-medium text-foreground">{r.label}</td>
+                  <td className="p-4 bg-primary/5 font-medium text-foreground">{r.w}</td>
+                  <td className="p-4 text-muted-foreground">{r.p}</td>
+                  <td className="p-4 text-muted-foreground">{r.d}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function CalculatorSection() {
+  const [cars, setCars] = useState(20);
+  const [profit, setProfit] = useState(2000);
+  const [plan, setPlan] = useState(75);
+  const plans = [
+    { name: "Forecourt", price: 49 },
+    { name: "Showroom", price: 75 },
+    { name: "Supersite", price: 150 },
+  ];
+  const s = useMemo(() => {
+    const contacted = cars * 6;
+    const sales = contacted * 0.005 * 12;
+    const gross = sales * profit;
+    const net = gross - plan * 12;
+    const cover = (plan * 12) / profit;
+    return { contacted, sales, gross, net, cover };
+  }, [cars, profit, plan]);
+  const fmt = (n: number) => (n < 10 ? n.toFixed(1) : Math.round(n).toLocaleString());
+
+  return (
+    <section id="calculator" className="py-24 bg-background">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-3xl mx-auto text-center mb-12">
+          <span className="inline-flex items-center gap-2 text-sm font-semibold text-primary uppercase tracking-wide"><Calculator className="h-4 w-4" />ROI calculator</span>
+          <h2 className="mt-3 text-3xl md:text-4xl font-semibold tracking-tight">What could your customer list be worth?</h2>
+          <p className="mt-4 text-lg text-muted-foreground">Move the sliders to match your dealership. The figures update as you go.</p>
+        </div>
+        <div className="rounded-3xl border border-border bg-card p-6 md:p-12 shadow-xl shadow-primary/5">
+          <div className="grid md:grid-cols-2 gap-8">
+            <div>
+              <div className="flex justify-between text-sm mb-3"><span className="text-muted-foreground">Cars you sell per month</span><span className="font-semibold">{cars}</span></div>
+              <Slider value={[cars]} onValueChange={(v) => setCars(v[0])} min={1} max={200} step={1} />
+            </div>
+            <div>
+              <div className="flex justify-between text-sm mb-3"><span className="text-muted-foreground">Average profit per sale</span><span className="font-semibold">£{profit.toLocaleString()}</span></div>
+              <Slider value={[profit]} onValueChange={(v) => setProfit(v[0])} min={500} max={5000} step={100} />
+            </div>
+          </div>
+          <div className="mt-8">
+            <p className="text-sm text-muted-foreground mb-3">Your Wynback plan</p>
+            <div className="flex flex-wrap gap-3">
+              {plans.map((p) => (
+                <button
+                  key={p.name}
+                  onClick={() => setPlan(p.price)}
+                  className={`px-5 py-2.5 rounded-xl text-sm font-semibold border transition-all ${plan === p.price ? "bg-primary text-primary-foreground border-primary" : "bg-background border-border hover:border-primary/30"}`}
+                >
+                  {p.name} £{p.price}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div className="mt-10 rounded-2xl bg-primary/10 border border-primary/20 p-6 text-center">
+            <p className="text-sm text-muted-foreground">Extra profit a year, after Wynback</p>
+            <p className="mt-1 text-4xl md:text-5xl font-bold text-primary">£{Math.round(s.net).toLocaleString()}</p>
+          </div>
+          <div className="mt-4 grid grid-cols-2 lg:grid-cols-4 gap-3">
+            <StatBox label="Past customers contacted a month" value={s.contacted.toLocaleString()} />
+            <StatBox label="Extra sales a year" value={fmt(s.sales)} />
+            <StatBox label="Profit from those sales" value={`£${Math.round(s.gross).toLocaleString()}`} />
+            <StatBox label="Sales a year to cover the plan" value={s.cover.toFixed(1)} />
+          </div>
+          <p className="mt-6 text-xs text-muted-foreground text-center">
+            Assumes six milestone groups a month (cars sold × 6 people contacted) and 0.5% of them buying again. An illustration, not a guarantee. Your demo uses your real numbers.
+          </p>
+        </div>
         <div className="mt-10 flex justify-center">
-          <BookDemoButton label="Book a demo" location="video_section" showArrow className="h-12 px-8 text-base shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-shadow" />
+          <DemoLink location="calculator" className={ctaClass}>Get these numbers for your list <ArrowRight className="h-4 w-4" /></DemoLink>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function StatBox({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-2xl p-4 text-center border border-border bg-background/50">
+      <div className="text-2xl md:text-3xl font-semibold tracking-tight">{value}</div>
+      <div className="mt-1 text-xs text-muted-foreground leading-tight">{label}</div>
+    </div>
+  );
+}
+
+function PricingSection() {
+  const [annual, setAnnual] = useState(false);
+  const tiers = [
+    { name: "Forecourt", monthly: 49, limit: "Up to 25 cars in stock", popular: false },
+    { name: "Showroom", monthly: 75, limit: "Up to 100 cars in stock", popular: true },
+    { name: "Supersite", monthly: 150, limit: "100+ cars in stock", popular: false },
+  ];
+  const features = [
+    "Free setup. We import your data and configure everything",
+    "Replies go straight to your own inbox",
+    "Milestones at 12, 18, 24, 36, 48 and 60 months",
+    "AI-written emails about each customer's exact car",
+    "Approve, edit or skip any email before it sends",
+    "Simple dashboard: sent, replies and hot leads",
+    "Unsubscribes handled automatically",
+    "Export your data anytime. No lock-in",
+    "Cancel anytime. No long contract",
+  ];
+  const coverLine = (yearly: number) => {
+    const ratio = 2000 / yearly;
+    if (ratio >= 1) return "One £2,000 sale covers the whole year";
+    return `One £2,000 sale covers ${Math.round(ratio * 12)} months`;
+  };
+  return (
+    <section id="pricing" className="py-24 bg-secondary/30">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <SectionHead eyebrow="Pricing" title="One extra sale pays for the year." intro="Simple monthly plans based on the stock you carry. Setup is free on every plan." />
+        <div className="flex justify-center mb-12 -mt-4">
+          <div className="inline-flex items-center gap-1 rounded-full border border-border bg-card p-1">
+            <button onClick={() => setAnnual(false)} className={`px-5 py-2 rounded-full text-sm font-medium ${!annual ? "bg-primary text-primary-foreground" : "text-muted-foreground"}`}>Monthly</button>
+            <button onClick={() => setAnnual(true)} className={`px-5 py-2 rounded-full text-sm font-medium inline-flex items-center gap-2 ${annual ? "bg-primary text-primary-foreground" : "text-muted-foreground"}`}>
+              Annually <span className="text-[10px] font-semibold uppercase">Save 20%</span>
+            </button>
+          </div>
+        </div>
+        <div className="grid md:grid-cols-3 gap-6 lg:gap-8">
+          {tiers.map((t) => {
+            const price = annual ? Math.round(t.monthly * 0.8) : t.monthly;
+            const yearly = annual ? price * 12 : t.monthly * 12;
+            return (
+              <div key={t.name} className={`relative flex flex-col rounded-2xl border bg-card p-8 ${t.popular ? "border-primary/40 shadow-xl shadow-primary/20 ring-1 ring-primary/30" : "border-border"}`}>
+                {t.popular && (
+                  <span className="absolute -top-3 left-1/2 -translate-x-1/2 inline-flex items-center gap-1 rounded-full bg-primary px-3 py-1 text-xs font-semibold text-primary-foreground">
+                    <Sparkles className="h-3 w-3" />Most popular
+                  </span>
+                )}
+                <h3 className="text-xl font-semibold">{t.name}</h3>
+                <p className="mt-1 text-sm text-muted-foreground">{t.limit}</p>
+                <div className="mt-6 flex items-baseline gap-1">
+                  <span className="text-5xl font-semibold tracking-tight">£{price}</span>
+                  <span className="text-muted-foreground">/month</span>
+                </div>
+                <p className="mt-1 text-xs text-muted-foreground h-4">{annual ? `£${(price * 12).toLocaleString()} billed yearly` : "\u00A0"}</p>
+                <DemoLink location={`pricing_${t.name.toLowerCase()}`} variant={t.popular ? "default" : "outline"} className="mt-8 w-full h-12">Book a demo</DemoLink>
+                <p className="mt-3 text-center text-xs text-muted-foreground">{coverLine(yearly)}</p>
+              </div>
+            );
+          })}
+        </div>
+        <div className="mt-16 max-w-4xl mx-auto rounded-2xl border border-border bg-card p-8 md:p-10">
+          <h3 className="text-center text-lg font-semibold mb-8">Every plan includes</h3>
+          <div className="grid sm:grid-cols-2 gap-x-8 gap-y-4">
+            {features.map((f) => (
+              <div key={f} className="flex items-start gap-3">
+                <span className="mt-0.5 h-5 w-5 rounded-full bg-primary/10 text-primary grid place-items-center shrink-0"><Check className="h-3 w-3" /></span>
+                <span className="text-sm text-foreground/90">{f}</span>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </section>
@@ -419,563 +794,60 @@ function VideoSection() {
 
 function FounderSection() {
   return (
-    <section className="py-20 bg-white border-t border-border/60">
+    <section className="py-24 bg-background">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <span className="text-sm font-semibold text-primary uppercase tracking-wide">From the founder</span>
-        <h2 className="mt-3 text-3xl md:text-4xl font-semibold tracking-tight">
-          Built by someone who&apos;s stood on the forecourt, not just studied it.
-        </h2>
-        <p className="mt-6 text-lg text-muted-foreground leading-relaxed">
-          I spent 14 years in car sales — from sales executive to running my own dealership. I&apos;ve lived the problem Wynback solves: good customers slip away simply because no one followed up. That&apos;s why Wynback runs itself — because I know you don&apos;t have a spare afternoon a month to chase your own database.
-        </p>
+        <Eyebrow>Why I built Wynback</Eyebrow>
+        <Quote className="mx-auto mt-6 h-8 w-8 text-primary/40" />
+        <blockquote className="mt-4 text-xl md:text-2xl text-foreground leading-relaxed">
+          &ldquo;I spent 14 years in the motor trade, from sales exec to running my own dealership. The easiest deals were always the customers who came back. But following them all up never happened, because there was always something more urgent. Wynback does the follow-up I never had time for.&rdquo;
+        </blockquote>
+        <p className="mt-6 text-sm text-muted-foreground">— Kit Barrett, founder of Wynback</p>
       </div>
     </section>
   );
 }
 
-function PainSection() {
-  const pains = [
-    {
-      icon: Zap,
-      title: "How many of your previous customers are due a new car right now — and don't know you're still here?",
-      body: "They've had the car three years, made their final payment, and started browsing online — without a single email from you reminding them you're still there. Wynback reaches out automatically, before they start looking elsewhere.",
-    },
-    {
-      icon: Database,
-      title: "If a customer's ready to upgrade next month, what do they do — search Autotrader, or think of you first?",
-      body: "Without a reminder, even a happy past customer just starts scrolling listings like a stranger would — despite already knowing and trusting you. Wynback puts you in their inbox before they open Autotrader.",
-    },
-    {
-      icon: Users,
-      title: "What's it costing you to buy back at auction the same car you already sold once?",
-      body: "You already know its history, its condition, and its owner. Instead of trading it in with you, they take it to We Buy Any Car — and you end up paying transport, auction fees, and a stranger's premium to buy back a car you could have sourced directly, for a fraction of the cost.",
-    },
-    {
-      icon: PenTool,
-      title: "Your CRM has the data. When's the last time it actually sold you a car?",
-      body: "Milestones pass, finance deals expire, and customers quietly slip away. Wynback automates the timing and the copy so it happens without eating your day.",
-    },
+function FAQSection() {
+  const faqs = [
+    { q: "How quickly can we get started?", a: "Wynback works from the sales data you already have, and setup is done for you: importing your records, choosing milestones and adding your email signature. You'll review your first month's list and emails with us before anything goes out." },
+    { q: "What data do I need?", a: "A spreadsheet of past sales with the customer's name, email, the car they bought and the sale date. Extras like the reg, trim and price help the emails get more specific, but they're optional. No DMS integration needed." },
+    { q: "Will the emails sound like a robot wrote them?", a: "No. They're short, plain and written in British English in your name, the way a good salesperson would write to a customer they remember. You can edit any email, or ask for it to be rewritten, before it sends." },
+    { q: "What about GDPR and unsubscribes?", a: "Every email includes a one-click unsubscribe, and anyone who opts out is never emailed again. Customers who sold the car, or were contacted in the last six months, are skipped automatically. We'll go through how your data is used on the demo." },
+    { q: "What happens when someone replies?", a: "The reply comes straight to your inbox and their remaining emails stop immediately. Wynback reads the reply and flags it: hot lead, interested, no longer owns the car, or unsubscribe. So you know who to call first." },
+    { q: "What results can I expect?", a: "It depends on how many cars you've sold and how far back your records go. You're contacting people who already chose you once, at the point they're likely to change car. Use the calculator above for a rough idea, and we'll run your real numbers on the demo." },
+    { q: "Is there a contract?", a: "No. Plans are monthly and you can cancel anytime. Annual billing saves 20% if you'd rather pay upfront. Your data is yours and you can export it whenever you like." },
   ];
-
   return (
-    <section className="py-24 bg-secondary/30">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="max-w-3xl mx-auto text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-semibold tracking-tight">The four leaks quietly draining profit from your dealership.</h2>
-          <p className="mt-4 text-lg text-muted-foreground">Every one of these is fixable — and Wynback fixes them automatically.</p>
-        </div>
-        <div className="grid md:grid-cols-2 gap-6">
-          {pains.map((pain) => (
-            <div
-              key={pain.title}
-              className="group rounded-2xl border border-border bg-card p-8 transition-all hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5"
-            >
-              <div className="h-12 w-12 rounded-xl bg-primary/10 text-primary grid place-items-center mb-5">
-                <pain.icon className="h-6 w-6" />
-              </div>
-              <h3 className="text-xl font-semibold">{pain.title}</h3>
-              <p className="mt-3 text-muted-foreground leading-relaxed">{pain.body}</p>
-            </div>
+    <section id="faq" className="py-24 bg-secondary/30">
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+        <SectionHead eyebrow="Questions" title="Everything dealers ask us." />
+        <Accordion type="single" collapsible className="rounded-2xl border border-border bg-card divide-y divide-border">
+          {faqs.map((f, i) => (
+            <AccordionItem key={f.q} value={`item-${i}`} className="border-0 px-6">
+              <AccordionTrigger className="text-left text-base font-medium hover:no-underline py-5">{f.q}</AccordionTrigger>
+              <AccordionContent className="text-muted-foreground leading-relaxed pb-5">{f.a}</AccordionContent>
+            </AccordionItem>
           ))}
-        </div>
+        </Accordion>
       </div>
     </section>
-  );
-}
-
-function SolutionSection() {
-  return (
-    <section id="how-it-works" className="py-24 relative overflow-hidden bg-white">
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/10 rounded-full blur-3xl pointer-events-none" />
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="max-w-3xl mx-auto text-center mb-16">
-          <span className="text-sm font-semibold text-primary uppercase tracking-wide">How it works</span>
-          <h2 className="mt-3 text-3xl md:text-4xl font-semibold tracking-tight text-foreground">Someone&apos;s going to sell your past customer their next car. Make sure it&apos;s you.</h2>
-          <p className="mt-4 text-lg text-muted-foreground">More sales, better relationships, cheaper stock — in 3 simple steps.</p>
-        </div>
-
-        <div className="grid md:grid-cols-3 gap-8">
-          <StepCard
-            step={1}
-            title="Upload your previous customer sales in one CSV"
-            body="Securely import the sales you already have. The more history, the more warm leads and buy-back opportunities surface every month."
-            mockup={<UploadMockup />}
-          />
-          <StepCard
-            step={2}
-            title="We automatically flag every customer at the right moment"
-            body="Each month we identify buyers at 12, 18, 24, 36, 48 or 60 months—periods when statistics show replacement intent peaks and finance agreements typically end. Two signals, one perfect moment."
-            mockup={<MilestoneMockup />}
-          />
-          <StepCard
-            step={3}
-            title="AI writes warm, personalised emails that actually prompt replies"
-            body="Review them once, they go out automatically — no templates, no generic fluff. Just real conversations with past customers."
-            mockup={<SequenceMockup />}
-          />
-        </div>
-        <p className="mt-12 text-center text-base md:text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-          That&apos;s it. No campaigns to build, no lists to manage — most dealers spend under 10 minutes a month keeping it running.
-        </p>
-        <div className="mt-8 flex justify-center">
-          <BookDemoButton label="See it in action — book a demo" location="solution" showArrow className="h-12 px-8 text-base shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-shadow" />
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function StepCard({
-  step,
-  title,
-  body,
-  mockup,
-}: {
-  step: number;
-  title: string;
-  body: string;
-  mockup: React.ReactNode;
-}) {
-  return (
-    <div className="flex flex-col rounded-2xl border border-border bg-card overflow-hidden transition-all hover:border-primary/30 hover:shadow-xl hover:shadow-primary/5">
-      <div className="p-8 pb-6">
-        <div className="inline-flex items-center justify-center h-8 w-8 rounded-full bg-primary text-primary-foreground text-sm font-semibold mb-5">
-          {step}
-        </div>
-        <h3 className="text-xl font-semibold">{title}</h3>
-        <p className="mt-3 text-muted-foreground leading-relaxed">{body}</p>
-      </div>
-      <div className="mt-auto p-6 pt-0">
-        {mockup}
-      </div>
-    </div>
-  );
-}
-
-import stepCustomersCropped from "@/assets/step-customers-cropped.png";
-import stepLeadsCropped from "@/assets/step-leads-cropped.png";
-import stepSequencesCropped from "@/assets/step-sequences-cropped.png";
-
-function ScreenshotFrame({ src, alt }: { src: string; alt: string }) {
-  return (
-    <div className="rounded-xl border border-border bg-background overflow-hidden shadow-sm aspect-[16/11]">
-      <img
-        src={src}
-        alt={alt}
-        loading="lazy"
-        className="w-full h-full object-cover"
-      />
-    </div>
-  );
-}
-
-function UploadMockup() {
-  return <ScreenshotFrame src={stepCustomersCropped} alt="Wynback customers page showing imported sales history" />;
-}
-
-function MilestoneMockup() {
-  return <ScreenshotFrame src={stepLeadsCropped} alt="Wynback monthly leads grouped by ownership milestone" />;
-}
-
-function SequenceMockup() {
-  return <ScreenshotFrame src={stepSequencesCropped} alt="Wynback AI-generated 3-email sequence preview" />;
-}
-
-
-function BenefitsSection() {
-  const benefits = [
-    {
-      icon: MousePointerClick,
-      title: "More sales, not more ad spend",
-      body: "Every email goes to someone who already knows and trusts your dealership. No portal fees, no click costs, no competing against every other dealer in your postcode.",
-    },
-    {
-      icon: ShieldCheck,
-      title: "Buy back cars you previously sold",
-      body: "Re-engaging past owners gives you first refusal on stock you understand — no auction premium, no transport, no surprises.",
-    },
-    {
-      icon: Users,
-      title: "Stronger customer relationships",
-      body: "A well-timed, personal email at important milestones keeps you front of mind. Customers feel looked after, not sold to.",
-    },
-    {
-      icon: Lock,
-      title: "Marketing that works while you sleep",
-      body: "The system runs every month automatically. Your team reviews the emails and clicks approve — everything else is handled.",
-    },
-    {
-      icon: Sparkles,
-      title: "No copywriting or marketing skills needed",
-      body: "The AI writes every email in a warm, human tone, referencing the exact car the customer bought and a soft, natural call-to-action.",
-    },
-    {
-      icon: Database,
-      title: "Your CRM becomes a profit engine",
-      body: "The same customer database you've already paid to acquire keeps producing leads — and it stays with the dealership. When a salesperson leaves, their contact book usually leaves with them; Wynback keeps the relationship with the business, not the individual.",
-    },
-  ];
-
-  return (
-    <section id="benefits" className="py-24 bg-secondary/30">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="max-w-3xl mx-auto text-center mb-16">
-          <span className="text-sm font-semibold text-primary uppercase tracking-wide">The payoff</span>
-          <h2 className="mt-3 text-3xl md:text-4xl font-semibold tracking-tight">The benefits that matter to your bottom line</h2>
-          <p className="mt-4 text-lg text-muted-foreground">Wynback is built to drive three outcomes: more sales, better retention, and cheaper stock.</p>
-        </div>
-        <div className="grid md:grid-cols-3 gap-8">
-          {benefits.map((benefit) => (
-            <div key={benefit.title} className="text-center md:text-left p-8">
-              <div className="mx-auto md:mx-0 h-14 w-14 rounded-2xl bg-primary/10 text-primary grid place-items-center mb-6">
-                <benefit.icon className="h-7 w-7" />
-              </div>
-              <h3 className="text-xl font-semibold">{benefit.title}</h3>
-              <p className="mt-3 text-muted-foreground leading-relaxed">{benefit.body}</p>
-            </div>
-          ))}
-        </div>
-        <div className="mt-14 flex justify-center">
-          <BookDemoButton label="Book a demo" location="benefits" showArrow className="h-12 px-8 text-base shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-shadow" />
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function CalculatorSection() {
-  const [carsPerMonth, setCarsPerMonth] = useState(20);
-  const [monthlyPayment, setMonthlyPayment] = useState(75);
-
-  const PROFIT_PER_SALE = 2000;
-  const CONVERSION_RATE = 0.005;
-
-  const stats = useMemo(() => {
-    const totalCustomers = carsPerMonth * 12 * 5;
-    const monthlyLeads = carsPerMonth * 6; // 6 milestone cohorts surface each month
-    const monthlyEmails = monthlyLeads * 3;
-    const monthlySales = monthlyLeads * CONVERSION_RATE;
-    const yearlySales = monthlySales * 12;
-    const yearlyProfit = yearlySales * PROFIT_PER_SALE;
-    const yearlyCost = monthlyPayment * 12;
-    const netAnnualProfit = yearlyProfit - yearlyCost;
-    return { totalCustomers, monthlyLeads, monthlyEmails, yearlySales, yearlyProfit, yearlyCost, netAnnualProfit };
-  }, [carsPerMonth, monthlyPayment]);
-
-  const formatSales = (n: number) => (n < 1 ? n.toFixed(1) : Math.round(n).toLocaleString());
-
-  const plans = [
-    { name: "Forecourt", price: 49 },
-    { name: "Showroom", price: 75 },
-    { name: "Supersite", price: 150 },
-  ];
-
-  return (
-    <section id="calculator" className="py-24 bg-secondary/30">
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="max-w-3xl mx-auto text-center mb-12">
-          <span className="inline-flex items-center gap-2 rounded-full border border-primary/25 bg-primary/10 px-4 py-1.5 text-xs font-semibold tracking-wide uppercase text-primary">
-            <Calculator className="h-3.5 w-3.5" />
-            ROI calculator
-          </span>
-          <h2 className="mt-4 text-3xl md:text-4xl font-semibold tracking-tight">See what your past sales could be worth</h2>
-          <p className="mt-4 text-lg text-muted-foreground">
-            You&apos;ve already paid to acquire these customers once. Reaching them again costs a fraction of a fresh ad — and even a modest reply rate turns into sales you&apos;d otherwise lose to a competitor. Slide your average monthly sales below to see what your own list could generate.
-          </p>
-        </div>
-
-        <div className="rounded-3xl border border-border bg-card p-8 md:p-12 shadow-xl shadow-primary/5">
-          <div className="mb-10">
-            <label htmlFor="sales-slider" className="block text-sm font-medium text-muted-foreground mb-4">
-              Average cars sold per month
-            </label>
-            <div className="flex items-center gap-6">
-              <Slider
-                id="sales-slider"
-                value={[carsPerMonth]}
-                onValueChange={(value) => setCarsPerMonth(value[0])}
-                min={1}
-                max={200}
-                step={1}
-                className="flex-1"
-              />
-              <div className="flex items-center gap-2 min-w-[100px] justify-end">
-                <input
-                  type="number"
-                  value={carsPerMonth}
-                  onChange={(e) => setCarsPerMonth(Math.max(1, Math.min(200, Number(e.target.value) || 0)))}
-                  className="w-20 h-10 rounded-lg border border-input bg-background px-3 text-right font-semibold focus:outline-none focus:ring-2 focus:ring-ring"
-                />
-                <span className="text-sm text-muted-foreground">/mo</span>
-              </div>
-            </div>
-          </div>
-
-          <div className="mb-10">
-            <label className="block text-sm font-medium text-muted-foreground mb-4">
-              Your monthly Wynback plan
-            </label>
-            <div className="flex flex-wrap gap-3">
-              {plans.map((plan) => (
-                <button
-                  key={plan.name}
-                  onClick={() => setMonthlyPayment(plan.price)}
-                  className={`px-5 py-2.5 rounded-xl text-sm font-semibold border transition-all ${
-                    monthlyPayment === plan.price
-                      ? "bg-primary text-primary-foreground border-primary shadow-md"
-                      : "bg-background border-border hover:border-primary/30"
-                  }`}
-                >
-                  {plan.name} — £{plan.price}/mo
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
-            <StatBox label="People re-engaged / month" value={stats.monthlyLeads.toLocaleString()} />
-            <StatBox label="Estimated extra sales / year" value={formatSales(stats.yearlySales)} />
-            <StatBox label="Estimated profit / year" value={`£${Math.round(stats.yearlyProfit).toLocaleString()}`} highlight />
-            <StatBox label="Profit after subscription" value={`£${Math.round(stats.netAnnualProfit).toLocaleString()}`} />
-          </div>
-
-          <div className="mt-8 p-4 rounded-xl bg-primary/5 border border-primary/10 text-center">
-            <p className="text-sm text-muted-foreground">
-              At a 0.5% conversion rate and{" "}
-              <span className="font-semibold text-foreground">£{PROFIT_PER_SALE.toLocaleString()} profit per sale</span>,
-              that&apos;s approximately{" "}
-              <span className="font-semibold text-foreground">{formatSales(stats.yearlySales)} extra sales per year</span>{" "}
-              generating{" "}
-              <span className="font-semibold text-foreground">£{Math.round(stats.yearlyProfit).toLocaleString()} profit</span>{" "}
-              after your{" "}
-              <span className="font-semibold text-foreground">£{stats.yearlyCost.toLocaleString()} annual subscription</span>,
-              leaving{" "}
-              <span className="font-semibold text-foreground">£{Math.round(stats.netAnnualProfit).toLocaleString()} net profit</span>.
-            </p>
-          </div>
-        </div>
-        <div className="mt-10 flex justify-center">
-          <BookDemoButton label="Book a demo to unlock these numbers" location="calculator" showArrow className="h-12 px-8 text-base shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-shadow" />
-        </div>
-      </div>
-    </section>
-  );
-}
-
-
-function StatBox({ label, value, highlight }: { label: string; value: string; highlight?: boolean }) {
-  return (
-    <div className={`rounded-2xl p-4 sm:p-6 text-center border ${highlight ? "bg-primary/10 border-primary/20" : "bg-background/50 border-border"}`}>
-      <div className={`text-2xl sm:text-3xl md:text-4xl font-semibold tracking-tight break-words ${highlight ? "text-primary" : "text-foreground"}`}>
-        {value}
-      </div>
-      <div className="mt-2 text-xs sm:text-sm text-muted-foreground leading-tight">{label}</div>
-    </div>
   );
 }
 
 function FinalCTASection() {
   return (
-    <section className="py-24">
+    <section className="py-24 bg-background">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="relative overflow-hidden rounded-3xl border border-primary/20 bg-card p-10 md:p-16 text-center">
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[500px] h-[300px] bg-primary/20 rounded-full blur-3xl pointer-events-none" />
           <div className="relative">
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-semibold tracking-tight">
-              Your next customer already owns a car. It’s yours. Are you going to remind them?
-            </h2>
-            <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
-              Your customers are already changing cars. Let Wynback make sure they change them with you.
-            </p>
-            <div className="mt-9 flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Button asChild size="lg" className="h-12 px-8 text-base shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-shadow">
-                <a href={DEMO_URL} onClick={(event) => trackDemoClick(event, "final_cta")}>
-                  Book a demo
-                  <ArrowRight className="h-4 w-4" />
-                </a>
-              </Button>
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-semibold tracking-tight">Someone&apos;s going to sell your customer their next car. Make sure it&apos;s you.</h2>
+            <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">Book a 20-minute demo. We&apos;ll show you how many of your past customers hit a milestone this month.</p>
+            <div className="mt-9 flex justify-center">
+              <DemoLink location="final_cta" className={ctaClass}>Book a demo <ArrowRight className="h-4 w-4" /></DemoLink>
             </div>
-            <p className="mt-3 text-sm text-muted-foreground">No setup fees</p>
+            <p className="mt-4 text-sm text-muted-foreground">Free setup · No contract · Your data stays yours</p>
           </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function PricingSection() {
-  const [annual, setAnnual] = useState(false);
-
-  const tiers = [
-    {
-      name: "Forecourt",
-      monthly: 49,
-      limit: "Up to 25 vehicles in stock",
-      popular: false,
-    },
-    {
-      name: "Showroom",
-      monthly: 75,
-      limit: "Up to 100 vehicles in stock",
-      popular: true,
-    },
-    {
-      name: "Supersite",
-      monthly: 150,
-      limit: "100+ vehicles in stock",
-      popular: false,
-    },
-  ];
-
-  const sharedFeatures = [
-    "Free setup — we configure your milestone sequences, you don't touch anything",
-    "Replies land straight in your own inbox — never a shared portal you have to check",
-    "Fully automated ownership-milestone triggers (12/24/36/48/60 months)",
-    "Under 10 minutes a month admin — no campaigns to build, no lists to manage",
-    "Your data stays yours — export anytime, no lock-in",
-    "Cancel anytime — no long contracts",
-    "Simple dashboard — opens, replies, and bookings generated, at a glance",
-    "GDPR-compliant sending and unsubscribes handled automatically",
-    "CSV import to get started — no DMS integration required on day one",
-  ];
-
-  return (
-    <section id="pricing" className="py-24 bg-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="max-w-3xl mx-auto text-center mb-12">
-          <span className="text-sm font-semibold text-primary uppercase tracking-wide">Pricing</span>
-          <h2 className="mt-3 text-3xl md:text-4xl font-semibold tracking-tight">Worth more than one extra sale a month?</h2>
-          <p className="mt-4 text-lg text-muted-foreground">One extra sale usually pays for the entire year. Pick a plan based on how many vehicles you keep in stock.</p>
-        </div>
-
-        <div className="flex justify-center mb-12">
-          <div className="inline-flex items-center gap-1 rounded-full border border-border bg-secondary/50 p-1">
-            <button
-              onClick={() => setAnnual(false)}
-              className={`px-5 py-2 rounded-full text-sm font-medium transition-all ${!annual ? "bg-white text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
-            >
-              Billed monthly
-            </button>
-            <button
-              onClick={() => setAnnual(true)}
-              className={`px-5 py-2 rounded-full text-sm font-medium transition-all inline-flex items-center gap-2 ${annual ? "bg-white text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
-            >
-              Billed annually
-              <span className="inline-flex items-center rounded-full bg-primary/10 text-primary px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide">Save 20%</span>
-            </button>
-          </div>
-        </div>
-
-        <div className="grid md:grid-cols-3 gap-6 lg:gap-8 items-stretch">
-          {tiers.map((tier) => {
-            const price = annual ? Math.round(tier.monthly * 0.8) : tier.monthly;
-            return (
-              <div
-                key={tier.name}
-                className={`relative flex flex-col rounded-2xl border bg-card p-8 transition-all ${
-                  tier.popular
-                    ? "border-primary/40 shadow-xl shadow-primary/20 ring-1 ring-primary/30 md:-translate-y-2"
-                    : "border-border hover:border-primary/20 hover:shadow-lg"
-                }`}
-              >
-                {tier.popular && (
-                  <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                    <span className="inline-flex items-center gap-1 rounded-full bg-primary px-3 py-1 text-xs font-semibold text-primary-foreground shadow-md">
-                      <Sparkles className="h-3 w-3" />
-                      Most Popular
-                    </span>
-                  </div>
-                )}
-                <h3 className="text-xl font-semibold">{tier.name}</h3>
-                <p className="mt-1 text-sm text-muted-foreground">{tier.limit}</p>
-                <div className="mt-6 flex items-baseline gap-1">
-                  <span className="text-4xl md:text-5xl font-semibold tracking-tight">£{price}</span>
-                  <span className="text-muted-foreground">/mo</span>
-                </div>
-                <p className="mt-1 text-xs text-muted-foreground h-4">
-                  {annual ? `Billed £${price * 12} yearly` : "\u00A0"}
-                </p>
-
-                <div className="mt-8">
-                  <Button
-                    asChild
-                    size="lg"
-                    variant={tier.popular ? "default" : "outline"}
-                    className={`w-full h-12 ${tier.popular ? "shadow-lg shadow-primary/25" : ""}`}
-                  >
-                    <a href={DEMO_URL} onClick={(event) => trackDemoClick(event, `pricing_${tier.name.toLowerCase()}`)}>Book a demo</a>
-                  </Button>
-                  <p className="mt-3 text-center text-xs text-muted-foreground">
-                    No setup fees. Cancel or change plans anytime.
-                  </p>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-
-        <div className="mt-16 max-w-4xl mx-auto">
-          <div className="rounded-2xl border border-border bg-card p-8 md:p-10">
-            <h3 className="text-center text-lg font-semibold mb-8">Every plan includes</h3>
-            <div className="grid sm:grid-cols-2 gap-x-8 gap-y-4">
-              {sharedFeatures.map((feature) => (
-                <div key={feature} className="flex items-start gap-3">
-                  <span className="mt-0.5 h-5 w-5 rounded-full bg-primary/10 text-primary grid place-items-center flex-shrink-0">
-                    <Check className="h-3 w-3" />
-                  </span>
-                  <span className="text-sm text-foreground/90">{feature}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-
-function PricingFAQ() {
-  const faqs = [
-    {
-      q: "What kind of results can I expect?",
-      a: "It depends on the size and age of your customer database, but the principle is simple: you're reaching people who already bought from you once, at the exact moment they're statistically most likely to be shopping again. Use the ROI calculator above to see what your own numbers could look like based on your monthly sales volume and list size.",
-    },
-    {
-      q: "What data do I need to upload?",
-      a: "Just a CSV of your past sales — customer name, email, purchase date, and the vehicle they bought. That's enough for Wynback to start flagging ownership milestones and generating email sequences. No DMS integration required to get started, and we'll help you get the file into the right format if needed.",
-    },
-    {
-      q: "How secure is my customer data?",
-      a: "Your data stays yours. All sending is GDPR-compliant, unsubscribes are handled automatically, and you can export your data or cancel at any time — there's no lock-in and we never share your customer list.",
-    },
-    {
-      q: "Do I need marketing experience?",
-      a: "No. The AI writes every email for you in a warm, human tone referencing the exact car each customer bought, and we set up your entire milestone sequence when you sign up. Most dealers spend under 10 minutes a month reviewing and approving emails — no campaigns to build, no copywriting required.",
-    },
-  ];
-
-  return (
-    <section className="py-16 bg-secondary/30">
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-10">
-          <h2 className="text-2xl md:text-3xl font-semibold tracking-tight">Frequently asked questions</h2>
-        </div>
-        <Accordion type="single" collapsible className="rounded-2xl border border-border bg-card divide-y divide-border">
-          {faqs.map((faq, i) => (
-            <AccordionItem key={i} value={`item-${i}`} className="border-0 px-6">
-              <AccordionTrigger className="text-left text-base font-medium hover:no-underline py-5">
-                {faq.q}
-              </AccordionTrigger>
-              <AccordionContent className="text-muted-foreground leading-relaxed pb-5">
-                {faq.a}
-              </AccordionContent>
-            </AccordionItem>
-          ))}
-        </Accordion>
-        <div className="mt-10 flex flex-col items-center gap-3">
-          <p className="text-sm text-muted-foreground">Still have questions? Get them answered in 20 minutes.</p>
-          <BookDemoButton label="Book a demo" location="faq" showArrow className="h-12 px-8 text-base shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-shadow" />
         </div>
       </div>
     </section>
@@ -984,14 +856,21 @@ function PricingFAQ() {
 
 function Footer() {
   return (
-    <footer className="border-t border-border py-10">
+    <footer className="border-t border-border py-10 pb-24 md:pb-10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4">
         <Link to="/" className="flex items-center">
           <img src={logo.url} alt="Wynback" className="h-7 w-auto object-contain" />
         </Link>
-        <p className="text-sm text-muted-foreground">
-          © {new Date().getFullYear()} Wynback. Built for UK independent car dealerships.
-        </p>
+        <nav className="flex gap-4 text-sm text-muted-foreground">
+          <a href="#how-it-works" className="hover:text-foreground">How it works</a>
+          <a href="#pricing" className="hover:text-foreground">Pricing</a>
+          <a href="#faq" className="hover:text-foreground">FAQ</a>
+          <Link to="/contact" className="hover:text-foreground">Contact</Link>
+        </nav>
+        <div className="text-center md:text-right text-sm text-muted-foreground">
+          <p>© {new Date().getFullYear()} Wynback. Built for UK independent car dealers.</p>
+          <p className="text-xs mt-1">Example emails and customers are illustrative.</p>
+        </div>
       </div>
     </footer>
   );

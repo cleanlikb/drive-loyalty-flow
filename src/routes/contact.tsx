@@ -68,8 +68,8 @@ function ContactPage() {
             Talk to the team
           </h1>
           <p className="mt-4 text-lg text-muted-foreground">
-            Questions about pricing, onboarding, or whether Wynback is right for your
-            dealership? Drop us a line — we usually reply within one working day.
+            Questions about pricing, setup, or whether Wynback suits your dealership? Send us a
+            message. We reply within one working day.
           </p>
         </div>
 
@@ -81,15 +81,26 @@ function ContactPage() {
               body="kit@wynback.co.uk"
               href="mailto:kit@wynback.co.uk"
             />
-            <InfoCard
-              icon={<MessageSquare className="h-5 w-5" />}
-              title="Sales & demos"
-              body="Book a 15-minute walkthrough tailored to your dealership."
-            />
+            <div className="flex items-start gap-4 rounded-xl border border-border bg-card p-5">
+              <div className="h-10 w-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0">
+                <MessageSquare className="h-5 w-5" />
+              </div>
+              <div>
+                <div className="font-semibold">Prefer to talk?</div>
+                <div className="text-sm text-muted-foreground mt-0.5">
+                  Book a 20-minute demo and we&apos;ll walk through it with your own numbers.
+                </div>
+                <Button asChild size="sm" className="mt-3">
+                  <a href="https://calendar.app.google/tjezLnaDgZ53Dhc78" target="_blank" rel="noopener noreferrer">
+                    Book a demo
+                  </a>
+                </Button>
+              </div>
+            </div>
             <InfoCard
               icon={<Clock className="h-5 w-5" />}
               title="Response time"
-              body="Mon–Fri, within one working day."
+              body="Monday to Friday, within one working day."
             />
           </div>
 
