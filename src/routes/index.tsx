@@ -608,7 +608,7 @@ function ComparisonSection() {
       p: <>Listing fees, ad spend or cost per lead<span className="block text-xs text-muted-foreground">Paid again for every buyer</span></>,
       d: "Hours of staff time",
     },
-    { label: "Your time", w: "Under 10 minutes a month", p: "Managing listings and leads", d: "An afternoon a month, minimum" },
+    { label: "Your time", w: "Under 10 minutes a month", p: "Managing listings and leads", d: "Two days a month" },
   ];
   return (
     <section className="py-24 bg-secondary/30">
