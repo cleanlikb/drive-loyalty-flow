@@ -49,7 +49,7 @@ export const Route = createFileRoute("/")({
       { property: "og:title", content: "Wynback — Your next sale is already in your customer list" },
       {
         property: "og:description",
-        content: "Automatic, personal emails to past customers at 12–60 month ownership milestones. From £49/month, free setup.",
+        content: "Automatic, personal emails to past customers at 12–60 month ownership milestones. From £75/month, free setup.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -597,7 +597,7 @@ function ComparisonSection() {
     { label: "Timing", w: "Automatic, at each ownership milestone", p: "When they're already shopping", d: "When you get round to it" },
     {
       label: "Monthly cost",
-      w: <>From £49<span className="block text-xs text-muted-foreground">Free setup</span></>,
+      w: <>From £75<span className="block text-xs text-muted-foreground">Free setup</span></>,
       p: <>Listing fees, ad spend or cost per lead<span className="block text-xs text-muted-foreground">Paid again for every buyer</span></>,
       d: "Hours of staff time",
     },
@@ -639,9 +639,9 @@ function CalculatorSection() {
   const [profit, setProfit] = useState(2000);
   const [plan, setPlan] = useState(75);
   const plans = [
-    { name: "Forecourt", price: 49 },
-    { name: "Showroom", price: 75 },
-    { name: "Supersite", price: 150 },
+    { name: "Forecourt", price: 75 },
+    { name: "Showroom", price: 125 },
+    { name: "Supersite", price: 175 },
   ];
   const s = useMemo(() => {
     const contacted = cars * 6;
@@ -720,9 +720,9 @@ function StatBox({ label, value }: { label: string; value: string }) {
 function PricingSection() {
   const [annual, setAnnual] = useState(false);
   const tiers = [
-    { name: "Forecourt", monthly: 49, limit: "Up to 25 cars in stock", popular: false },
-    { name: "Showroom", monthly: 75, limit: "Up to 100 cars in stock", popular: true },
-    { name: "Supersite", monthly: 150, limit: "100+ cars in stock", popular: false },
+    { name: "Forecourt", monthly: 75, limit: "Up to 125 previous customers a month", popular: false },
+    { name: "Showroom", monthly: 125, limit: "Up to 250 previous customers a month", popular: true },
+    { name: "Supersite", monthly: 175, limit: "Over 250 previous customers a month", popular: false },
   ];
   const features = [
     "Free setup. We import your data and configure everything",
@@ -743,7 +743,7 @@ function PricingSection() {
   return (
     <section id="pricing" className="py-24 bg-secondary/30">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <SectionHead eyebrow="Pricing" title="One extra sale pays for the year." intro="Simple monthly plans based on the stock you carry. Setup is free on every plan." />
+        <SectionHead eyebrow="Pricing" title="One extra sale pays for the year." intro="Simple monthly plans based on how many past customers we contact for you each month. Setup is free on every plan." />
         <div className="flex justify-center mb-12 -mt-4">
           <div className="inline-flex items-center gap-1 rounded-full border border-border bg-card p-1">
             <button onClick={() => setAnnual(false)} className={`px-5 py-2 rounded-full text-sm font-medium ${!annual ? "bg-primary text-primary-foreground" : "text-muted-foreground"}`}>Monthly</button>
