@@ -308,16 +308,16 @@ function NumbersSection() {
 
 function ProblemSection() {
   const pains = [
+    { t: "The list never gets worked", b: "nobody has two spare days to go through it." },
+    { t: "Milestones pass unseen", b: "the finance ends and the life change happens without you." },
     { t: "Every portal lead costs more", b: "and they're comparing you with every dealer nearby." },
     { t: "Happy customers buy elsewhere", b: "because nobody got in touch when they were ready." },
-    { t: "No time for follow-up", b: "so the customer list just sits there." },
-    { t: "Part-exchanges go to buying sites", b: "and you lose the sale and the trade-in." },
   ];
   return (
     <section className="py-16 md:py-20 bg-background">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <p className="text-xs font-semibold uppercase tracking-widest text-primary text-center">The problem</p>
-        <h2 className="mt-3 text-2xl md:text-4xl font-bold tracking-tight text-center">You're paying to chase strangers while your best prospects go quiet.</h2>
+        <h2 className="mt-3 text-2xl md:text-4xl font-bold tracking-tight text-center text-balance">You know you should be in touch when past customers are ready to change car. <span className="mt-2 block text-muted-foreground">You don&apos;t have two days a month to do it consistently.</span></h2>
         <ul className="mt-8 grid sm:grid-cols-2 gap-3">
           {pains.map((p) => (
             <li key={p.t} className="flex gap-3 rounded-xl border border-border bg-card p-4">
@@ -328,8 +328,8 @@ function ProblemSection() {
         </ul>
         <div className="mt-8 rounded-xl border border-primary/20 bg-primary/5 p-5 text-center">
           <p className="text-sm md:text-base leading-relaxed">
-            Keeping in touch with every past customer yourself means a call or an email for each one, every few months —{" "}
-            <span className="font-semibold text-foreground">two days of your month, every month, just to keep up.</span>{" "}
+            Two days a month, every month, is what keeping in touch with every past customer yourself actually costs —{" "}
+            <span className="font-semibold text-foreground">and that&apos;s only if you never miss one.</span>{" "}
             <span className="text-muted-foreground">Wynback does the lot for you in under 10 minutes.</span>
           </p>
         </div>
