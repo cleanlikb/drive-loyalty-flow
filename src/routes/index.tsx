@@ -12,12 +12,7 @@ import {
   Plus,
   Flame,
   Reply,
-  Ban,
-  MailX,
-  CalendarClock,
   Calculator,
-  Eye,
-  ShieldCheck,
   Quote,
 } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
@@ -146,7 +141,6 @@ function Landing() {
         <SolutionSection />
         <EmailsSection />
         <HowItWorksSection />
-        <SafeguardsSection />
         <ComparisonSection />
         <CalculatorSection />
         <PricingSection />
@@ -770,36 +764,6 @@ function EmailsSection() {
   );
 }
 
-function SafeguardsSection() {
-  const items = [
-    { icon: Reply, t: "A reply stops everything", b: "The moment a customer replies, their remaining emails are cancelled. No awkward follow-ups." },
-    { icon: Ban, t: "Sold the car? Removed for good", b: "If someone replies that they no longer own it, they're taken off every future list." },
-    { icon: MailX, t: "Unsubscribes handled for you", b: "Every email has a one-click unsubscribe, and opt-outs are never emailed again." },
-    { icon: CalendarClock, t: "No over-contacting", b: "Anyone contacted in the last six months is skipped, so nobody hears from you too often." },
-    { icon: ShieldCheck, t: "No made-up numbers", b: "The AI never invents prices, discounts or finance figures. Facts come from your own records." },
-    { icon: Eye, t: "You see everything first", b: "Every email waits for your approval. Edit, rewrite or skip anyone before it sends." },
-  ];
-  return (
-    <section className="py-24 lg:py-32 bg-background">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <SectionHead eyebrow="Built in" title="Designed so it never embarrasses you." intro="Automated doesn't mean careless. These rules are built into every sequence." />
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 border-t border-foreground/15">
-          {items.map((x, i) => (
-            <div key={x.t} className="border-b border-foreground/10 py-8 sm:px-6 sm:[&:nth-child(odd)]:pl-0 lg:[&:nth-child(odd)]:pl-6 lg:[&:nth-child(3n+1)]:pl-0">
-              <div className="flex items-center gap-3">
-                <span className="font-display text-sm text-muted-foreground tabular-nums">0{i + 1}</span>
-                <x.icon className="h-4 w-4 text-primary" />
-              </div>
-              <h3 className="mt-4 text-lg font-semibold text-foreground">{x.t}</h3>
-              <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{x.b}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
 function ComparisonSection() {
   const rows: { label: string; w: ReactNode; p: ReactNode; d: ReactNode }[] = [
     { label: "Who you reach", w: "People who've already bought from you", p: "Anyone browsing", d: "Whoever you remember" },
@@ -1022,6 +986,7 @@ function FAQSection() {
     { q: "How quickly can we get started?", a: "Wynback works from the sales data you already have, and setup is done for you: importing your records, choosing milestones and adding your email signature. You'll review your first month's list and emails with us before anything goes out." },
     { q: "What data do I need?", a: "A spreadsheet of past sales with the customer's name, email, the car they bought and the sale date. Extras like the reg, trim and price help the emails get more specific, but they're optional. No DMS integration needed." },
     { q: "Will the emails sound like a robot wrote them?", a: "No. They're short, plain and written in British English in your name, the way a good salesperson would write to a customer they remember. You can edit any email, or ask for it to be rewritten, before it sends." },
+    { q: "Do I get to see the emails before they go out?", a: "Yes. Every email waits for your approval: edit it, ask for a rewrite or skip that customer before anything sends. The AI never invents prices, discounts or finance figures, either — the details come from your own records." },
     { q: "What about GDPR and unsubscribes?", a: "Every email includes a one-click unsubscribe, and anyone who opts out is never emailed again. Customers who sold the car, or were contacted in the last six months, are skipped automatically. We'll go through how your data is used on the demo." },
     { q: "What happens when someone replies?", a: "The reply comes straight to your inbox and their remaining emails stop immediately. Wynback reads the reply and flags it: hot lead, interested, no longer owns the car, or unsubscribe. So you know who to call first." },
     { q: "What results can I expect?", a: "It depends on how many cars you've sold and how far back your records go. You're contacting people who already chose you once, at the point they're likely to change car. Use the calculator above for a rough idea, and we'll run your real numbers on the demo." },
