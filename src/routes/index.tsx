@@ -12,12 +12,7 @@ import {
   Plus,
   Flame,
   Reply,
-  Ban,
-  MailX,
-  CalendarClock,
   Calculator,
-  Eye,
-  ShieldCheck,
   Quote,
 } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
@@ -146,7 +141,6 @@ function Landing() {
         <SolutionSection />
         <EmailsSection />
         <HowItWorksSection />
-        <SafeguardsSection />
         <ComparisonSection />
         <CalculatorSection />
         <PricingSection />
@@ -1022,6 +1016,7 @@ function FAQSection() {
     { q: "How quickly can we get started?", a: "Wynback works from the sales data you already have, and setup is done for you: importing your records, choosing milestones and adding your email signature. You'll review your first month's list and emails with us before anything goes out." },
     { q: "What data do I need?", a: "A spreadsheet of past sales with the customer's name, email, the car they bought and the sale date. Extras like the reg, trim and price help the emails get more specific, but they're optional. No DMS integration needed." },
     { q: "Will the emails sound like a robot wrote them?", a: "No. They're short, plain and written in British English in your name, the way a good salesperson would write to a customer they remember. You can edit any email, or ask for it to be rewritten, before it sends." },
+    { q: "Do I get to see the emails before they go out?", a: "Yes. Every email waits for your approval: edit it, ask for a rewrite or skip that customer before anything sends. The AI never invents prices, discounts or finance figures, either — the details come from your own records." },
     { q: "What about GDPR and unsubscribes?", a: "Every email includes a one-click unsubscribe, and anyone who opts out is never emailed again. Customers who sold the car, or were contacted in the last six months, are skipped automatically. We'll go through how your data is used on the demo." },
     { q: "What happens when someone replies?", a: "The reply comes straight to your inbox and their remaining emails stop immediately. Wynback reads the reply and flags it: hot lead, interested, no longer owns the car, or unsubscribe. So you know who to call first." },
     { q: "What results can I expect?", a: "It depends on how many cars you've sold and how far back your records go. You're contacting people who already chose you once, at the point they're likely to change car. Use the calculator above for a rough idea, and we'll run your real numbers on the demo." },
