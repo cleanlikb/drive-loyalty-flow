@@ -242,9 +242,11 @@ function HeroSection() {
               <a href="#emails">See the emails</a>
             </Button>
           </div>
-          <ul className="mt-5 flex flex-wrap gap-x-4 gap-y-1 text-sm text-primary">
+          <ul className="mt-6 flex flex-wrap gap-2">
             {["Free setup, done for you", "Starts from a CSV", "Cancel anytime"].map((t) => (
-              <li key={t} className="flex items-center gap-1.5"><Check className="h-4 w-4" />{t}</li>
+              <li key={t} className="flex items-center gap-1.5 rounded-full border border-border/70 bg-background/90 px-3 py-1.5 text-sm font-medium text-foreground shadow-sm backdrop-blur-sm">
+                <Check className="h-4 w-4 shrink-0 text-primary" />{t}
+              </li>
             ))}
           </ul>
         </div>
