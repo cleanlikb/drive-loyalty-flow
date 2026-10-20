@@ -8,7 +8,6 @@ import {
   X,
   ArrowRight,
   Check,
-  Sparkles,
   Minus,
   Plus,
   Flame,
