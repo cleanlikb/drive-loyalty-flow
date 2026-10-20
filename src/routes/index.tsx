@@ -140,8 +140,8 @@ function Landing() {
         <NumbersSection />
         <ProblemSection />
         <TimingSection />
-        <HowItWorksSection />
         <EmailsSection />
+        <HowItWorksSection />
         <SafeguardsSection />
         <ComparisonSection />
         <CalculatorSection />
