@@ -36,16 +36,16 @@ export const Route = createFileRoute("/")({
   component: Landing,
   head: () => ({
     meta: [
-      { title: "Wynback — Your next sale is already in your customer list" },
+      { title: "Wynback — Sell more cars. Make more profit." },
       {
         name: "description",
         content:
-          "Wynback emails every past buyer at the moments they're most likely to change car and puts their replies in your inbox. Built for UK independent car dealers.",
+          "Sell more cars and make more profit from the customers you've already sold to. Wynback emails each past buyer at the moments they're most likely to change car and puts their replies in your inbox. Built for UK independent car dealers.",
       },
-      { property: "og:title", content: "Wynback — Your next sale is already in your customer list" },
+      { property: "og:title", content: "Wynback — Sell more cars. Make more profit." },
       {
         property: "og:description",
-        content: "Automatic, personal emails to past customers at 12–60 month ownership milestones. From £75/month, free setup.",
+        content: "Sell more cars and make more profit from customers you've already sold to. Automatic, personal emails at 12–60 month ownership milestones. From £75/month, free setup.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -227,11 +227,12 @@ function HeroSection() {
       <div className="relative max-w-7xl mx-auto px-6 lg:px-8 pt-14 pb-12 md:py-24 grid md:grid-cols-2 gap-12 items-center">
         <div>
           <p className="text-xs md:text-sm font-medium tracking-[0.25em] uppercase text-muted-foreground">For UK independent car dealers</p>
-          <h1 className="mt-5 text-[2.6rem] sm:text-5xl md:text-6xl font-extrabold tracking-tight leading-[0.95] text-foreground">
-            Your next sale is already in your customer list<span className="text-primary">.</span>
+          <h1 className="mt-5 text-[2.35rem] sm:text-5xl md:text-6xl font-extrabold tracking-tight leading-[0.95] text-foreground">
+            <span className="block">Sell more cars.</span>
+            <span className="block">Make more profit<span className="text-primary">.</span></span>
           </h1>
           <p className="mt-6 text-lg text-muted-foreground leading-relaxed">
-            Wynback emails every past buyer at the moments they&apos;re most likely to change car, from 12 to 60 months after they bought, and puts their replies in your inbox. No portal fees. No cold leads. Under 10 minutes a month.
+            The buyers are already in your customer list. Wynback emails each one at the moments they&apos;re most likely to change car, from 12 to 60 months after they bought, and puts their replies in your inbox. No portal fees. No cold leads. Under 10 minutes a month.
           </p>
           <div className="mt-8 flex flex-col sm:flex-row gap-3">
             <DemoLink location="hero" className="h-14 px-7 text-base rounded-xl shadow-lg">
