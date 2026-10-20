@@ -36,7 +36,7 @@ export const Route = createFileRoute("/")({
       { property: "og:title", content: "Wynback — Sell more cars. Make more profit." },
       {
         property: "og:description",
-        content: "Sell more cars and make more profit from customers you've already sold to. Automatic, personal emails at 12–60 month ownership milestones. From £75/month, free setup.",
+        content: "Sell more cars and make more profit from customers you've already sold to. Automatic, personal emails at 12–60 month ownership milestones. From £99/month, free setup.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -771,7 +771,7 @@ function ComparisonSection() {
     { label: "Timing", w: "Automatic, at each ownership milestone", p: "When they're already shopping", d: "When you get round to it" },
     {
       label: "Monthly cost",
-      w: <>From £75<span className="block text-xs text-muted-foreground">Free setup</span></>,
+      w: <>From £99<span className="block text-xs text-muted-foreground">Free setup</span></>,
       p: <>Listing fees, ad spend or cost per lead<span className="block text-xs text-muted-foreground">Paid again for every buyer</span></>,
       d: "Hours of staff time",
     },
@@ -811,11 +811,11 @@ function ComparisonSection() {
 function CalculatorSection() {
   const [cars, setCars] = useState(20);
   const [profit, setProfit] = useState(2000);
-  const [plan, setPlan] = useState(75);
+  const [plan, setPlan] = useState(99);
   const plans = [
-    { name: "Forecourt", price: 75 },
-    { name: "Showroom", price: 125 },
-    { name: "Supersite", price: 175 },
+    { name: "Forecourt", price: 99 },
+    { name: "Showroom", price: 149 },
+    { name: "Supersite", price: 199 },
   ];
   const s = useMemo(() => {
     const contacted = cars * 6;
@@ -823,7 +823,8 @@ function CalculatorSection() {
     const gross = sales * profit;
     const net = gross - plan * 12;
     const cover = (plan * 12) / profit;
-    return { contacted, sales, gross, net, cover };
+    const hours = Math.round((contacted * 3 * 3) / 60);
+    return { contacted, sales, gross, net, cover, hours };
   }, [cars, profit, plan]);
   const fmt = (n: number) => (n < 10 ? n.toFixed(1) : Math.round(n).toLocaleString());
 
@@ -863,6 +864,8 @@ function CalculatorSection() {
           <div className="mt-10 rounded-2xl bg-primary/10 border border-primary/20 p-6 text-center">
             <p className="text-sm text-muted-foreground">Extra profit a year, after Wynback</p>
             <p className="mt-1 text-4xl md:text-5xl font-bold text-primary">£{Math.round(s.net).toLocaleString()}</p>
+            <p className="mt-4 text-sm text-muted-foreground">Time you get back</p>
+            <p className="mt-1 text-2xl md:text-3xl font-semibold">{s.hours.toLocaleString()} hours a month</p>
           </div>
           <div className="mt-4 grid grid-cols-2 lg:grid-cols-4 gap-3">
             <StatBox label="Past customers contacted a month" value={s.contacted.toLocaleString()} />
@@ -871,7 +874,7 @@ function CalculatorSection() {
             <StatBox label="Sales a year to cover the plan" value={s.cover.toFixed(1)} />
           </div>
           <p className="mt-6 text-xs text-muted-foreground text-center">
-            Assumes six milestone groups a month (cars sold × 6 people contacted) and 0.5% of them buying again. An illustration, not a guarantee. Your demo uses your real numbers.
+            Assumes six milestone groups a month (cars sold × 6 people contacted) and 0.5% of them buying again. Time saved is based on three emails per customer and three minutes to personalise and send each one. An illustration, not a guarantee. Your demo uses your real numbers.
           </p>
         </div>
         <div className="mt-10 flex justify-center">
@@ -894,9 +897,9 @@ function StatBox({ label, value }: { label: string; value: string }) {
 function PricingSection() {
   const [annual, setAnnual] = useState(false);
   const tiers = [
-    { name: "Forecourt", monthly: 75, limit: "Up to 125 previous customers a month", stock: "Est. up to 40 cars in stock" },
-    { name: "Showroom", monthly: 125, limit: "Up to 250 previous customers a month", stock: "Est. up to 80 cars in stock" },
-    { name: "Supersite", monthly: 175, limit: "Over 250 previous customers a month", stock: "Est. over 150 cars in stock" },
+    { name: "Forecourt", monthly: 99, limit: "Up to 125 previous customers a month", stock: "Est. up to 40 cars in stock" },
+    { name: "Showroom", monthly: 149, limit: "Up to 250 previous customers a month", stock: "Est. up to 80 cars in stock" },
+    { name: "Supersite", monthly: 199, limit: "Over 250 previous customers a month", stock: "Est. over 150 cars in stock" },
   ];
   const features = [
     "Free setup. Wynback imports your data and configures everything",
@@ -974,7 +977,7 @@ function FounderSection() {
           <blockquote className="font-display text-2xl md:text-3xl lg:text-[2.6rem] leading-[1.25] text-foreground">
             &ldquo;I spent 14 years in the motor trade, from sales exec to running my own dealership. The easiest deals were always the customers who came back. But following them all up never happened, because there was always something more urgent. <span className="italic text-primary">Wynback does the follow-up I never had time for.</span>&rdquo;
           </blockquote>
-          <p className="mt-8 text-sm font-medium tracking-wide text-muted-foreground">— Chris, founder of Wynback</p>
+          <p className="mt-8 text-sm font-medium tracking-wide text-muted-foreground">— Kit, founder of Wynback</p>
         </div>
       </div>
     </section>
