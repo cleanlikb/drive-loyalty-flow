@@ -227,8 +227,9 @@ function HeroSection() {
       <div className="relative max-w-7xl mx-auto px-6 lg:px-8 pt-14 pb-12 md:py-24 grid md:grid-cols-2 gap-12 items-center">
         <div>
           <p className="text-xs md:text-sm font-medium tracking-[0.25em] uppercase text-muted-foreground">For UK independent car dealers</p>
-          <h1 className="mt-5 text-[2.6rem] sm:text-5xl md:text-6xl font-extrabold tracking-tight leading-[0.95] text-foreground">
-            Sell more cars. Make more profit<span className="text-primary">.</span>
+          <h1 className="mt-5 text-[2.35rem] sm:text-5xl md:text-6xl font-extrabold tracking-tight leading-[0.95] text-foreground">
+            <span className="block">Sell more cars.</span>
+            <span className="block">Make more profit<span className="text-primary">.</span></span>
           </h1>
           <p className="mt-6 text-lg text-muted-foreground leading-relaxed">
             The buyers are already in your customer list. Wynback emails each one at the moments they&apos;re most likely to change car, from 12 to 60 months after they bought, and puts their replies in your inbox. No portal fees. No cold leads. Under 10 minutes a month.
