@@ -578,7 +578,7 @@ function EmailsSection() {
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         <SectionHead
           eyebrow="The emails"
-          title="Short, personal emails that read like they came from you."
+          title="Emails designed to start conversations — and replies from customers ready to change or sell their car."
           intro={`No templates, no mail merge, no "Dear Valued Customer". Every email is written for one customer: the car they bought, how long they've had it and where they are in ownership. No two customers get the same email.`}
         />
         <p className="text-center text-sm text-muted-foreground mb-4">Pick an example customer to see how the emails change</p>
@@ -674,7 +674,7 @@ function ComparisonSection() {
   return (
     <section className="py-24 lg:py-32 bg-secondary/30">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-        <SectionHead eyebrow="Compared" title="The cheapest warm leads you'll ever get." />
+        <SectionHead eyebrow="Compared" title="The warm leads portals can't sell you." />
         <div className="overflow-x-auto rounded-2xl border border-border bg-card">
           <table className="w-full min-w-[640px] text-sm">
             <thead>
