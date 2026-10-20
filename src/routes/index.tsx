@@ -342,9 +342,9 @@ function SolutionSection() {
   const ms = [
     { m: 12, t: "Check-in", why: "the new-car shine has worn off and they've started noticing what else is out there." },
     { m: 18, t: "Life changes", why: "a new job, a baby or a move, and the car they bought stops fitting the life they've got." },
-    { m: 24, t: "Short finance ends", why: "the two-year deal finishes, so part-exchange looks easier than another payment." },
+    { m: 24, t: "2-year deal ends", why: "the agreement is up, and part-exchange looks easier than another payment." },
     { m: 36, t: "PCP ends", hi: true, why: "the balloon payment lands. They settle it or hand the car back, and either way they're buying again." },
-    { m: 48, t: "Long finance ends", why: "the long agreement winds up, the warranty is gone and repair bills start to loom." },
+    { m: 48, t: "4-year deal ends", why: "the warranty is gone, repair bills start to loom and a newer car looks cheaper to run." },
     { m: 60, t: "Ready for newer", why: "five years of servicing and tax are climbing, while the car still trades well enough to put towards something newer." },
   ];
   return (
