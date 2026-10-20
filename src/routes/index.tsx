@@ -87,15 +87,22 @@ function DemoLink({
 const ctaClass = "h-12 px-8 text-base shadow-lg shadow-primary/25";
 
 function Eyebrow({ children }: { children: ReactNode }) {
-  return <span className="text-sm font-semibold text-primary uppercase tracking-wide">{children}</span>;
+  return (
+    <span className="inline-flex items-center gap-3 text-xs font-semibold text-primary uppercase tracking-[0.25em]">
+      <span className="hidden lg:inline-block h-px w-8 bg-primary/60" />
+      {children}
+    </span>
+  );
 }
 
 function SectionHead({ eyebrow, title, intro }: { eyebrow: string; title: string; intro?: string }) {
   return (
-    <div className="max-w-3xl mx-auto text-center mb-14">
-      <Eyebrow>{eyebrow}</Eyebrow>
-      <h2 className="mt-3 text-3xl md:text-4xl lg:text-5xl font-semibold tracking-tight text-foreground">{title}</h2>
-      {intro && <p className="mt-4 text-lg text-muted-foreground">{intro}</p>}
+    <div className="mb-14 lg:mb-20 text-center max-w-3xl mx-auto lg:max-w-none lg:text-left lg:grid lg:grid-cols-12 lg:gap-12 lg:items-end">
+      <div className="lg:col-span-7">
+        <Eyebrow>{eyebrow}</Eyebrow>
+        <h2 className="mt-4 text-3xl md:text-4xl lg:text-[3.25rem] font-semibold leading-[1.05] text-foreground text-balance">{title}</h2>
+      </div>
+      {intro && <p className="mt-4 lg:mt-0 lg:col-span-5 text-lg text-muted-foreground leading-relaxed">{intro}</p>}
     </div>
   );
 }
@@ -314,23 +321,24 @@ function ProblemSection() {
     { t: "Happy customers buy elsewhere", b: "because nobody got in touch when they were ready." },
   ];
   return (
-    <section className="py-16 md:py-20 lg:py-28 bg-background">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <p className="text-xs font-semibold uppercase tracking-widest text-primary text-center">The problem</p>
-        <h2 className="mt-3 text-2xl md:text-4xl lg:text-5xl font-semibold tracking-tight text-center text-balance">You know you should be in touch when past customers are ready to change car. <span className="mt-2 block text-muted-foreground">You don&apos;t have two days a month to do it consistently.</span></h2>
-        <ul className="mt-8 grid sm:grid-cols-2 gap-3">
-          {pains.map((p) => (
-            <li key={p.t} className="flex gap-3 rounded-xl border border-border bg-card p-4">
-              <X className="h-5 w-5 shrink-0 text-destructive mt-0.5" />
-              <p className="text-sm leading-snug"><span className="font-semibold text-foreground">{p.t}</span> <span className="text-muted-foreground">{p.b}</span></p>
-            </li>
-          ))}
-        </ul>
-        <div className="mt-8 rounded-xl border border-primary/20 bg-primary/5 p-5 text-center">
-          <p className="text-sm md:text-base leading-relaxed">
-            Two days a month, every month, is what keeping in touch with every past customer yourself actually costs —{" "}
-            <span className="font-semibold text-foreground">and that&apos;s only if you never miss one.</span>{" "}
-            <span className="text-muted-foreground">Wynback does the lot for you in under 10 minutes.</span>
+    <section className="py-16 md:py-24 lg:py-32 bg-ink text-ink-foreground">
+      <div className="max-w-6xl mx-auto px-6 lg:px-8 grid lg:grid-cols-12 gap-10 lg:gap-16">
+        <div className="lg:col-span-6">
+          <p className="text-xs font-semibold uppercase tracking-[0.25em] text-ink-muted">The problem</p>
+          <h2 className="mt-4 text-3xl md:text-4xl lg:text-5xl font-semibold leading-[1.08] text-balance">You know you should be in touch when past customers are ready to change car. <span className="mt-3 block italic text-ink-muted">You don&apos;t have two days a month to do it consistently.</span></h2>
+        </div>
+        <div className="lg:col-span-6 lg:pt-10">
+          <ol className="border-t border-ink-border">
+            {pains.map((p, i) => (
+              <li key={p.t} className="flex gap-5 border-b border-ink-border py-5">
+                <span className="font-display text-sm text-ink-muted tabular-nums pt-0.5">0{i + 1}</span>
+                <p className="leading-snug"><span className="font-semibold">{p.t}</span> <span className="text-ink-muted">{p.b}</span></p>
+              </li>
+            ))}
+          </ol>
+          <p className="mt-8 font-display text-xl lg:text-2xl leading-snug">
+            Two days a month, every month — <span className="italic text-ink-muted">and that&apos;s only if you never miss one.</span>{" "}
+            Wynback does the lot in under 10 minutes.
           </p>
         </div>
       </div>
@@ -348,42 +356,75 @@ function SolutionSection() {
     { m: 60, t: "Ready for newer", why: "five years of servicing and tax are climbing, while the car still trades well enough to put towards something newer." },
   ];
   return (
-    <section className="py-16 md:py-20 lg:py-28 bg-secondary/30">
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <p className="text-xs font-semibold uppercase tracking-widest text-primary">The solution</p>
-        <h2 className="mt-3 text-2xl md:text-4xl lg:text-5xl font-semibold tracking-tight text-balance">
-          Wynback uses AI to work out when your customers are most likely to change car.
-        </h2>
-        <p className="mx-auto mt-4 max-w-2xl text-base text-muted-foreground text-balance">
-          Then it writes each one a personalised email at the milestones that matter &mdash; checked
-          automatically every month, across your whole customer list.
-        </p>
-        <div className="mt-8 grid grid-cols-3 md:grid-cols-6 gap-2 md:gap-3">
-          {ms.map((x) => (
-            <div key={x.m} className={`rounded-xl border p-3 ${x.hi ? "border-primary bg-primary/10 ring-1 ring-primary/30" : "border-border bg-card"}`}>
-              <div className="text-2xl font-bold text-primary leading-none">{x.m}</div>
-              <div className="text-[10px] uppercase tracking-wide text-muted-foreground">months</div>
-              <div className="mt-1.5 text-xs font-medium text-foreground leading-tight">{x.t}</div>
-            </div>
-          ))}
+    <section className="py-16 md:py-24 lg:py-32 bg-paper">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 grid lg:grid-cols-12 gap-10 lg:gap-16">
+        <div className="text-center lg:text-left lg:col-span-5 lg:sticky lg:top-28 lg:self-start">
+          <Eyebrow>The solution</Eyebrow>
+          <h2 className="mt-4 text-2xl md:text-4xl lg:text-[2.9rem] font-semibold leading-[1.08] text-balance">
+            Wynback uses AI to work out when your customers are most likely to change car.
+          </h2>
+          <p className="mx-auto lg:mx-0 mt-5 max-w-2xl text-base lg:text-lg text-muted-foreground text-balance">
+            Then it writes each one a personalised email at the milestones that matter &mdash; checked
+            automatically every month, across your whole customer list.
+          </p>
+          <div className="hidden lg:block mt-10">
+            <DemoLink location="solution" className="h-12 px-8 text-base rounded-full">
+              Book a demo <ArrowRight className="h-4 w-4" />
+            </DemoLink>
+          </div>
         </div>
-        <p className="mt-10 text-sm font-semibold text-foreground">Why they move at each one</p>
-        <div className="mx-auto mt-3 max-w-3xl overflow-hidden rounded-2xl border border-border bg-card text-left">
-          {ms.map((x) => (
-            <div key={x.m} className="flex items-start gap-3 border-b border-border/70 p-4 last:border-b-0">
-              <span className={`mt-0.5 inline-flex h-7 shrink-0 items-center justify-center rounded-full px-2.5 text-[11px] font-bold ${x.hi ? "bg-primary text-primary-foreground" : "bg-primary/10 text-primary"}`}>
-                {x.m} mo
-              </span>
-              <p className="text-sm leading-snug text-muted-foreground">
-                <span className="font-semibold text-foreground">{x.t}</span> &mdash; {x.why}
-              </p>
+
+        <div className="lg:col-span-7">
+          {/* Mobile / tablet: compact grid + reasons */}
+          <div className="lg:hidden text-center">
+            <div className="grid grid-cols-3 md:grid-cols-6 gap-2 md:gap-3">
+              {ms.map((x) => (
+                <div key={x.m} className={`rounded-xl border p-3 ${x.hi ? "border-primary bg-primary/10 ring-1 ring-primary/30" : "border-border bg-card"}`}>
+                  <div className="text-2xl font-bold text-primary leading-none">{x.m}</div>
+                  <div className="text-[10px] uppercase tracking-wide text-muted-foreground">months</div>
+                  <div className="mt-1.5 text-xs font-medium text-foreground leading-tight">{x.t}</div>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
-        <div className="mt-8">
-          <DemoLink location="solution" className="h-12 px-8 text-base">
-            Book a demo <ArrowRight className="h-4 w-4" />
-          </DemoLink>
+            <p className="mt-10 text-sm font-semibold text-foreground">Why they move at each one</p>
+            <div className="mx-auto mt-3 max-w-3xl overflow-hidden rounded-2xl border border-border bg-card text-left">
+              {ms.map((x) => (
+                <div key={x.m} className="flex items-start gap-3 border-b border-border/70 p-4 last:border-b-0">
+                  <span className={`mt-0.5 inline-flex h-7 shrink-0 items-center justify-center rounded-full px-2.5 text-[11px] font-bold ${x.hi ? "bg-primary text-primary-foreground" : "bg-primary/10 text-primary"}`}>
+                    {x.m} mo
+                  </span>
+                  <p className="text-sm leading-snug text-muted-foreground">
+                    <span className="font-semibold text-foreground">{x.t}</span> &mdash; {x.why}
+                  </p>
+                </div>
+              ))}
+            </div>
+            <div className="mt-8">
+              <DemoLink location="solution" className="h-12 px-8 text-base">
+                Book a demo <ArrowRight className="h-4 w-4" />
+              </DemoLink>
+            </div>
+          </div>
+
+          {/* Desktop: editorial timeline */}
+          <div className="hidden lg:block">
+            <p className="text-xs font-semibold uppercase tracking-[0.25em] text-muted-foreground">Why they move at each one</p>
+            <ol className="mt-6 border-t border-foreground/15">
+              {ms.map((x) => (
+                <li key={x.m} className={`grid grid-cols-[7rem_1fr] gap-6 border-b border-foreground/10 py-6 ${x.hi ? "relative" : ""}`}>
+                  {x.hi && <span className="absolute -left-6 top-6 bottom-6 w-1 rounded-full bg-primary" />}
+                  <div>
+                    <span className={`font-display text-5xl leading-none tabular-nums ${x.hi ? "text-primary" : "text-foreground"}`}>{x.m}</span>
+                    <span className="block mt-1 text-[11px] uppercase tracking-widest text-muted-foreground">months</span>
+                  </div>
+                  <div>
+                    <p className="text-lg font-semibold text-foreground">{x.t}{x.hi && <span className="ml-3 align-middle rounded-full bg-primary/10 px-2.5 py-0.5 text-[11px] font-semibold text-primary">Biggest moment</span>}</p>
+                    <p className="mt-1.5 text-muted-foreground leading-relaxed">{x.why.charAt(0).toUpperCase() + x.why.slice(1)}</p>
+                  </div>
+                </li>
+              ))}
+            </ol>
+          </div>
         </div>
       </div>
     </section>
@@ -600,11 +641,14 @@ function SafeguardsSection() {
     <section className="py-24 lg:py-32 bg-background">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <SectionHead eyebrow="Built in" title="Designed so it never embarrasses you." intro="Automated doesn't mean careless. These rules are built into every sequence." />
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {items.map((x) => (
-            <div key={x.t} className="rounded-2xl border border-border bg-card p-6">
-              <div className="h-11 w-11 rounded-xl bg-primary/10 text-primary grid place-items-center"><x.icon className="h-5 w-5" /></div>
-              <h3 className="mt-4 font-semibold text-foreground">{x.t}</h3>
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 border-t border-foreground/15">
+          {items.map((x, i) => (
+            <div key={x.t} className="border-b border-foreground/10 py-8 sm:px-6 sm:[&:nth-child(odd)]:pl-0 lg:[&:nth-child(odd)]:pl-6 lg:[&:nth-child(3n+1)]:pl-0">
+              <div className="flex items-center gap-3">
+                <span className="font-display text-sm text-muted-foreground tabular-nums">0{i + 1}</span>
+                <x.icon className="h-4 w-4 text-primary" />
+              </div>
+              <h3 className="mt-4 text-lg font-semibold text-foreground">{x.t}</h3>
               <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{x.b}</p>
             </div>
           ))}
@@ -814,14 +858,18 @@ function PricingSection() {
 
 function FounderSection() {
   return (
-    <section className="py-24 lg:py-32 bg-background">
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <Eyebrow>Why I built Wynback</Eyebrow>
-        <Quote className="mx-auto mt-6 h-8 w-8 text-primary/40" />
-        <blockquote className="mt-4 text-xl md:text-2xl text-foreground leading-relaxed">
-          &ldquo;I spent 14 years in the motor trade, from sales exec to running my own dealership. The easiest deals were always the customers who came back. But following them all up never happened, because there was always something more urgent. Wynback does the follow-up I never had time for.&rdquo;
-        </blockquote>
-        <p className="mt-6 text-sm text-muted-foreground">— Chris, founder of Wynback</p>
+    <section className="py-24 lg:py-36 bg-paper border-y border-border/60">
+      <div className="max-w-6xl mx-auto px-6 lg:px-8 grid lg:grid-cols-12 gap-8">
+        <div className="lg:col-span-3">
+          <Eyebrow>Why I built Wynback</Eyebrow>
+          <Quote className="mt-6 h-10 w-10 text-primary/50" />
+        </div>
+        <div className="lg:col-span-9">
+          <blockquote className="font-display text-2xl md:text-3xl lg:text-[2.6rem] leading-[1.25] text-foreground">
+            &ldquo;I spent 14 years in the motor trade, from sales exec to running my own dealership. The easiest deals were always the customers who came back. But following them all up never happened, because there was always something more urgent. <span className="italic text-primary">Wynback does the follow-up I never had time for.</span>&rdquo;
+          </blockquote>
+          <p className="mt-8 text-sm font-medium tracking-wide text-muted-foreground">— Chris, founder of Wynback</p>
+        </div>
       </div>
     </section>
   );
@@ -856,18 +904,16 @@ function FAQSection() {
 
 function FinalCTASection() {
   return (
-    <section className="py-24 lg:py-32 bg-background">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="relative overflow-hidden rounded-3xl border border-primary/20 bg-card p-10 md:p-16 text-center">
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[500px] h-[300px] bg-primary/20 rounded-full blur-3xl pointer-events-none" />
-          <div className="relative">
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-semibold tracking-tight">Someone&apos;s going to sell your customer their next car. Make sure it&apos;s you.</h2>
-            <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">Book a 20-minute demo. We&apos;ll show you how many of your past customers hit a milestone this month.</p>
-            <div className="mt-9 flex justify-center">
-              <DemoLink location="final_cta" className={ctaClass}>Book a demo <ArrowRight className="h-4 w-4" /></DemoLink>
-            </div>
-            <p className="mt-4 text-sm text-muted-foreground">Free setup · No contract · Your data stays yours</p>
-          </div>
+    <section className="bg-ink text-ink-foreground py-24 lg:py-36">
+      <div className="max-w-6xl mx-auto px-6 lg:px-8 grid lg:grid-cols-12 gap-10 items-end">
+        <div className="lg:col-span-8">
+          <p className="text-xs font-semibold uppercase tracking-[0.25em] text-ink-muted">One last thing</p>
+          <h2 className="mt-5 text-4xl md:text-5xl lg:text-6xl font-semibold leading-[1.02]">Someone&apos;s going to sell your customer their next car. <span className="italic text-ink-muted">Make sure it&apos;s you.</span></h2>
+        </div>
+        <div className="lg:col-span-4 lg:pb-2">
+          <p className="text-lg text-ink-muted">Book a 20-minute demo. We&apos;ll show you how many of your past customers hit a milestone this month.</p>
+          <DemoLink location="final_cta" className="mt-7 h-14 px-8 text-base rounded-full">Book a demo <ArrowRight className="h-4 w-4" /></DemoLink>
+          <p className="mt-4 text-sm text-ink-muted">Free setup · No contract · Your data stays yours</p>
         </div>
       </div>
     </section>
