@@ -238,7 +238,7 @@ function HeroSection() {
             <span className="block">Make more profit<span className="text-primary">.</span></span>
           </h1>
           <p className="mt-6 text-lg text-muted-foreground leading-relaxed">
-            The buyers are already in your customer list. Wynback emails each one at the moments they&apos;re most likely to change car, from 12 to 60 months after they bought, and puts their replies in your inbox. No AutoTrader fees. No cold leads. Under 10 minutes a month.
+            The buyers are already in your customer list. Wynback emails each one at the moments they&apos;re most likely to change car, from 12 to 60 months after they bought, and puts their replies in your inbox. No marketplace fees. No cold leads. Under 10 minutes a month.
           </p>
           <div className="mt-8 flex flex-col sm:flex-row gap-3">
             <DemoLink location="hero" className="h-14 px-7 text-base rounded-xl shadow-lg">
@@ -317,7 +317,7 @@ function ProblemSection() {
   const pains = [
     { t: "The list never gets worked", b: "nobody has two spare days to go through it." },
     { t: "Milestones pass unseen", b: "the finance ends and the life change happens without you." },
-    { t: "Every AutoTrader lead costs more", b: "and they're comparing you with every dealer nearby." },
+    { t: "Every marketplace lead costs more", b: "and they're comparing you with every dealer nearby." },
     { t: "Happy customers buy elsewhere", b: "because nobody got in touch when they were ready." },
   ];
   return (
@@ -674,14 +674,14 @@ function ComparisonSection() {
   return (
     <section className="py-24 lg:py-32 bg-secondary/30">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-        <SectionHead eyebrow="Compared" title="The warm leads AutoTrader can't sell you." />
+        <SectionHead eyebrow="Compared" title="The warm leads the marketplaces can't sell you." />
         <div className="overflow-x-auto rounded-2xl border border-border bg-card">
           <table className="w-full min-w-[640px] text-sm">
             <thead>
               <tr className="border-b border-border">
                 <th className="p-4 text-left font-medium text-muted-foreground" />
                 <th className="p-4 text-left font-semibold text-primary bg-primary/5">Wynback</th>
-                <th className="p-4 text-left font-semibold text-foreground">AutoTrader and paid ads</th>
+                <th className="p-4 text-left font-semibold text-foreground">Marketplaces and paid ads</th>
                 <th className="p-4 text-left font-semibold text-foreground">Doing it yourself</th>
               </tr>
             </thead>
