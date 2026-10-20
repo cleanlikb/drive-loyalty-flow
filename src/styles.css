@@ -15,7 +15,7 @@
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
   --radius-2xl: calc(var(--radius) + 8px);
-  --font-sans: "Poppins", ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+  --font-sans: "Manrope", ui-sans-serif, system-ui, -apple-system, "Segoe UI",
     sans-serif;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -181,4 +181,20 @@
     font-optical-sizing: auto;
     letter-spacing: -0.02em;
   }
+}
+
+/* Editorial landing surfaces */
+:root {
+  --paper: oklch(0.975 0.008 80);
+  --ink: oklch(0.17 0.03 295);
+  --ink-foreground: oklch(0.96 0.01 80);
+  --ink-muted: oklch(0.72 0.03 295);
+  --ink-border: oklch(0.3 0.04 295);
+}
+@theme inline {
+  --color-paper: var(--paper);
+  --color-ink: var(--ink);
+  --color-ink-foreground: var(--ink-foreground);
+  --color-ink-muted: var(--ink-muted);
+  --color-ink-border: var(--ink-border);
 }
