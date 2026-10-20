@@ -140,8 +140,8 @@ function Landing() {
         <NumbersSection />
         <ProblemSection />
         <TimingSection />
-        <HowItWorksSection />
         <EmailsSection />
+        <HowItWorksSection />
         <SafeguardsSection />
         <ComparisonSection />
         <CalculatorSection />
@@ -378,7 +378,7 @@ function HowItWorksSection() {
     { tag: "Step 3 · 10 minutes", t: "Approve the emails. Take the calls.", b: "Three short emails per customer, written about their exact car and signed by you. Read them, tweak anything, approve. Replies land in your inbox.", img: stepSequencesCropped, alt: "Email sequence page" },
   ];
   return (
-    <section id="how-it-works" className="py-24 bg-background">
+    <section id="how-it-works" className="py-24 bg-secondary/30">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <SectionHead
           eyebrow="How it works"
@@ -514,7 +514,7 @@ function EmailsSection() {
   const c = exampleCustomers[cust];
   const e = c.emails[tab];
   return (
-    <section id="emails" className="py-24 bg-secondary/30">
+    <section id="emails" className="py-24 bg-background">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         <SectionHead
           eyebrow="The emails"
