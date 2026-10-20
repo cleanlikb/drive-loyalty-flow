@@ -764,36 +764,6 @@ function EmailsSection() {
   );
 }
 
-function SafeguardsSection() {
-  const items = [
-    { icon: Reply, t: "A reply stops everything", b: "The moment a customer replies, their remaining emails are cancelled. No awkward follow-ups." },
-    { icon: Ban, t: "Sold the car? Removed for good", b: "If someone replies that they no longer own it, they're taken off every future list." },
-    { icon: MailX, t: "Unsubscribes handled for you", b: "Every email has a one-click unsubscribe, and opt-outs are never emailed again." },
-    { icon: CalendarClock, t: "No over-contacting", b: "Anyone contacted in the last six months is skipped, so nobody hears from you too often." },
-    { icon: ShieldCheck, t: "No made-up numbers", b: "The AI never invents prices, discounts or finance figures. Facts come from your own records." },
-    { icon: Eye, t: "You see everything first", b: "Every email waits for your approval. Edit, rewrite or skip anyone before it sends." },
-  ];
-  return (
-    <section className="py-24 lg:py-32 bg-background">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <SectionHead eyebrow="Built in" title="Designed so it never embarrasses you." intro="Automated doesn't mean careless. These rules are built into every sequence." />
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 border-t border-foreground/15">
-          {items.map((x, i) => (
-            <div key={x.t} className="border-b border-foreground/10 py-8 sm:px-6 sm:[&:nth-child(odd)]:pl-0 lg:[&:nth-child(odd)]:pl-6 lg:[&:nth-child(3n+1)]:pl-0">
-              <div className="flex items-center gap-3">
-                <span className="font-display text-sm text-muted-foreground tabular-nums">0{i + 1}</span>
-                <x.icon className="h-4 w-4 text-primary" />
-              </div>
-              <h3 className="mt-4 text-lg font-semibold text-foreground">{x.t}</h3>
-              <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{x.b}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
 function ComparisonSection() {
   const rows: { label: string; w: ReactNode; p: ReactNode; d: ReactNode }[] = [
     { label: "Who you reach", w: "People who've already bought from you", p: "Anyone browsing", d: "Whoever you remember" },
