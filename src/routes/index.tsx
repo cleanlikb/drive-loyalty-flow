@@ -407,16 +407,38 @@ function HowItWorksSection() {
 }
 
 
-type EmailSet = { subject: string; body: string }[];
+type EmailSet = { subject: string; body: string[] }[];
 const exampleCustomers: { id: string; name: string; car: string; emails: EmailSet }[] = [
   {
     id: "emma",
     name: "Emma Clarke",
     car: "BMW 3 Series M Sport · owned 3 years",
     emails: [
-      { subject: "Three years with the 3 Series", body: "Hi Emma, Hard to believe it's three years since you collected your 3 Series M Sport. I hope it's still putting a smile on your face. Three years is when a lot of owners start thinking about what's next, so I wanted you to hear from us first. No rush at all." },
-      { subject: "What's next after the 3 Series?", body: "Hi Emma, Quick one. When the time comes to change, would you stay with a 3 Series, step up to something bigger, or try a hybrid? Tell me what you're after and I'll keep an eye out for the right car." },
-      { subject: "A figure for your 3 Series?", body: "Hi Emma, Last one from me. 3 Series are in demand at the moment, so if you reply with your current mileage I'll come back with a part-exchange figure. No obligation." },
+      {
+        subject: "Three years with the 3 Series",
+        body: [
+          "Hi Emma,",
+          "Hard to believe it's three years since you collected your 3 Series M Sport. I hope it's still putting a smile on your face.",
+          "Three years is when a lot of owners start thinking about what's next, so I wanted you to hear from us first.",
+          "No rush at all.",
+        ],
+      },
+      {
+        subject: "What's next after the 3 Series?",
+        body: [
+          "Hi Emma,",
+          "Quick one. When the time comes to change, would you stay with a 3 Series, step up to something bigger, or try a hybrid?",
+          "Tell me what you're after and I'll keep an eye out for the right car.",
+        ],
+      },
+      {
+        subject: "A figure for your 3 Series?",
+        body: [
+          "Hi Emma,",
+          "Last one from me. 3 Series are in demand at the moment, so if you reply with your current mileage I'll come back with a part-exchange figure.",
+          "No obligation.",
+        ],
+      },
     ],
   },
   {
@@ -424,9 +446,28 @@ const exampleCustomers: { id: string; name: string; car: string; emails: EmailSe
     name: "Ben Hughes",
     car: "Ford Kuga Titanium · owned 1 year",
     emails: [
-      { subject: "A year with the Kuga", body: "Hi Ben, It's a year since you picked up your Kuga Titanium, so I wanted to say thanks again for buying from us. I hope you're enjoying it. And if any friends or family are looking for a car, we'd love to help them too." },
-      { subject: "Still the right car?", body: "Hi Ben, A lot can change in a year. If the Kuga's still perfect, great. If you need more space, or something cheaper to run for a new commute, I'm always happy to chat." },
-      { subject: "Here if you need us", body: "Hi Ben, I won't fill up your inbox. If you ever want to know what the Kuga's worth, reply with the mileage and I'll send you a figure." },
+      {
+        subject: "A year with the Kuga",
+        body: [
+          "Hi Ben,",
+          "It's a year since you picked up your Kuga Titanium, so I wanted to say thanks again for buying from us. I hope you're enjoying it.",
+          "And if any friends or family are looking for a car, we'd love to help them too.",
+        ],
+      },
+      {
+        subject: "Still the right car?",
+        body: [
+          "Hi Ben,",
+          "A lot can change in a year. If the Kuga's still perfect, great. If you need more space, or something cheaper to run for a new commute, I'm always happy to chat.",
+        ],
+      },
+      {
+        subject: "Here if you need us",
+        body: [
+          "Hi Ben,",
+          "I won't fill up your inbox. If you ever want to know what the Kuga's worth, reply with the mileage and I'll send you a figure.",
+        ],
+      },
     ],
   },
   {
@@ -434,9 +475,30 @@ const exampleCustomers: { id: string; name: string; car: string; emails: EmailSe
     name: "Grace Lloyd",
     car: "Vauxhall Corsa SRi · owned 5 years",
     emails: [
-      { subject: "Five years with the Corsa", body: "Hi Grace, Five years ago you drove away in your Corsa SRi. I hope it's served you well. Around now a lot of owners start thinking about something newer, with lower running costs and the latest safety kit. Worth a look if you've been wondering." },
-      { subject: "Something newer for you?", body: "Hi Grace, If you did fancy a change, what matters most this time? Lower running costs, an automatic, a bit more room? Let me know and I'll pick out a few that fit." },
-      { subject: "What's the Corsa worth?", body: "Hi Grace, Last one from me. Reply with the Corsa's mileage and I'll tell you what it's worth against something newer." },
+      {
+        subject: "Five years with the Corsa",
+        body: [
+          "Hi Grace,",
+          "Five years ago you drove away in your Corsa SRi. I hope it's served you well.",
+          "Around now a lot of owners start thinking about something newer, with lower running costs and the latest safety kit.",
+          "Worth a look if you've been wondering.",
+        ],
+      },
+      {
+        subject: "Something newer for you?",
+        body: [
+          "Hi Grace,",
+          "If you did fancy a change, what matters most this time? Lower running costs, an automatic, a bit more room?",
+          "Let me know and I'll pick out a few that fit.",
+        ],
+      },
+      {
+        subject: "What's the Corsa worth?",
+        body: [
+          "Hi Grace,",
+          "Last one from me. Reply with the Corsa's mileage and I'll tell you what it's worth against something newer.",
+        ],
+      },
     ],
   },
 ];
