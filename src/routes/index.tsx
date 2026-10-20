@@ -166,7 +166,7 @@ function Header({
              
              
              
-              onClick={(event) => trackDemoClick(event, "mobile_nav", () => setMobileOpen(false))}
+              onClick={(event) => { trackDemoClick(event, "mobile_nav"); setMobileOpen(false); }}
             >
               Book a demo
             </a>
