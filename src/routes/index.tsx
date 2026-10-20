@@ -223,7 +223,7 @@ function Header({ mobileOpen, setMobileOpen }: { mobileOpen: boolean; setMobileO
 function HeroSection() {
   return (
     <section className="relative overflow-hidden bg-background">
-      <div className="absolute inset-x-0 bottom-0 h-[55%] md:inset-y-0 md:left-auto md:right-0 md:h-full md:w-[60%]">
+      <div className="absolute inset-x-0 top-[42vh] bottom-0 md:inset-y-0 md:left-auto md:right-0 md:h-full md:w-[60%]">
         <img src={dealerImg.url} alt="Dealership forecourt at sunset" className="h-full w-full object-cover object-right" />
         <div className="absolute inset-0 bg-gradient-to-b from-background via-background/40 to-transparent md:bg-gradient-to-r md:via-background/30" />
       </div>
