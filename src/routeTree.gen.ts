@@ -9,38 +9,37 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as McpRouteImport } from './routes/mcp'
-import { Route as ContactRouteImport } from './routes/contact'
-import { Route as AuthRouteImport } from './routes/auth'
-import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
-import { Route as AuthenticatedRepliesRouteImport } from './routes/_authenticated/replies'
-import { Route as AuthenticatedOnboardingRouteImport } from './routes/_authenticated/onboarding'
-import { Route as AuthenticatedLeadsRouteImport } from './routes/_authenticated/leads'
-import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
-import { Route as AuthenticatedCustomersRouteImport } from './routes/_authenticated/customers'
-import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as ContactRouteImport } from './routes/contact'
+import { Route as McpRouteImport } from './routes/mcp'
 import { Route as Char91DotmcpChar93ListToolsRouteImport } from './routes/[.mcp]/list-tools'
+import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
+import { Route as AuthenticatedCustomersRouteImport } from './routes/_authenticated/customers'
+import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedLeadsRouteImport } from './routes/_authenticated/leads'
+import { Route as AuthenticatedOnboardingRouteImport } from './routes/_authenticated/onboarding'
+import { Route as AuthenticatedRepliesRouteImport } from './routes/_authenticated/replies'
+import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
+import { Route as DotlovableOauthConsentRouteImport } from './routes/[.]lovable.oauth.consent'
+import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
 import { Route as AuthenticatedSequencesIndexRouteImport } from './routes/_authenticated/sequences.index'
 import { Route as AuthenticatedSequencesIdRouteImport } from './routes/_authenticated/sequences.$id'
-import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
-import { Route as DotlovableOauthConsentRouteImport } from './routes/[.]lovable.oauth.consent'
-import { Route as ApiPublicWebhooksResendRouteImport } from './routes/api/public/webhooks/resend'
-import { Route as ApiPublicWebhooksInboundReplyRouteImport } from './routes/api/public/webhooks/inbound-reply'
-import { Route as ApiPublicCronRescanRepliesRouteImport } from './routes/api/public/cron/rescan-replies'
-import { Route as ApiPublicCronMonthlyCohortRouteImport } from './routes/api/public/cron/monthly-cohort'
-import { Route as ApiPublicCronDispatchEmailsRouteImport } from './routes/api/public/cron/dispatch-emails'
 import { Route as ApiPublicAdminSeedDemoRouteImport } from './routes/api/public/admin/seed-demo'
+import { Route as ApiPublicCronDispatchEmailsRouteImport } from './routes/api/public/cron/dispatch-emails'
+import { Route as ApiPublicCronMonthlyCohortRouteImport } from './routes/api/public/cron/monthly-cohort'
+import { Route as ApiPublicCronRescanRepliesRouteImport } from './routes/api/public/cron/rescan-replies'
+import { Route as ApiPublicWebhooksInboundReplyRouteImport } from './routes/api/public/webhooks/inbound-reply'
+import { Route as ApiPublicWebhooksResendRouteImport } from './routes/api/public/webhooks/resend'
 
-const McpRoute = McpRouteImport.update({
-  id: '/mcp',
-  path: '/mcp',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ContactRoute = ContactRouteImport.update({
-  id: '/contact',
-  path: '/contact',
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRoute = AuthRouteImport.update({
@@ -48,33 +47,31 @@ const AuthRoute = AuthRouteImport.update({
   path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
-  id: '/_authenticated',
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const McpRoute = McpRouteImport.update({
+  id: '/mcp',
+  path: '/mcp',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
-  id: '/settings',
-  path: '/settings',
-  getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
-const AuthenticatedRepliesRoute = AuthenticatedRepliesRouteImport.update({
-  id: '/replies',
-  path: '/replies',
-  getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
-const AuthenticatedOnboardingRoute = AuthenticatedOnboardingRouteImport.update({
-  id: '/onboarding',
-  path: '/onboarding',
-  getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
-const AuthenticatedLeadsRoute = AuthenticatedLeadsRouteImport.update({
-  id: '/leads',
-  path: '/leads',
+const Char91DotmcpChar93ListToolsRoute =
+  Char91DotmcpChar93ListToolsRouteImport.update({
+    id: '/.mcp/list-tools',
+    path: '/.mcp/list-tools',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const Char91DotwellKnownChar93OauthProtectedResourceRoute =
+  Char91DotwellKnownChar93OauthProtectedResourceRouteImport.update({
+    id: '/.well-known/oauth-protected-resource',
+    path: '/.well-known/oauth-protected-resource',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const AuthenticatedCustomersRoute = AuthenticatedCustomersRouteImport.update({
+  id: '/customers',
+  path: '/customers',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
@@ -82,21 +79,35 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-const AuthenticatedCustomersRoute = AuthenticatedCustomersRouteImport.update({
-  id: '/customers',
-  path: '/customers',
+const AuthenticatedLeadsRoute = AuthenticatedLeadsRouteImport.update({
+  id: '/leads',
+  path: '/leads',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-const Char91DotwellKnownChar93OauthProtectedResourceRoute =
-  Char91DotwellKnownChar93OauthProtectedResourceRouteImport.update({
-    id: '/.well-known/oauth-protected-resource',
-    path: '/.well-known/oauth-protected-resource',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const Char91DotmcpChar93ListToolsRoute =
-  Char91DotmcpChar93ListToolsRouteImport.update({
-    id: '/.mcp/list-tools',
-    path: '/.mcp/list-tools',
+const AuthenticatedOnboardingRoute = AuthenticatedOnboardingRouteImport.update({
+  id: '/onboarding',
+  path: '/onboarding',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedRepliesRoute = AuthenticatedRepliesRouteImport.update({
+  id: '/replies',
+  path: '/replies',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const DotlovableOauthConsentRoute = DotlovableOauthConsentRouteImport.update({
+  id: '/.lovable/oauth/consent',
+  path: '/.lovable/oauth/consent',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const Char91DotmcpChar93InvokeToolToolRoute =
+  Char91DotmcpChar93InvokeToolToolRouteImport.update({
+    id: '/.mcp/invoke-tool/$tool',
+    path: '/.mcp/invoke-tool/$tool',
     getParentRoute: () => rootRouteImport,
   } as any)
 const AuthenticatedSequencesIndexRoute =
@@ -111,32 +122,15 @@ const AuthenticatedSequencesIdRoute =
     path: '/sequences/$id',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
-const Char91DotmcpChar93InvokeToolToolRoute =
-  Char91DotmcpChar93InvokeToolToolRouteImport.update({
-    id: '/.mcp/invoke-tool/$tool',
-    path: '/.mcp/invoke-tool/$tool',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const DotlovableOauthConsentRoute = DotlovableOauthConsentRouteImport.update({
-  id: '/.lovable/oauth/consent',
-  path: '/.lovable/oauth/consent',
+const ApiPublicAdminSeedDemoRoute = ApiPublicAdminSeedDemoRouteImport.update({
+  id: '/api/public/admin/seed-demo',
+  path: '/api/public/admin/seed-demo',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiPublicWebhooksResendRoute = ApiPublicWebhooksResendRouteImport.update({
-  id: '/api/public/webhooks/resend',
-  path: '/api/public/webhooks/resend',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiPublicWebhooksInboundReplyRoute =
-  ApiPublicWebhooksInboundReplyRouteImport.update({
-    id: '/api/public/webhooks/inbound-reply',
-    path: '/api/public/webhooks/inbound-reply',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const ApiPublicCronRescanRepliesRoute =
-  ApiPublicCronRescanRepliesRouteImport.update({
-    id: '/api/public/cron/rescan-replies',
-    path: '/api/public/cron/rescan-replies',
+const ApiPublicCronDispatchEmailsRoute =
+  ApiPublicCronDispatchEmailsRouteImport.update({
+    id: '/api/public/cron/dispatch-emails',
+    path: '/api/public/cron/dispatch-emails',
     getParentRoute: () => rootRouteImport,
   } as any)
 const ApiPublicCronMonthlyCohortRoute =
@@ -145,15 +139,21 @@ const ApiPublicCronMonthlyCohortRoute =
     path: '/api/public/cron/monthly-cohort',
     getParentRoute: () => rootRouteImport,
   } as any)
-const ApiPublicCronDispatchEmailsRoute =
-  ApiPublicCronDispatchEmailsRouteImport.update({
-    id: '/api/public/cron/dispatch-emails',
-    path: '/api/public/cron/dispatch-emails',
+const ApiPublicCronRescanRepliesRoute =
+  ApiPublicCronRescanRepliesRouteImport.update({
+    id: '/api/public/cron/rescan-replies',
+    path: '/api/public/cron/rescan-replies',
     getParentRoute: () => rootRouteImport,
   } as any)
-const ApiPublicAdminSeedDemoRoute = ApiPublicAdminSeedDemoRouteImport.update({
-  id: '/api/public/admin/seed-demo',
-  path: '/api/public/admin/seed-demo',
+const ApiPublicWebhooksInboundReplyRoute =
+  ApiPublicWebhooksInboundReplyRouteImport.update({
+    id: '/api/public/webhooks/inbound-reply',
+    path: '/api/public/webhooks/inbound-reply',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicWebhooksResendRoute = ApiPublicWebhooksResendRouteImport.update({
+  id: '/api/public/webhooks/resend',
+  path: '/api/public/webhooks/resend',
   getParentRoute: () => rootRouteImport,
 } as any)
 
@@ -327,25 +327,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/mcp': {
-      id: '/mcp'
-      path: '/mcp'
-      fullPath: '/mcp'
-      preLoaderRoute: typeof McpRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/contact': {
-      id: '/contact'
-      path: '/contact'
-      fullPath: '/contact'
-      preLoaderRoute: typeof ContactRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/auth': {
-      id: '/auth'
-      path: '/auth'
-      fullPath: '/auth'
-      preLoaderRoute: typeof AuthRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated': {
@@ -355,39 +341,46 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/settings': {
-      id: '/_authenticated/settings'
-      path: '/settings'
-      fullPath: '/settings'
-      preLoaderRoute: typeof AuthenticatedSettingsRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/replies': {
-      id: '/_authenticated/replies'
-      path: '/replies'
-      fullPath: '/replies'
-      preLoaderRoute: typeof AuthenticatedRepliesRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
+    '/mcp': {
+      id: '/mcp'
+      path: '/mcp'
+      fullPath: '/mcp'
+      preLoaderRoute: typeof McpRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/onboarding': {
-      id: '/_authenticated/onboarding'
-      path: '/onboarding'
-      fullPath: '/onboarding'
-      preLoaderRoute: typeof AuthenticatedOnboardingRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
+    '/.mcp/list-tools': {
+      id: '/.mcp/list-tools'
+      path: '/.mcp/list-tools'
+      fullPath: '/.mcp/list-tools'
+      preLoaderRoute: typeof Char91DotmcpChar93ListToolsRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/leads': {
-      id: '/_authenticated/leads'
-      path: '/leads'
-      fullPath: '/leads'
-      preLoaderRoute: typeof AuthenticatedLeadsRouteImport
+    '/.well-known/oauth-protected-resource': {
+      id: '/.well-known/oauth-protected-resource'
+      path: '/.well-known/oauth-protected-resource'
+      fullPath: '/.well-known/oauth-protected-resource'
+      preLoaderRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/customers': {
+      id: '/_authenticated/customers'
+      path: '/customers'
+      fullPath: '/customers'
+      preLoaderRoute: typeof AuthenticatedCustomersRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/dashboard': {
@@ -397,25 +390,46 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/_authenticated/customers': {
-      id: '/_authenticated/customers'
-      path: '/customers'
-      fullPath: '/customers'
-      preLoaderRoute: typeof AuthenticatedCustomersRouteImport
+    '/_authenticated/leads': {
+      id: '/_authenticated/leads'
+      path: '/leads'
+      fullPath: '/leads'
+      preLoaderRoute: typeof AuthenticatedLeadsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/.well-known/oauth-protected-resource': {
-      id: '/.well-known/oauth-protected-resource'
-      path: '/.well-known/oauth-protected-resource'
-      fullPath: '/.well-known/oauth-protected-resource'
-      preLoaderRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRouteImport
+    '/_authenticated/onboarding': {
+      id: '/_authenticated/onboarding'
+      path: '/onboarding'
+      fullPath: '/onboarding'
+      preLoaderRoute: typeof AuthenticatedOnboardingRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/replies': {
+      id: '/_authenticated/replies'
+      path: '/replies'
+      fullPath: '/replies'
+      preLoaderRoute: typeof AuthenticatedRepliesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/settings': {
+      id: '/_authenticated/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof AuthenticatedSettingsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/.lovable/oauth/consent': {
+      id: '/.lovable/oauth/consent'
+      path: '/.lovable/oauth/consent'
+      fullPath: '/.lovable/oauth/consent'
+      preLoaderRoute: typeof DotlovableOauthConsentRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/.mcp/list-tools': {
-      id: '/.mcp/list-tools'
-      path: '/.mcp/list-tools'
-      fullPath: '/.mcp/list-tools'
-      preLoaderRoute: typeof Char91DotmcpChar93ListToolsRouteImport
+    '/.mcp/invoke-tool/$tool': {
+      id: '/.mcp/invoke-tool/$tool'
+      path: '/.mcp/invoke-tool/$tool'
+      fullPath: '/.mcp/invoke-tool/$tool'
+      preLoaderRoute: typeof Char91DotmcpChar93InvokeToolToolRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/sequences/': {
@@ -432,46 +446,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedSequencesIdRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/.mcp/invoke-tool/$tool': {
-      id: '/.mcp/invoke-tool/$tool'
-      path: '/.mcp/invoke-tool/$tool'
-      fullPath: '/.mcp/invoke-tool/$tool'
-      preLoaderRoute: typeof Char91DotmcpChar93InvokeToolToolRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/.lovable/oauth/consent': {
-      id: '/.lovable/oauth/consent'
-      path: '/.lovable/oauth/consent'
-      fullPath: '/.lovable/oauth/consent'
-      preLoaderRoute: typeof DotlovableOauthConsentRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/webhooks/resend': {
-      id: '/api/public/webhooks/resend'
-      path: '/api/public/webhooks/resend'
-      fullPath: '/api/public/webhooks/resend'
-      preLoaderRoute: typeof ApiPublicWebhooksResendRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/webhooks/inbound-reply': {
-      id: '/api/public/webhooks/inbound-reply'
-      path: '/api/public/webhooks/inbound-reply'
-      fullPath: '/api/public/webhooks/inbound-reply'
-      preLoaderRoute: typeof ApiPublicWebhooksInboundReplyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/cron/rescan-replies': {
-      id: '/api/public/cron/rescan-replies'
-      path: '/api/public/cron/rescan-replies'
-      fullPath: '/api/public/cron/rescan-replies'
-      preLoaderRoute: typeof ApiPublicCronRescanRepliesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/cron/monthly-cohort': {
-      id: '/api/public/cron/monthly-cohort'
-      path: '/api/public/cron/monthly-cohort'
-      fullPath: '/api/public/cron/monthly-cohort'
-      preLoaderRoute: typeof ApiPublicCronMonthlyCohortRouteImport
+    '/api/public/admin/seed-demo': {
+      id: '/api/public/admin/seed-demo'
+      path: '/api/public/admin/seed-demo'
+      fullPath: '/api/public/admin/seed-demo'
+      preLoaderRoute: typeof ApiPublicAdminSeedDemoRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/public/cron/dispatch-emails': {
@@ -481,11 +460,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicCronDispatchEmailsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/public/admin/seed-demo': {
-      id: '/api/public/admin/seed-demo'
-      path: '/api/public/admin/seed-demo'
-      fullPath: '/api/public/admin/seed-demo'
-      preLoaderRoute: typeof ApiPublicAdminSeedDemoRouteImport
+    '/api/public/cron/monthly-cohort': {
+      id: '/api/public/cron/monthly-cohort'
+      path: '/api/public/cron/monthly-cohort'
+      fullPath: '/api/public/cron/monthly-cohort'
+      preLoaderRoute: typeof ApiPublicCronMonthlyCohortRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/cron/rescan-replies': {
+      id: '/api/public/cron/rescan-replies'
+      path: '/api/public/cron/rescan-replies'
+      fullPath: '/api/public/cron/rescan-replies'
+      preLoaderRoute: typeof ApiPublicCronRescanRepliesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/webhooks/inbound-reply': {
+      id: '/api/public/webhooks/inbound-reply'
+      path: '/api/public/webhooks/inbound-reply'
+      fullPath: '/api/public/webhooks/inbound-reply'
+      preLoaderRoute: typeof ApiPublicWebhooksInboundReplyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/webhooks/resend': {
+      id: '/api/public/webhooks/resend'
+      path: '/api/public/webhooks/resend'
+      fullPath: '/api/public/webhooks/resend'
+      preLoaderRoute: typeof ApiPublicWebhooksResendRouteImport
       parentRoute: typeof rootRouteImport
     }
   }

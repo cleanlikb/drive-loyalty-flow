@@ -33,6 +33,7 @@ import {
 } from "@/components/ui/accordion";
 
 import logo from "@/assets/wynback-logo.png.asset.json";
+import dealerImg from "@/assets/dealer-forecourt.png.asset.json";
 import explainerAsset from "@/assets/wynback-explainer.mp4.asset.json";
 import explainerPoster from "@/assets/wynback-explainer-poster.png.asset.json";
 import { trackEvent } from "@/lib/analytics";
@@ -165,7 +166,7 @@ function Header({
              
              
              
-              onClick={(event) => trackDemoClick(event, "mobile_nav", () => setMobileOpen(false))}
+              onClick={(event) => { trackDemoClick(event, "mobile_nav"); setMobileOpen(false); }}
             >
               Book a demo
             </a>
@@ -239,30 +240,86 @@ function BookDemoButton({
 }
 
 function HeroSection() {
+  const activity = [
+    { title: "Email sent", sub: "Range Rover Sport (2019)", time: "2 hours ago", done: true },
+    { title: "Customer replied", sub: "Interested in a test drive", time: "4 hours ago", done: true },
+    { title: "Follow-up scheduled", sub: "BMW 3 Series (2020)", time: "Tomorrow", done: false },
+  ];
   return (
-    <section className="relative overflow-hidden bg-gradient-to-br from-primary via-primary to-fuchsia-600 text-primary-foreground pt-24 pb-28 md:pt-32 md:pb-36">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.18),transparent_40%)] pointer-events-none" />
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_left,rgba(0,0,0,0.12),transparent_40%)] pointer-events-none" />
+    <section className="relative overflow-hidden bg-background">
+      <div className="absolute inset-x-0 bottom-0 h-[60%] md:inset-y-0 md:left-auto md:right-0 md:h-full md:w-[62%]">
+        <img src={dealerImg.url} alt="Dealership forecourt at sunset" className="h-full w-full object-cover object-right" />
+        <div className="absolute inset-0 bg-gradient-to-b from-background via-background/40 to-transparent md:bg-gradient-to-r md:via-background/30" />
+      </div>
 
-      <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <span className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/15 px-4 py-1.5 text-xs font-semibold tracking-wide uppercase text-white">
-          For UK independent dealerships
-        </span>
-        <h1 className="mt-6 text-4xl md:text-5xl lg:text-6xl font-semibold tracking-tight text-white">
-          Every month, your past customers buy their next car from someone else.
-        </h1>
-        <p className="mt-6 text-lg md:text-xl text-white/80 max-w-2xl mx-auto leading-relaxed">
-          They&apos;re due an upgrade right now — and nobody&apos;s reminded them you exist. Wynback brings them back automatically, in 10 minutes a month.
-        </p>
-        <div className="mt-9 flex flex-col sm:flex-row items-center justify-center gap-4">
-          <Button asChild size="lg" className="h-12 px-8 text-base bg-white text-primary hover:bg-white/90 shadow-lg shadow-black/10 hover:shadow-black/20 transition-shadow">
-            <a href={DEMO_URL} onClick={(event) => trackDemoClick(event, "hero")}>
-              Book a demo
-              <ArrowRight className="h-4 w-4" />
+      <div className="relative max-w-7xl mx-auto px-6 lg:px-8 pt-14 pb-10 md:py-28">
+        <div className="max-w-xl">
+          <p className="text-xs md:text-sm font-medium tracking-[0.25em] uppercase text-muted-foreground">
+            Built for UK independent dealerships
+          </p>
+          <h1 className="mt-5 text-[2.6rem] sm:text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight leading-[0.95] text-foreground">
+            Your next sale is already in your customer database<span className="text-primary">.</span>
+          </h1>
+          <p className="mt-6 text-lg md:text-xl text-muted-foreground leading-relaxed">
+            Wynback automatically brings past customers back when they&apos;re ready to change their car — without adding work for your team.
+          </p>
+          <Button asChild size="lg" className="mt-8 h-14 px-8 text-lg rounded-xl shadow-lg">
+            <a href="#how-it-works">
+              See how Wynback works <ArrowRight className="h-5 w-5" />
             </a>
           </Button>
+          <p className="mt-4 text-sm text-primary">
+            <span className="underline underline-offset-4">No setup fees</span> · We configure it for you
+          </p>
         </div>
-        <p className="mt-3 text-sm text-white/70">No setup fees · We configure it for you</p>
+
+        <div className="mt-12 md:mt-16 max-w-md [perspective:1200px]">
+          <div className="flex rounded-2xl border border-border bg-card/95 backdrop-blur shadow-2xl [transform:rotateY(8deg)_rotateX(4deg)]">
+            <div className="flex flex-col items-center gap-4 border-r border-border p-3">
+              <img src={logo.url} alt="" className="h-6 w-6 object-cover object-left" />
+              <span className="rounded-lg bg-primary/10 p-2 text-primary"><Zap className="h-4 w-4" /></span>
+              <Users className="h-4 w-4 text-muted-foreground" />
+              <Send className="h-4 w-4 text-muted-foreground" />
+              <Mail className="h-4 w-4 text-muted-foreground" />
+            </div>
+            <div className="flex-1 p-4">
+              <div className="flex items-start justify-between">
+                <div>
+                  <p className="text-[11px] text-muted-foreground">Good morning</p>
+                  <p className="font-semibold text-foreground">Your campaigns</p>
+                </div>
+                <span className="rounded-md border border-border px-2 py-1 text-[10px] text-muted-foreground">Last 30 days</span>
+              </div>
+              <div className="mt-3 grid grid-cols-2 gap-2">
+                <div className="rounded-xl border border-border p-3">
+                  <p className="text-xs text-foreground">Customers ready to upgrade</p>
+                  <p className="mt-1 flex items-center gap-2 text-xl font-semibold"><Users className="h-4 w-4 text-primary" />128</p>
+                  <p className="text-[10px] text-muted-foreground">customers</p>
+                </div>
+                <div className="rounded-xl border border-border p-3">
+                  <p className="text-xs text-foreground">Personalised follow-ups</p>
+                  <p className="mt-1 flex items-center gap-2 text-xl font-semibold"><Mail className="h-4 w-4 text-primary" />14</p>
+                  <p className="text-[10px] text-muted-foreground">replies this week</p>
+                </div>
+              </div>
+              <div className="mt-2 rounded-xl border border-border p-3">
+                <p className="text-xs font-medium text-foreground">Campaign activity</p>
+                <ul className="mt-2 space-y-2">
+                  {activity.map((a) => (
+                    <li key={a.title} className="flex items-start gap-2">
+                      <span className={`mt-1 h-2 w-2 rounded-full ${a.done ? "bg-primary" : "bg-muted-foreground/40"}`} />
+                      <div className="flex-1">
+                        <p className="text-xs text-foreground">{a.title}</p>
+                        <p className="text-[10px] text-muted-foreground">{a.sub}</p>
+                      </div>
+                      <span className="text-[10px] text-muted-foreground">{a.time}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
   );
