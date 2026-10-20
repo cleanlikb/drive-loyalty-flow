@@ -266,15 +266,15 @@ function HeroEmail() {
         <div className="mt-2 space-y-2 text-sm text-muted-foreground leading-relaxed">
           <p>Hi Emma,</p>
           <p>It&apos;s been three years since you drove away in your BMW 3 Series, so I wanted to see how you&apos;re getting on with it.</p>
-          <p>We&apos;ve had a lot of interest in 3 Series part-exchanges lately. No pitch, just keeping in touch.</p>
+          <p>Three years is when a lot of owners start thinking about what&apos;s next, so I wanted you to hear from us first. No rush at all.</p>
         </div>
       </div>
       <div className="rounded-2xl border border-primary/30 bg-card/95 backdrop-blur shadow-xl p-5 md:ml-8">
         <div className="flex items-center justify-between">
-          <span className="text-xs text-muted-foreground"><Reply className="inline h-3.5 w-3.5 mr-1" />Emma replied · 2 hours later</span>
-          <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 text-primary px-2 py-0.5 text-[11px] font-semibold"><Flame className="h-3 w-3" />Hot lead</span>
+          <span className="text-xs text-muted-foreground"><Reply className="inline h-3.5 w-3.5 mr-1" />Emma replied · 3 hours later</span>
+          <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 text-primary px-2 py-0.5 text-[11px] font-semibold">Interested</span>
         </div>
-        <p className="mt-2 text-sm text-foreground">&ldquo;Funny timing. It&apos;s on 41,000 miles and we were thinking about changing. What would you give me for it?&rdquo;</p>
+        <p className="mt-2 text-sm text-foreground">&ldquo;Thanks for checking in &mdash; it&apos;s still going strong. We&apos;ve only just started talking about what&apos;s next though, so you&apos;ve timed it well.&rdquo;</p>
       </div>
     </div>
   );
@@ -352,11 +352,11 @@ function SolutionSection() {
         <div className="text-center lg:text-left lg:col-span-5 lg:sticky lg:top-28 lg:self-start">
           <Eyebrow>The solution</Eyebrow>
           <h2 className="mt-4 text-2xl md:text-4xl lg:text-[2.9rem] font-semibold leading-[1.08] text-balance">
-            Wynback uses AI to work out when your customers are most likely to change car.
+            Wynback tracks every customer&apos;s ownership milestones, then uses AI to write each one a personal email.
           </h2>
           <p className="mx-auto lg:mx-0 mt-5 max-w-2xl text-base lg:text-lg text-muted-foreground text-balance">
-            Then it writes each one a personalised email at the milestones that matter &mdash; checked
-            automatically every month, across your whole customer list.
+            Six milestones, from 12 to 60 months after they bought &mdash; checked automatically every
+            month, across your whole customer list.
           </p>
           <div className="hidden lg:block mt-10">
             <DemoLink location="solution" className="h-12 px-8 text-base rounded-full">
@@ -424,14 +424,14 @@ function SolutionSection() {
 
 function HowItWorksSection() {
   const customers = [
-    { n: "Emma Clarke", c: "BMW 3 Series", d: "Mar 2023" },
-    { n: "Ben Hughes", c: "Ford Kuga", d: "Jun 2022" },
-    { n: "Grace Patel", c: "Audi A3", d: "Oct 2021" },
+    { n: "Emma Clarke", c: "BMW 3 Series", d: "Oct 2023" },
+    { n: "Ben Hughes", c: "Ford Kuga", d: "Oct 2025" },
+    { n: "Grace Lloyd", c: "Vauxhall Corsa", d: "Oct 2021" },
   ];
   const leads = [
     { m: 36, n: "Emma Clarke", c: "BMW 3 Series", hi: true },
-    { m: 24, n: "Ben Hughes", c: "Ford Kuga" },
-    { m: 60, n: "Grace Patel", c: "Audi A3" },
+    { m: 12, n: "Ben Hughes", c: "Ford Kuga" },
+    { m: 60, n: "Grace Lloyd", c: "Vauxhall Corsa" },
   ];
   const Initials = ({ n }: { n: string }) => (
     <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-bold text-primary">
@@ -899,7 +899,7 @@ function PricingSection() {
   const tiers = [
     { name: "Forecourt", monthly: 99, limit: "Up to 125 previous customers a month", stock: "Est. up to 40 cars in stock" },
     { name: "Showroom", monthly: 149, limit: "Up to 250 previous customers a month", stock: "Est. up to 80 cars in stock" },
-    { name: "Supersite", monthly: 199, limit: "Over 250 previous customers a month", stock: "Est. over 150 cars in stock" },
+    { name: "Supersite", monthly: 199, limit: "Over 250 previous customers a month", stock: "Est. 80+ cars in stock" },
   ];
   const features = [
     "Free setup. Wynback imports your data and configures everything",
