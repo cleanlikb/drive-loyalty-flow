@@ -257,7 +257,7 @@ function HeroSection() {
           <p className="text-xs md:text-sm font-medium tracking-[0.25em] uppercase text-muted-foreground">
             Built for UK independent dealerships
           </p>
-          <h1 className="mt-5 text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight leading-[0.95] text-foreground">
+          <h1 className="mt-5 text-[2.6rem] sm:text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight leading-[0.95] text-foreground">
             Your next sale is already in your customer database<span className="text-primary">.</span>
           </h1>
           <p className="mt-6 text-lg md:text-xl text-muted-foreground leading-relaxed">
