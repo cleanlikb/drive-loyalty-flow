@@ -1,5 +1,5 @@
 // Lightweight GA4 helpers. Safe to call before gtag loads (queues via dataLayer).
-const GA_MEASUREMENT_ID = "G-HW40JP52ZD";
+const GA_MEASUREMENT_ID = "G-TPCE2DBF86";
 
 declare global {
   interface Window {
