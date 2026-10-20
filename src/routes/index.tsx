@@ -228,10 +228,10 @@ function HeroSection() {
         <div>
           <p className="text-xs md:text-sm font-medium tracking-[0.25em] uppercase text-muted-foreground">For UK independent car dealers</p>
           <h1 className="mt-5 text-[2.6rem] sm:text-5xl md:text-6xl font-extrabold tracking-tight leading-[0.95] text-foreground">
-            Your next sale is already in your customer list<span className="text-primary">.</span>
+            Sell more cars. Make more profit<span className="text-primary">.</span>
           </h1>
           <p className="mt-6 text-lg text-muted-foreground leading-relaxed">
-            Wynback emails every past buyer at the moments they&apos;re most likely to change car, from 12 to 60 months after they bought, and puts their replies in your inbox. No portal fees. No cold leads. Under 10 minutes a month.
+            The buyers are already in your customer list. Wynback emails each one at the moments they&apos;re most likely to change car, from 12 to 60 months after they bought, and puts their replies in your inbox. No portal fees. No cold leads. Under 10 minutes a month.
           </p>
           <div className="mt-8 flex flex-col sm:flex-row gap-3">
             <DemoLink location="hero" className="h-14 px-7 text-base rounded-xl shadow-lg">
