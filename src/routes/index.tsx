@@ -139,7 +139,7 @@ function Landing() {
         <HeroSection />
         <NumbersSection />
         <ProblemSection />
-        <TimingSection />
+        <SolutionSection />
         <EmailsSection />
         <HowItWorksSection />
         <SafeguardsSection />
@@ -338,7 +338,7 @@ function ProblemSection() {
   );
 }
 
-function TimingSection() {
+function SolutionSection() {
   const ms = [
     { m: 12, t: "Check-in" },
     { m: 18, t: "Life changes" },
