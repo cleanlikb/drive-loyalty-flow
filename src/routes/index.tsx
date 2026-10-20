@@ -326,6 +326,13 @@ function ProblemSection() {
             </li>
           ))}
         </ul>
+        <div className="mt-8 rounded-xl border border-primary/20 bg-primary/5 p-5 text-center">
+          <p className="text-sm md:text-base leading-relaxed">
+            Keeping in touch with every past customer yourself means a call or an email for each one, every few months —{" "}
+            <span className="font-semibold text-foreground">two days of your month, every month, just to keep up.</span>{" "}
+            <span className="text-muted-foreground">Wynback does the lot for you in under 10 minutes.</span>
+          </p>
+        </div>
       </div>
     </section>
   );
