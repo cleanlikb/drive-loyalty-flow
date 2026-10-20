@@ -350,8 +350,14 @@ function TimingSection() {
   return (
     <section className="py-16 md:py-20 bg-secondary/30">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <p className="text-xs font-semibold uppercase tracking-widest text-primary">The timing</p>
-        <h2 className="mt-3 text-2xl md:text-4xl font-bold tracking-tight text-balance">Wynback emails each customer at six moments they&apos;re most likely to change car.</h2>
+        <p className="text-xs font-semibold uppercase tracking-widest text-primary">The solution</p>
+        <h2 className="mt-3 text-2xl md:text-4xl font-bold tracking-tight text-balance">
+          Wynback uses AI to work out when your customers are most likely to change car.
+        </h2>
+        <p className="mx-auto mt-4 max-w-2xl text-base text-muted-foreground text-balance">
+          Then it writes each one a personalised email at the milestones that matter &mdash; checked
+          automatically every month, across your whole customer list.
+        </p>
         <div className="mt-8 grid grid-cols-3 md:grid-cols-6 gap-2 md:gap-3">
           {ms.map((x) => (
             <div key={x.m} className={`rounded-xl border p-3 ${x.hi ? "border-primary bg-primary/10 ring-1 ring-primary/30" : "border-border bg-card"}`}>
@@ -362,7 +368,7 @@ function TimingSection() {
           ))}
         </div>
         <div className="mt-8">
-          <DemoLink location="timing" className="h-12 px-8 text-base">
+          <DemoLink location="solution" className="h-12 px-8 text-base">
             Book a demo <ArrowRight className="h-4 w-4" />
           </DemoLink>
         </div>
