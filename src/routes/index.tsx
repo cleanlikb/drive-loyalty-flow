@@ -552,8 +552,12 @@ function EmailsSection() {
               <p className="font-semibold text-foreground">{e.subject}</p>
               <span className="rounded-full bg-muted px-2 py-0.5 text-[11px] text-muted-foreground">Example</span>
             </div>
-            <p className="mt-4 text-muted-foreground leading-relaxed">{e.body}</p>
-            <p className="mt-4 text-foreground">James, Whitfield Motors</p>
+            <div className="mt-4 space-y-3 text-muted-foreground leading-relaxed">
+              {e.body.map((p, i) => (
+                <p key={i}>{p}</p>
+              ))}
+            </div>
+            <p className="mt-6 text-foreground">James, Whitfield Motors</p>
           </div>
         </div>
         <p className="mt-6 text-center text-sm text-muted-foreground max-w-3xl mx-auto">
