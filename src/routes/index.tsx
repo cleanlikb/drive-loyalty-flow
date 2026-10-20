@@ -308,34 +308,24 @@ function NumbersSection() {
 
 function ProblemSection() {
   const pains = [
-    { t: "Every lead costs more, and none of them know you.", b: "Portals and ads put you in front of buyers who are comparing you with every dealer in the postcode. You pay again for every sale, and you win on price or not at all." },
-    { t: "Happy customers buy their next car elsewhere.", b: "They liked you. But three years on, nobody's been in touch. So when they're ready to change, they open Autotrader like everyone else, and your name never comes up." },
-    { t: "Follow-up never makes it to the top of the list.", b: "Between the phones, the prep and the test drives, nobody has a spare afternoon to write forty personal emails. So the customer database just sits there." },
-    { t: "Their part-exchange goes to the car-buying sites.", b: "When an old customer changes car without you, you lose the sale and the trade-in. A car you sold, know and could retail again goes to an instant-offer site instead." },
+    { t: "Every portal lead costs more", b: "and they're comparing you with every dealer nearby." },
+    { t: "Happy customers buy elsewhere", b: "because nobody got in touch when they were ready." },
+    { t: "No time for follow-up", b: "so the customer list just sits there." },
+    { t: "Part-exchanges go to buying sites", b: "and you lose the sale and the trade-in." },
   ];
   return (
-    <section className="py-24 bg-background">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <SectionHead
-          eyebrow="The problem"
-          title="You're paying to chase strangers while your best prospects go quiet."
-          intro="The people most likely to buy from you are the ones who already have. Most dealers never speak to them again."
-        />
-        <div className="grid md:grid-cols-2 gap-6">
-          {pains.map((p, i) => (
-            <div key={p.t} className="rounded-2xl border border-border bg-card p-8">
-              <span className="h-9 w-9 rounded-full bg-primary/10 text-primary grid place-items-center font-semibold">{i + 1}</span>
-              <h3 className="mt-4 text-xl font-semibold">{p.t}</h3>
-              <p className="mt-3 text-muted-foreground leading-relaxed">{p.b}</p>
-            </div>
+    <section className="py-16 md:py-20 bg-background">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <p className="text-xs font-semibold uppercase tracking-widest text-primary text-center">The problem</p>
+        <h2 className="mt-3 text-2xl md:text-4xl font-bold tracking-tight text-center">You're paying to chase strangers while your best prospects go quiet.</h2>
+        <ul className="mt-8 grid sm:grid-cols-2 gap-3">
+          {pains.map((p) => (
+            <li key={p.t} className="flex gap-3 rounded-xl border border-border bg-card p-4">
+              <X className="h-5 w-5 shrink-0 text-destructive mt-0.5" />
+              <p className="text-sm leading-snug"><span className="font-semibold text-foreground">{p.t}</span> <span className="text-muted-foreground">{p.b}</span></p>
+            </li>
           ))}
-        </div>
-        <div className="mt-10 rounded-2xl bg-primary text-primary-foreground p-8 md:p-10 flex flex-col md:flex-row items-center gap-6 justify-between">
-          <p className="text-lg md:text-xl font-medium max-w-2xl">Wynback turns your past sales into a monthly list of warm prospects, and writes to every one of them for you.</p>
-          <DemoLink location="problem_banner" variant="secondary" className="h-12 px-8 text-base shrink-0">
-            Book a demo <ArrowRight className="h-4 w-4" />
-          </DemoLink>
-        </div>
+        </ul>
       </div>
     </section>
   );
@@ -343,33 +333,32 @@ function ProblemSection() {
 
 function TimingSection() {
   const ms = [
-    { m: 12, t: "First year done", b: "A friendly check-in. Builds the relationship before they need anything." },
-    { m: 18, t: "Settled in", b: "Life changes: a new job, a new baby, a longer commute." },
-    { m: 24, t: "Two years in", b: "Shorter finance deals start to finish. Some are ready to upgrade." },
-    { m: 36, t: "Classic change point", b: "Many PCP agreements run three years. Prime time to talk.", hi: true },
-    { m: 48, t: "Four years in", b: "Longer agreements end. Mileage and bills start to climb." },
-    { m: 60, t: "Five years on", b: "Plenty of owners are ready for something newer." },
+    { m: 12, t: "Check-in" },
+    { m: 18, t: "Life changes" },
+    { m: 24, t: "Short finance ends" },
+    { m: 36, t: "PCP ends", hi: true },
+    { m: 48, t: "Long finance ends" },
+    { m: 60, t: "Ready for newer" },
   ];
   return (
-    <section className="py-24 bg-secondary/30">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <SectionHead
-          eyebrow="The timing"
-          title="Every buyer reaches a point where they start looking again."
-          intro="Wynback watches the date each customer bought and gets in touch at six points in their ownership, so you're the first dealer they hear from."
-        />
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+    <section className="py-16 md:py-20 bg-secondary/30">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <p className="text-xs font-semibold uppercase tracking-widest text-primary">The timing</p>
+        <h2 className="mt-3 text-2xl md:text-4xl font-bold tracking-tight">We email each customer at six moments they're most likely to change car.</h2>
+        <div className="mt-8 grid grid-cols-3 md:grid-cols-6 gap-2 md:gap-3">
           {ms.map((x) => (
-            <div key={x.m} className={`rounded-2xl border p-6 ${x.hi ? "border-primary bg-primary/5 ring-1 ring-primary/30" : "border-border bg-card"}`}>
-              <div className="text-3xl font-bold text-primary">{x.m} <span className="text-base font-medium text-muted-foreground">months</span></div>
-              <h3 className="mt-2 font-semibold text-foreground">{x.t}</h3>
-              <p className="mt-1 text-sm text-muted-foreground">{x.b}</p>
+            <div key={x.m} className={`rounded-xl border p-3 ${x.hi ? "border-primary bg-primary/10 ring-1 ring-primary/30" : "border-border bg-card"}`}>
+              <div className="text-2xl font-bold text-primary leading-none">{x.m}</div>
+              <div className="text-[10px] uppercase tracking-wide text-muted-foreground">months</div>
+              <div className="mt-1.5 text-xs font-medium text-foreground leading-tight">{x.t}</div>
             </div>
           ))}
         </div>
-        <p className="mt-8 text-center text-sm text-muted-foreground max-w-3xl mx-auto">
-          You choose which milestones to use. Customers who don&apos;t own the car any more, have unsubscribed, or were contacted in the last six months are left out automatically.
-        </p>
+        <div className="mt-8">
+          <DemoLink location="timing" className="h-12 px-8 text-base">
+            Book a demo <ArrowRight className="h-4 w-4" />
+          </DemoLink>
+        </div>
       </div>
     </section>
   );
