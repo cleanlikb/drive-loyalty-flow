@@ -809,7 +809,7 @@ function FounderSection() {
         <blockquote className="mt-4 text-xl md:text-2xl text-foreground leading-relaxed">
           &ldquo;I spent 14 years in the motor trade, from sales exec to running my own dealership. The easiest deals were always the customers who came back. But following them all up never happened, because there was always something more urgent. Wynback does the follow-up I never had time for.&rdquo;
         </blockquote>
-        <p className="mt-6 text-sm text-muted-foreground">— Kit Barrett, founder of Wynback</p>
+        <p className="mt-6 text-sm text-muted-foreground">— Chris, founder of Wynback</p>
       </div>
     </section>
   );
