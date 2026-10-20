@@ -225,7 +225,7 @@ function HeroSection() {
     <section className="relative overflow-hidden bg-background">
       <div className="absolute inset-x-0 top-[42vh] bottom-0 md:inset-y-0 md:left-auto md:right-0 md:h-full md:w-[60%]">
         <img src={dealerImg.url} alt="Dealership forecourt at sunset" className="h-full w-full object-cover object-right" />
-        <div className="absolute inset-0 bg-gradient-to-b from-background via-background/40 to-transparent md:bg-gradient-to-r md:via-background/30" />
+        <div className="absolute inset-0 bg-gradient-to-b from-background via-background/70 via-45% to-transparent md:bg-gradient-to-r md:via-background/30 md:via-50%" />
       </div>
 
       <div className="relative max-w-7xl mx-auto px-6 lg:px-8 pt-14 pb-12 md:py-24 grid md:grid-cols-2 gap-12 items-center">
