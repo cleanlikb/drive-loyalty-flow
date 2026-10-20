@@ -736,10 +736,10 @@ function PricingSection() {
     "Cancel anytime. No long contract",
   ];
   const coverLine = (yearly: number) => {
-    const ratio = 2000 / yearly;
-    if (ratio >= 1) return "One £2,000 sale covers the whole year";
-    return `One £2,000 sale covers ${Math.round(ratio * 12)} months`;
+    const months = Math.floor(24000 / yearly);
+    return `One £2,000 sale covers ${months} month${months === 1 ? "" : "s"}`;
   };
+
   return (
     <section id="pricing" className="py-24 bg-secondary/30">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
