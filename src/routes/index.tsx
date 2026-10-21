@@ -229,7 +229,11 @@ function HeroSection() {
             <span className="block">Make more profit<span className="text-primary">.</span></span>
           </h1>
           <p className="mt-6 text-lg text-muted-foreground leading-relaxed">
-            The buyers are already in your customer list. Wynback emails each one at the moments they&apos;re most likely to change car, from 12 to 60 months after they bought, and puts their replies in your inbox. No marketplace fees. No cold leads. Under 10 minutes a month.
+            <span className="font-semibold text-foreground">One extra deal covers an entire year of Wynback.</span> Wynback emails each past customer at the moments they&apos;re most likely to change car, from 12 to 60 months after they bought, and puts their replies in your inbox.
+          </p>
+          <p className="mt-4 inline-flex flex-wrap items-center gap-x-2 rounded-xl border border-primary/25 bg-primary/5 px-4 py-3 text-base font-medium text-foreground">
+            <Clock className="h-5 w-5 shrink-0 text-primary" />
+            Saves up to 19 hours of manual chasing a month — for under 10 minutes of your time.
           </p>
           <div className="mt-8 flex flex-col sm:flex-row gap-3">
             <DemoLink location="hero" className="h-14 px-7 text-base rounded-xl shadow-lg">
