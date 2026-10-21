@@ -14,6 +14,7 @@ import {
   Reply,
   Calculator,
   Quote,
+  Clock,
 } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
@@ -31,12 +32,13 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "Sell more cars and make more profit from the customers you've already sold to. Wynback emails each past buyer at the moments they're most likely to change car and puts their replies in your inbox. Built for UK independent car dealers.",
+          "One extra deal covers an entire year of Wynback. Wynback emails each past customer at the moments they're most likely to change car and puts their replies in your inbox — saving up to 19 hours of manual chasing a month. Built for UK independent car dealers.",
       },
       { property: "og:title", content: "Wynback — Sell more cars. Make more profit." },
       {
         property: "og:description",
-        content: "Sell more cars and make more profit from customers you've already sold to. Automatic, personal emails at 12–60 month ownership milestones. From £99/month, free setup.",
+        content:
+          "One extra deal covers an entire year of Wynback. Personal emails at 12–60 month ownership milestones, replies straight to your inbox. From £99/month, free setup.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -229,7 +231,11 @@ function HeroSection() {
             <span className="block">Make more profit<span className="text-primary">.</span></span>
           </h1>
           <p className="mt-6 text-lg text-muted-foreground leading-relaxed">
-            The buyers are already in your customer list. Wynback emails each one at the moments they&apos;re most likely to change car, from 12 to 60 months after they bought, and puts their replies in your inbox. No marketplace fees. No cold leads. Under 10 minutes a month.
+            <span className="font-semibold text-foreground">One extra deal covers an entire year of Wynback.</span> Wynback emails each past customer at the moments they&apos;re most likely to change car, from 12 to 60 months after they bought, and puts their replies in your inbox.
+          </p>
+          <p className="mt-4 inline-flex flex-wrap items-center gap-x-2 rounded-xl border border-primary/25 bg-primary/5 px-4 py-3 text-base font-medium text-foreground">
+            <Clock className="h-5 w-5 shrink-0 text-primary" />
+            Saves up to 19 hours of manual chasing a month — for under 10 minutes of your time.
           </p>
           <div className="mt-8 flex flex-col sm:flex-row gap-3">
             <DemoLink location="hero" className="h-14 px-7 text-base rounded-xl shadow-lg">
