@@ -32,12 +32,13 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "Sell more cars and make more profit from the customers you've already sold to. Wynback emails each past buyer at the moments they're most likely to change car and puts their replies in your inbox. Built for UK independent car dealers.",
+          "One extra deal covers an entire year of Wynback. Wynback emails each past customer at the moments they're most likely to change car and puts their replies in your inbox — saving up to 19 hours of manual chasing a month. Built for UK independent car dealers.",
       },
       { property: "og:title", content: "Wynback — Sell more cars. Make more profit." },
       {
         property: "og:description",
-        content: "Sell more cars and make more profit from customers you've already sold to. Automatic, personal emails at 12–60 month ownership milestones. From £99/month, free setup.",
+        content:
+          "One extra deal covers an entire year of Wynback. Personal emails at 12–60 month ownership milestones, replies straight to your inbox. From £99/month, free setup.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
